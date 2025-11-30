@@ -346,10 +346,8 @@
     </div>
   </footer>
 
-  <script src="js/utils.js"></script>
-  <script src="js/navigation.js"></script>
-  <script src="js/api.js"></script>
-  <script>
+<script src="js/navigation.js"></script>
+<script>
     // Нэвтэрсэн бол товчнуудыг өөрчлөх
     if (typeof TokenManager !== 'undefined' && TokenManager.isAuthenticated()) {
       const user = UserManager.getUser();
@@ -363,5 +361,7 @@
       }
     }
   </script>
+  <!-- Main Application - Component Based -->
+  <script type="module" src="main.js"></script>
 </body>
 </html>
