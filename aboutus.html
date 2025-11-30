@@ -4,9 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>OmniCredit — Бидний тухай</title>
-  
+
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
-  
+
+  <!-- Төслийн үндсэн stylesheet-үүд -->
   <link rel="stylesheet" href="css/variables.css">
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/navigation.css">
@@ -15,168 +16,321 @@
   <link rel="stylesheet" href="css/hero.css">
   <link rel="stylesheet" href="css/footer.css">
 
+  <!-- Энэ хуудсанд зориулагдсан шинэ дизайн (нав/фүүтерд хүрэхгүй) -->
   <style>
-    .timeline {
-      position: relative;
-      padding: 40px 0;
+    /* INTRO HERO – FIXED FOR DESKTOP */
+
+    .intro {
+      width: 100%;
+      margin: 2rem auto 1rem;
+      padding: 2.5rem 2rem 2.8rem;
+      border-radius: 18px;
+      background-color: #103C4C;
+      color: #ffffff;
     }
 
-    .timeline-item {
-      display: grid;
-      grid-template-columns: 120px 1fr;
-      gap: 32px;
-      margin-bottom: 48px;
-      position: relative;
+    .intro .smalltitle {
+      letter-spacing: 0.35em;
+      font-weight: 600;
+      font-size: 0.85rem;
     }
 
-    .timeline-year {
-      font-size: 2rem;
+    .intro h1 {
+      margin: 1.2rem 0 1.4rem;
+      color: #ffffff;
+      font-size: 2.2rem;
+      line-height: 1.25;
       font-weight: 800;
-      background: var(--gradient-peachy);
+    }
+
+    .intro .hylbar {
+      background: linear-gradient(90deg, #29C8C9, #41DB96);
       -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
       background-clip: text;
+      color: transparent;
+    }
+
+    .intro .desc {
+      font-size: 1rem;
+      font-weight: 400;
+      max-width: 46rem;
+    }
+
+    @media (min-width: 1024px) {
+      .intro h1 {
+        font-size: 2.6rem;
+      }
+      .intro .desc {
+        font-size: 1.1rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .intro {
+        padding: 2rem 1.5rem;
+      }
+      .intro h1 {
+        font-size: 1.9rem;
+      }
+      .intro .desc {
+        font-size: 0.95rem;
+      }
+    }
+
+    @media (max-width: 540px) {
+      .intro {
+        padding: 1.6rem 1.2rem;
+      }
+      .intro h1 {
+        font-size: 1.7rem;
+        line-height: 1.2;
+      }
+      .intro .desc {
+        font-size: 0.9rem;
+      }
+    }
+
+    /* PURPOSE – 2 карт */
+
+    .purpose {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 2.4rem;
+      width: 95%;
+      margin: 3.2rem auto;
+      align-items: stretch;
+    }
+
+    .purpose article {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      background: #fff;
+      border: 1px solid #e0e0e0;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, .08);
+    }
+
+    .purpose img {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      height: auto;
+      object-fit: cover;
+      display: block;
+    }
+
+    .purpose h2 {
+      font-size: 1.8rem;
+      margin: 1.2rem 1.6rem 0.4rem;
+    }
+
+    .purpose p {
+      font-size: 1.4rem;
+      color: #444;
+      margin: 0 1.6rem 1.2rem;
+    }
+
+    @media (max-width: 768px) {
+      .purpose {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* TIMELINE */
+
+    .timeline {
+      width: 95%;
+      max-width: 100rem;
+      margin: 5rem auto;
+      position: relative;
+    }
+
+    .timeline h2 {
+      font-size: 2.4rem;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    .timeline .list {
+      position: relative;
+      display: block;
+    }
+
+    .titem {
+      width: min(48rem, 90%);
+      background: #D9FBE7;
+      border: 0;
+      border-radius: 8px;
+      padding: 1.6rem 2rem;
+      margin: 2.8rem 0;
+      box-shadow: 0 10px 14px -6px rgba(0, 0, 0, .25);
+    }
+
+    .titem:nth-child(odd) {
+      margin-left: 1.6rem;
+    }
+
+    .titem:nth-child(even) {
+      margin-left: auto;
+      margin-right: 1.6rem;
+    }
+
+    .titem time {
+      font-weight: 800;
+      font-size: 1.8rem;
+      color: #064E3B;
+      margin-right: .8rem;
+      position: relative;
+      display: inline-block;
+    }
+
+    .titem span {
+      display: block;
+      font-size: 1.6rem;
+      color: #0F172A;
+      margin-top: .4rem;
+    }
+
+    @media (max-width: 700px) {
+      .titem {
+        width: 100%;
+        margin-left: 0;
+        margin-right: 0;
+      }
+    }
+
+    /* TEAM */
+
+    .team {
+      width: 95%;
+      margin: 3.2rem auto;
+    }
+
+    .team h2 {
+      font-size: 2.4rem;
+      margin-bottom: 1.6rem;
+    }
+
+    .listmem {
+      display: flex;
+      flex-direction: column;
+      gap: 6rem;
+      width: 90%;
+      margin: 4rem auto;
+    }
+
+    .member {
+      display: flex;
+      align-items: center;
+      gap: 3rem;
+      background: none;
+      border: none;
+      box-shadow: none;
+    }
+
+    .member img {
+      width: 30rem;
+      height: 20rem;
+      border-radius: 12px;
+      object-fit: cover;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    }
+
+    .member .infomem,
+    .member .meminfo {
+      max-width: 40rem;
+    }
+
+    .member h3 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .member p {
+      font-size: 1.4rem;
+      color: #333;
+      line-height: 1.4;
+    }
+
+    .member:nth-child(even) {
+      flex-direction: row-reverse;
       text-align: right;
     }
 
-    .timeline-content {
-      padding: 24px;
-      background: var(--card);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-    }
-
-    .timeline-content h4 {
-      margin-bottom: 8px;
-      color: var(--primary);
-    }
-
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 24px;
-      margin: 48px 0;
-    }
-
-    @media (max-width: 968px) {
-      .stats-grid {
-        grid-template-columns: repeat(2, 1fr);
+    @media (max-width: 768px) {
+      .member {
+        flex-direction: column;
+        text-align: center;
       }
 
-      .timeline-item {
-        grid-template-columns: 80px 1fr;
-        gap: 16px;
-      }
-
-      .timeline-year {
-        font-size: 1.5rem;
+      .member img {
+        width: 95%;
+        height: auto;
       }
     }
 
-    @media (max-width: 568px) {
-      .stats-grid {
-        grid-template-columns: 1fr;
-      }
+    /* REQUEST CTA */
+
+    .request {
+      width: 95%;
+      margin: 4rem auto 5rem;
+      background: #E9FBF3;
+      border: 1px solid #CFF3E3;
+      border-radius: 10px;
+      padding: 2.4rem;
     }
 
-    .team-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 32px;
-      margin-top: 48px;
+    .request span {
+      font-size: 1rem;
+      font-weight: bold;
+      letter-spacing: 0.5em;
+      color: #000000;
+      text-transform: uppercase;
+      display: block;
+      margin-bottom: .8rem;
     }
 
-    .team-member {
-      text-align: center;
+    .request h2 {
+      font-size: 2.4rem;
+      margin-bottom: 0.8rem;
     }
 
-    .team-avatar {
-      width: 120px;
-      height: 120px;
-      margin: 0 auto 16px;
-      background: var(--gradient-soft);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 48px;
-      border: 4px solid var(--line);
+    .request p {
+      font-size: 1.4rem;
+      color: #000000;
+      margin-bottom: 1.6rem;
     }
 
-    .team-name {
+    #openform {
+      border: none;
+      border-radius: 50px;
+      padding: 1rem 2rem;
+      background: linear-gradient(90deg, #29C8C9, #41DB96);
+      color: #000000;
       font-weight: 700;
-      font-size: 1.125rem;
-      margin-bottom: 4px;
+      cursor: pointer;
+      transition: 0.2s;
     }
 
-    .team-role {
-      color: var(--text-muted);
-      font-size: 14px;
-      margin-bottom: 12px;
-    }
-
-    .team-social {
-      display: flex;
-      gap: 12px;
-      justify-content: center;
-    }
-
-    .team-social a {
-      width: 36px;
-      height: 36px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: var(--bg);
-      border-radius: 50%;
-      transition: var(--transition);
-    }
-
-    .team-social a:hover {
-      background: var(--gradient-peachy);
+    #openform:hover {
       transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     }
 
-    @media (max-width: 768px) {
-      .team-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    .values-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 24px;
-      margin-top: 32px;
-    }
-
-    .value-item {
-      padding: 32px;
-      background: var(--card);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow-sm);
-      border-left: 4px solid var(--primary);
-    }
-
-    .value-icon {
-      font-size: 40px;
-      margin-bottom: 16px;
-    }
-
-    .value-item h4 {
-      margin-bottom: 12px;
-    }
-
-    @media (max-width: 768px) {
-      .values-grid {
-        grid-template-columns: 1fr;
+    @media (max-width: 600px) {
+      .purpose img {
+        height: 16rem;
       }
     }
   </style>
 </head>
 <body>
   <div class="container">
-    
+
+    <!-- NAVIGATION -->
     <nav class="nav">
       <a href="index.html" class="brand">OmniCredit</a>
       <div class="nav-links">
@@ -192,124 +346,99 @@
       <button class="mobile-menu-toggle">☰</button>
     </nav>
 
-    <section class="hero hero-compact">
-      <div class="hero-content">
-        <h1>OmniCredit түүх</h1>
+    <main>
+      <!-- INTRO -->
+      <section class="intro">
+        <p class="smalltitle">ABOUT US</p>
+        <h1>
+          Бид санхүүжилтийг <span class="hylbar">хялбар</span> болгоно.
+        </h1>
+        <p class="desc">
+          OmniCredit нь хэрэглэгчдэд тод, уян хатан санхүүгийн үйлчилгээ хүргэх зорилготой финтек баг.
+          Бидний түүх, үнэт зүйлтэй танилцаарай.
+        </p>
+      </section>
+
+      <!-- PURPOSE (Эрхэм зорилго / Алсын хараа) -->
+      <section class="purpose">
+        <omni-purpose-card
+          img="images/workspace.jpg"
+          title="Эрхэм зорилго"
+          text1="Санхүүжилтийг хүн бүрт хүртээмжтэй, хурдан, хялбар олгох."
+          text2="Тодорхой нөхцөл, ил тод, шуурхай шийдвэр дээр төвлөрнө.">
+        </omni-purpose-card>
+
+        <omni-purpose-card
+          img="images/workspace.jpg"
+          title="Алсын хараа"
+          text1="Монголын тэргүүлэх дижитал зээл олгох платформ болох."
+          text2="Харилцагчдад үнэ цэнийг бүтээж, санхүүгийн олон төрлийн үйлчилгээг багтаахад төвлөрнө.">
+        </omni-purpose-card>
+      </section>
+
+      <!-- TIMELINE -->
+      <section class="timeline">
+        <h2>Түүхэн товчоо</h2>
+        <div class="list">
+          <omni-timeline-item
+            date="2025-01-01"
+            text="OmniCredit албан ёсоор байгуулагдаж, платформын хөгжүүлэлт эхэлсэн.">
+          </omni-timeline-item>
+
+          <omni-timeline-item
+            date="2025-06-01"
+            text="Анхны туршилтын хэрэглэгчид зээл авч, бүтээгдэхүүний үндсэн боломжууд нээгдсэн.">
+          </omni-timeline-item>
+
+          <omni-timeline-item
+            date="2026-01-01"
+            text="Хамтрагч байгууллагын сүлжээ өргөжиж, OmniCredit олон сувгаар хүрч эхэлнэ.">
+          </omni-timeline-item>
+        </div>
+      </section>
+
+      <!-- TEAM -->
+      <section class="team">
+        <h2>Гүйцэтгэх удирдлагын баг</h2>
+        <div class="listmem">
+          <omni-team-member
+            img="images/coworker.webp"
+            name="Б. Жавхланбат"
+            role="Хөгжүүлэгч"
+            desc="Back-end / Front-end хөгжүүлэлт, системийн архитектур дээр ажиллаж байна.">
+          </omni-team-member>
+
+          <omni-team-member
+            img="images/coworker.webp"
+            name="Т. Марал"
+            role="Дизайнер"
+            desc="Хэрэглэгчийн туршлага, интерфэйсийн дизайн, брэндийн визуал бодлогыг хариуцдаг.">
+          </omni-team-member>
+
+          <omni-team-member
+            img="images/coworker.webp"
+            name="О. Анар"
+            role="Гүйцэтгэх захирал"
+            desc="Стратеги, бүтээгдэхүүний чиглэл, багийн зохион байгуулалт, хамтын ажиллагааг удирдана.">
+          </omni-team-member>
+        </div>
+      </section>
+
+      <!-- REQUEST CTA -->
+      <section class="request">
+        <span>Хамтрах хүсэлт илгээх</span>
+        <h2>Бидэнтэй хамт өсөе</h2>
         <p>
-          Бид Монголд  зээлийн үйлчилгээг хүн бүрт хүртээмжтэй, ил тод, найдвартай үйлчилгээ 
-          үзүүлэхээр зорин ажиллаж байна.
+          OmniCredit танай бизнесийн <strong>борлуулалтыг</strong> өсгөхөд тусална.
+          Богино маягт илгээвэл бид тантай холбогдож, хамтын ажиллагааны боломжийг
+          танилцуулах болно.
         </p>
-      </div>
-    </section>
-
-    <section style="margin-top: 80px;">
-      <div class="card card-peachy" style="padding: 64px 48px;">
-        <h2 style="color: white; text-align: center; margin-bottom: 24px;">
-          Бидний эрхэм зорилго
-        </h2>
-        <p style="color: white; text-align: center; font-size: 1.125rem; max-width: 800px; margin: 0 auto; line-height: 1.8;">
-          Санхүүгийн үйлчилгээг хүн бүрт хүртээмжтэй болгож, 
-          технологийн тусламжтайгаар хүмүүсийн амьдралын чанарыг 
-          сайжруулахад хувь нэмэр оруулах. Бид ил тод, шударга, 
-          хариуцлагатай зарчмаар үйл ажиллагаа явуулдаг.
-        </p>
-      </div>
-    </section>
-
-    <section style="margin-top: 80px;">
-      <h2 class="text-center mb-4">Бидний үнэт зүйлс</h2>
-      <div class="values-grid">
-        <div class="value-item">
-          <div class="value-icon"></div>
-          <h4>Ил тод байдал</h4>
-          <p style="color: var(--text-muted);">
-            Бүх төлбөр, хураамж, үйлчилгээний нөхцөлийг 
-            ойлгомжтой, нууцгүй тодорхой зарлана.
-          </p>
-        </div>
-
-        <div class="value-item">
-          <div class="value-icon"></div>
-          <h4>Хэрэглэгч төвтэй</h4>
-          <p style="color: var(--text-muted);">
-            Хэрэглэгчийн хэрэгцээ шаардлагад нийцсэн, 
-            хүртээмжтэй үйлчилгээ үзүүлэхийг эрхэмлэнэ.
-          </p>
-        </div>
-
-        <div class="value-item">
-          <div class="value-icon"></div>
-          <h4>Найдвартай байдал</h4>
-          <p style="color: var(--text-muted);">
-            Таны мэдээллийн аюулгүй байдлыг хамгийн 
-            өндөр түвшинд хангаж ажиллана.
-          </p>
-        </div>
-
-        <div class="value-item">
-          <div class="value-icon"></div>
-          <h4>Инновац</h4>
-          <p style="color: var(--text-muted);">
-            Орчин үеийн технологи, шинэ санааг ашиглан 
-            үйлчилгээгээ тасралтгүй сайжруулна.
-          </p>
-        </div>
-      </div>
-    </section>
-
-    <section style="margin-top: 80px;">
-      <h2 class="text-center mb-4">Бидний замнал</h2>
-      <div class="timeline">
-        <div class="timeline-item">
-          <div class="timeline-year">2025</div>
-          <div class="timeline-content">
-            <h4>Байгуулагдсан</h4>
-            <p style="color: var(--text-muted);">
-              OmniCredit компани албан ёсоор үүсгэн байгуулагдаж,
-              анхны хөгжүүлэлтийн ажлыг эхлүүллээ. Одоогоор манай баг
-              платформыг хөгжүүлэлтийн үе шатандаа явуулж байна.
-            </p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section style="margin-top: 80px; margin-bottom: 80px;">
-      <h2 class="text-center mb-4">Манай баг</h2>
-      <div class="team-grid">
-        <div class="team-member">
-          <div class="team-avatar"></div>
-          <div class="team-name">Б. Жавхланбат</div>
-          <div class="team-role">Хөгжүүлэгч</div>
-          <div class="team-social">
-            <a href="#"></a>
-            <a href="#"></a>
-          </div>
-        </div>
-
-        <div class="team-member">
-          <div class="team-avatar"></div>
-          <div class="team-name">Т. Марал</div>
-          <div class="team-role">Дизайнер</div>
-          <div class="team-social">
-            <a href="#"></a>
-            <a href="#"></a>
-          </div>
-        </div>
-
-        <div class="team-member">
-          <div class="team-avatar"></div>
-          <div class="team-name">О. Анар</div>
-          <div class="team-role">Гүйцэтгэх захирал</div>
-          <div class="team-social">
-            <a href="#"></a>
-            <a href="#"></a>
-          </div>
-        </div>
-      </div>
-    </section>
+        <button id="openform">Илгээх</button>
+      </section>
+    </main>
   </div>
 
+  <!-- FOOTER -->
   <footer class="footer">
     <div class="container">
       <div class="footer-content">
@@ -339,15 +468,18 @@
         </div>
       </div>
       <div class="footer-bottom">
-        <div class="footer-copyright">
+        <div class="footer版权">
           <span>© 2025 OmniCredit. Бүх эрх хуулиар хамгаалагдсан.</span>
         </div>
       </div>
     </div>
   </footer>
 
-<script src="js/navigation.js"></script>
-<script>
+  <!-- COMPONENTS -->
+  <script type="module" src="components/omni-aboutus.js"></script>
+
+  <script src="components/navigation.component.js"></script>
+  <script>
     // Нэвтэрсэн бол товчнуудыг өөрчлөх
     if (typeof TokenManager !== 'undefined' && TokenManager.isAuthenticated()) {
       const user = UserManager.getUser();
@@ -361,7 +493,6 @@
       }
     }
   </script>
-  <!-- Main Application - Component Based -->
-  <script type="module" src="main.js"></script>
+
 </body>
 </html>
