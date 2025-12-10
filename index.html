@@ -48,7 +48,7 @@
       padding: 0 1.25rem;
     }
 
-    /* NAVIGATION (хуучин navigation.css-тэйгээ явна, зөвхөн жижиг override) */
+    /* NAVIGATION */
     .nav {
       padding: 14px 0;
       display: flex;
@@ -61,6 +61,7 @@
       font-weight: 700;
       font-size: 1.25rem;
       color: var(--accent);
+      text-decoration: none;
     }
 
     .nav-links a.active {
@@ -136,110 +137,96 @@
       box-shadow: 0 12px 24px rgba(27, 191, 122, 0.35);
     }
 
-    /* баруун талын 2 карт */
-
     /* Баруун талын 2 зээлийн карт – зураг + градиент товч */
 
-.hero-side {
-  display: flex;
-  flex-direction: column;
-  gap: 22px;
-}
+    .hero-side {
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
 
-.hero-loan-card {
-  background: #ffffff;
-  border-radius: 28px;
-  box-shadow: 0 22px 55px rgba(15, 23, 42, 0.14);
-  padding: 18px 20px;
-  display: grid;
-  grid-template-columns: 190px minmax(0, 1fr);
-  column-gap: 20px;
-  align-items: center;
-}
+    .hero-loan-card {
+      background: #ffffff;
+      border-radius: 28px;
+      box-shadow: 0 22px 55px rgba(15, 23, 42, 0.14);
+      padding: 18px 20px;
+      display: grid;
+      grid-template-columns: 190px minmax(0, 1fr);
+      column-gap: 20px;
+      align-items: center;
+    }
 
-.hero-loan-image {
-  width: 100%;
-  height: 132px;
-  overflow: hidden;
-  border-radius: 20px;
-}
+    .hero-loan-image {
+      width: 100%;
+      height: 132px;
+      overflow: hidden;
+      border-radius: 20px;
+    }
 
-.hero-loan-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
+    .hero-loan-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      animation: floatY 6s ease-in-out infinite;
+    }
 
-.hero-loan-body {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
+    .hero-loan-body {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
 
-.hero-loan-title {
-  margin: 0;
-  font-size: 1rem;
-  font-weight: 800;
-  letter-spacing: 0.03em;
-}
+    .hero-loan-title {
+      margin: 0;
+      font-size: 1rem;
+      font-weight: 800;
+      letter-spacing: 0.03em;
+    }
 
-.hero-loan-text {
-  margin: 0;
-  font-size: 0.9rem;
-  line-height: 1.6;
-  color: #4b5563; /* саарал текст */
-}
+    .hero-loan-text {
+      margin: 0;
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: #4b5563;
+    }
 
-.hero-loan-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  align-self: flex-start;
-  padding: 9px 26px;
-  border-radius: 999px;
-  background: linear-gradient(90deg, #111827 0%, #16a34a 100%);
-  color: #ffffff;
-  font-size: 0.9rem;
-  font-weight: 600;
-  text-decoration: none;
-  box-shadow: 0 12px 26px rgba(0, 0, 0, 0.25);
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
-}
+    .hero-loan-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      align-self: flex-start;
+      padding: 9px 26px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #111827 0%, #16a34a 100%);
+      color: #ffffff;
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-decoration: none;
+      box-shadow: 0 12px 26px rgba(0, 0, 0, 0.25);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
 
-.hero-loan-btn:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 16px 35px rgba(0, 0, 0, 0.3);
-}
+    .hero-loan-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 16px 35px rgba(0, 0, 0, 0.3);
+    }
 
-/* responsive */
+    @keyframes floatY {
+      0%,
+      100% {
+        transform: translateY(0);
+      }
 
-@media (max-width: 768px) {
-  .hero-loan-card {
-    grid-template-columns: minmax(0, 1fr);
-    row-gap: 14px;
-  }
+      50% {
+        transform: translateY(-8px);
+      }
+    }
 
-  .hero-loan-image {
-    height: 160px;
-  }
-
-  .hero-loan-btn {
-    align-self: stretch;
-    justify-content: center;
-  }
-}
-
-@media (max-width: 480px) {
-  .hero-loan-card {
-    padding: 16px 16px 18px;
-    border-radius: 24px;
-  }
-
-  .hero-loan-image {
-    height: 150px;
-  }
-}
+    /* 2 дахь картанд delay */
+    .hero-side omni-feature-card:nth-child(2) .hero-loan-image img {
+      animation-delay: 1.5s;
+    }
 
     /* STATS */
 
@@ -359,7 +346,7 @@
       color: #22c55e;
     }
 
-    /* WHY US – screenshot style */
+    /* WHY US */
 
     .why-section {
       padding: 20px 0 32px;
@@ -451,7 +438,7 @@
 
     @media (max-width: 768px) {
       .nav {
-        flex-wrap: wrap;
+        flex-wrap: true;
       }
 
       .hero {
@@ -473,6 +460,20 @@
       .testimonial-arrow {
         display: none;
       }
+
+      .hero-loan-card {
+        grid-template-columns: minmax(0, 1fr);
+        row-gap: 14px;
+      }
+
+      .hero-loan-image {
+        height: 160px;
+      }
+
+      .hero-loan-btn {
+        align-self: stretch;
+        justify-content: center;
+      }
     }
 
     @media (max-width: 640px) {
@@ -488,14 +489,6 @@
         display: none;
       }
 
-      .hero-side-card {
-        grid-template-columns: minmax(0, 1fr);
-      }
-
-      .hero-side-img {
-        height: 70px;
-      }
-
       .stats-grid {
         grid-template-columns: 1fr;
       }
@@ -506,6 +499,15 @@
 
       .container {
         padding: 0 1rem;
+      }
+
+      .hero-loan-card {
+        padding: 16px 16px 18px;
+        border-radius: 24px;
+      }
+
+      .hero-loan-image {
+        height: 150px;
       }
     }
   </style>
@@ -550,40 +552,29 @@
         </div>
 
         <!-- Баруун талын 2 жижиг карт -->
-      <div class="hero-side">
-  <omni-feature-card
-    title="ХЭРЭГЛЭЭНИЙ ЗЭЭЛ"
-    text="Өдөр тутмын хэрэгцээг санхүүгийн дарамтгүйгээр хангах хурдан, уян, хатан нөхцөлтэй зээл."
-    img="images/consumer-loan.jpg"
-    href="zeelhuudas.html">
-  </omni-feature-card>
+        <div class="hero-side">
+          <omni-feature-card
+            title="ХЭРЭГЛЭЭНИЙ ЗЭЭЛ"
+            text="Өдөр тутмын хэрэгцээг санхүүгийн дарамтгүйгээр хангах хурдан, уян хатан нөхцөлтэй зээл."
+            img="images/consumer-loan.svg"
+            href="zeelhuudas.html">
+          </omni-feature-card>
 
-  <omni-feature-card
-    title="ХУДАЛДАН АВАЛТЫН ЗЭЭЛ"
-    text="Бараа бүтээгдэхүүнээ урьдчилгаа бага эсвэл урьдчилгаагүйгээр худалдан авах ухаалаг санхүүжилт."
-    img="images/purchase-loan.jpg"
-    href="purchase-loan.html">
-  </omni-feature-card>
-</div>
-
+          <omni-feature-card
+            title="ХУДАЛДАН АВАЛТЫН ЗЭЭЛ"
+            text="Бараа бүтээгдэхүүнээ урьдчилгаа бага эсвэл урьдчилгаагүйгээр худалдан авах ухаалаг санхүүжилт."
+            img="images/purchase-loan.svg"
+            href="purchase-loan.html">
+          </omni-feature-card>
+        </div>
+      </section>
 
       <!-- STATS -->
       <section class="stats-section">
         <div class="stats-grid">
-          <div class="stat-card">
-            <div class="stat-value">100+</div>
-            <div class="stat-label">Зээл олгосон</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-value">
-              4.8<span class="stat-star">★</span>
-            </div>
-            <div class="stat-label">Үнэлгээ</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-value">500+</div>
-            <div class="stat-label">Харилцагч</div>
-          </div>
+          <omni-stat-card value="100+" label="Зээл олгосон"></omni-stat-card>
+          <omni-stat-card value="4.8" label="Үнэлгээ" star></omni-stat-card>
+          <omni-stat-card value="500+" label="Харилцагч"></omni-stat-card>
         </div>
       </section>
     </div>
@@ -600,8 +591,10 @@
             <div>
               <div class="testimonial-name">Саруул</div>
               <div class="testimonial-role">Жижиг бизнес эрхлэгч</div>
-              <p>Эргэлтийн хөрөнгөө богино хугацаанд шийдэж чадсан. Төлөлтийн
-                уян хатан хуваарь нь их таалагдсан.</p>
+              <p>
+                Эргэлтийн хөрөнгөө богино хугацаанд шийдэж чадсан. Төлөлтийн
+                уян хатан хуваарь нь их таалагдсан.
+              </p>
             </div>
             <div class="testimonial-stars">★★★★★</div>
           </article>
@@ -610,8 +603,10 @@
             <div>
               <div class="testimonial-name">Бат-Эрдэнэ</div>
               <div class="testimonial-role">Инженер</div>
-              <p>Аппаар хүсэлт илгээж 5 минутын дотор баталгаажуулсан. Нөхцөл
-                нь ойлгомжтой, нууц шимтгэлгүй байсан.</p>
+              <p>
+                Аппаар хүсэлт илгээж 5 минутын дотор баталгаажуулсан. Нөхцөл
+                нь ойлгомжтой, нууц шимтгэлгүй байсан.
+              </p>
             </div>
             <div class="testimonial-stars">★★★★★</div>
           </article>
@@ -620,8 +615,10 @@
             <div>
               <div class="testimonial-name">Ундраа</div>
               <div class="testimonial-role">Гэрийн эзэгтэй</div>
-              <p>Гэнэтийн эмчилгээний зардлаа санаа зоволгүй шийдэхэд тус болсон.
-                Сарын төлбөр нь төгрөгөөрөө боломжийн байлаа.</p>
+              <p>
+                Гэнэтийн эмчилгээний зардлаа санаа зоволгүй шийдэхэд тус болсон.
+                Сарын төлбөр нь боломжийн байлаа.
+              </p>
             </div>
             <div class="testimonial-stars">★★★★★</div>
           </article>
@@ -636,37 +633,41 @@
     <div class="container">
       <h2 class="section-title">Яагаад манайхыг сонгох вэ</h2>
       <div class="why-grid">
-        <div class="why-card">
-          <div class="why-icon">ⓘ</div>
-          <h3>ИЛ ТОД ҮЙЛЧИЛГЭЭ</h3>
-          <p>Нууц шимтгэл, далд төлбөргүй. Бүх нөхцөл, хүү, төлбөрийг ил тод нэг дор харуулна.</p>
-        </div>
-        <div class="why-card">
-          <div class="why-icon">ⓘ</div>
-          <h3>ШУУРХАЙ ШИЙДВЭР</h3>
-          <p>Онлайнаар хүсэлт илгээж, хэдхэн минутын дотор урьдчилсан шийдвэр авах боломжтой.</p>
-        </div>
-        <div class="why-card">
-          <div class="why-icon">ⓘ</div>
-          <h3>ҮНЭ ХАТАН ТӨЛӨЛТ</h3>
-          <p>2–24 сарын уян хатан хугацаа, таны орлогод тохирсон сар бүрийн тогтмол төлөлт.</p>
-        </div>
-        <div class="why-card">
-          <div class="why-icon">ⓘ</div>
-          <h3>АЮУЛГҮЙ, НАЙДВАРТАЙ</h3>
-          <p>Банкны түвшний аюулгүй байдлыг хангаж, таны хувийн мэдээллийг нууцаар хадгална.</p>
-        </div>
+        <omni-why-card
+          title="ИЛ ТОД ҮЙЛЧИЛГЭЭ"
+          text="Нууц шимтгэл, далд төлбөргүй. Бүх нөхцөл, хүү, төлбөрийг ил тод нэг дор харуулна.">
+        </omni-why-card>
+
+        <omni-why-card
+          title="ШУУРХАЙ ШИЙДВЭР"
+          text="Онлайнаар хүсэлт илгээж, хэдхэн минутын дотор урьдчилсан шийдвэр авах боломжтой.">
+        </omni-why-card>
+
+        <omni-why-card
+          title="УЯН ХАТАН ТӨЛӨЛТ"
+          text="2–24 сарын уян хатан хугацаа, таны орлогод тохирсон сар бүрийн тогтмол төлөлт.">
+        </omni-why-card>
+
+        <omni-why-card
+          title="АЮУЛГҮЙ, НАЙДВАРТАЙ"
+          text="Банкны түвшний аюулгүй байдлыг хангаж, таны хувийн мэдээллийг нууцаар хадгална.">
+        </omni-why-card>
       </div>
     </div>
   </section>
 
-  <!-- ADMIN USERS SECTION (хуучин логикийг хадгалсан) -->
+  <!-- ADMIN USERS SECTION -->
   <div class="container">
     <section id="registeredUsersSection" style="display: none; margin-top: 40px;">
       <h2 class="section-title">Бүртгэлтэй хэрэглэгчид</h2>
       <div style="background: #fff; padding: 32px; border-radius: 18px; box-shadow: var(--shadow-soft);">
         <div style="margin-bottom: 24px; display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
-          <input type="text" id="adminUserSearch" placeholder="Нэр, и-мэйл, утас, регистрээр хайх..." style="flex: 1 1 240px; padding: 12px 16px; border: 2px solid #e5e7eb; border-radius: 12px; font-size: 1rem;">
+          <input
+            type="text"
+            id="adminUserSearch"
+            placeholder="Нэр, и-мэйл, утас, регистрээр хайх..."
+            style="flex: 1 1 240px; padding: 12px 16px; border: 2px solid #e5e7eb; border-radius: 12px; font-size: 1rem;"
+          >
           <button class="btn btn-primary" onclick="searchUsers()">Хайх</button>
         </div>
 
@@ -708,11 +709,11 @@
         танай борлуулалт өсөхөд дэмжлэг болно.
       </p>
       <div class="partner-logos">
-        <div class="partner-logo">Logoplsum</div>
-        <div class="partner-logo">Logoplsum</div>
-        <div class="partner-logo">Logoplsum</div>
-        <div class="partner-logo">Logoplsum</div>
-        <div class="partner-logo">Logoplsum</div>
+        <omni-partner-logo text="Logoplsum"></omni-partner-logo>
+        <omni-partner-logo text="Logoplsum"></omni-partner-logo>
+        <omni-partner-logo text="Logoplsum"></omni-partner-logo>
+        <omni-partner-logo text="Logoplsum"></omni-partner-logo>
+        <omni-partner-logo text="Logoplsum"></omni-partner-logo>
       </div>
     </div>
   </section>
