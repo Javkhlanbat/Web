@@ -1,5 +1,7 @@
-// Hero side loan card
-class OmniHeroLoanCard extends HTMLElement {
+// components/omni-home.js
+
+// 1) Hero side loan card (Хэрэглээний / Худалдан авалтын зээл)
+class OmniFeatureCard extends HTMLElement {
   static get observedAttributes() {
     return ['title', 'text', 'img', 'href'];
   }
@@ -22,7 +24,7 @@ class OmniHeroLoanCard extends HTMLElement {
     const img = this.getAttribute('img') || '';
     const href = this.getAttribute('href') || '#';
 
-    this.innerHTML =`
+    this.innerHTML = /* html */`
       <article class="hero-loan-card">
         <div class="hero-loan-image">
           <img src="${img}" alt="${title}">
@@ -37,12 +39,12 @@ class OmniHeroLoanCard extends HTMLElement {
   }
 }
 
-customElements.define('omni-hero-loan-card', OmniHeroLoanCard);
+customElements.define('omni-feature-card', OmniFeatureCard);
 
-// Stat card
+// 2) Stat card (100+, 4.8, 500+)
 class OmniStatCard extends HTMLElement {
   static get observedAttributes() {
-    return ['value', 'label'];
+    return ['value', 'label', 'star'];
   }
 
   connectedCallback() {
@@ -56,10 +58,13 @@ class OmniStatCard extends HTMLElement {
   render() {
     const value = this.getAttribute('value') || '';
     const label = this.getAttribute('label') || '';
+    const star = this.hasAttribute('star');
 
-    this.innerHTML = `
+    this.innerHTML = /* html */`
       <div class="stat-card">
-        <div class="stat-value">${value}</div>
+        <div class="stat-value">
+          ${value}${star ? '<span class="stat-star">★</span>' : ''}
+        </div>
         <div class="stat-label">${label}</div>
       </div>
     `;
@@ -68,50 +73,10 @@ class OmniStatCard extends HTMLElement {
 
 customElements.define('omni-stat-card', OmniStatCard);
 
-// Testimonial card
-class ReviewCard extends HTMLElement {
-  static get observedAttributes() {
-    return ['name', 'role', 'text', 'rating'];
-  }
-
-  connectedCallback() {
-    this.render();
-  }
-
-  attributeChangedCallback() {
-    this.render();
-  }
-
-  renderStars(rating) {
-    const r = Number(rating) || 0;
-    return '★★★★★'.slice(0, r);
-  }
-
-  render() {
-    const name = this.getAttribute('name') || '';
-    const role = this.getAttribute('role') || '';
-    const text = this.getAttribute('text') || '';
-    const rating = this.getAttribute('rating') || '5';
-
-    this.innerHTML = `
-      <article class="testimonial-card">
-        <div>
-          <div class="testimonial-name">${name}</div>
-          <div class="testimonial-role">${role}</div>
-          <p>${text}</p>
-        </div>
-        <div class="testimonial-stars">${this.renderStars(rating)}</div>
-      </article>
-    `;
-  }
-}
-
-customElements.define('omni-testimonial-card', ReviewCard);
-
-// Why-us card
+// 3) Why-card (Яагаад манайхыг сонгох вэ)
 class OmniWhyCard extends HTMLElement {
   static get observedAttributes() {
-    return ['icon', 'title', 'text'];
+    return ['title', 'text'];
   }
 
   connectedCallback() {
@@ -123,23 +88,22 @@ class OmniWhyCard extends HTMLElement {
   }
 
   render() {
-    const icon = this.getAttribute('icon') || '';
     const title = this.getAttribute('title') || '';
     const text = this.getAttribute('text') || '';
 
-    this.innerHTML = `
-      <div class="why-card">
-        <div class="why-icon">${icon}</div>
+    this.innerHTML = /* html */`
+      <article class="why-card">
+        <div class="why-icon">ⓘ</div>
         <h3>${title}</h3>
         <p>${text}</p>
-      </div>
+      </article>
     `;
   }
 }
 
 customElements.define('omni-why-card', OmniWhyCard);
 
-// Partner logo
+// 4) Partner logo
 class OmniPartnerLogo extends HTMLElement {
   static get observedAttributes() {
     return ['text'];
@@ -155,7 +119,7 @@ class OmniPartnerLogo extends HTMLElement {
 
   render() {
     const text = this.getAttribute('text') || '';
-    this.innerHTML = /*html*/`
+    this.innerHTML = /* html */`
       <div class="partner-logo">${text}</div>
     `;
   }
