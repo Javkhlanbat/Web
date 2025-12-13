@@ -4,13 +4,8 @@ class OmniPurposeCard extends HTMLElement {
     return ['img', 'title', 'text1', 'text2'];
   }
 
-  connectedCallback() {
-    this.render();
-  }
-
-  attributeChangedCallback() {
-    this.render();
-  }
+  connectedCallback() { this.render(); }
+  attributeChangedCallback() { this.render(); }
 
   render() {
     const img = this.getAttribute('img') || '';
@@ -30,28 +25,19 @@ class OmniPurposeCard extends HTMLElement {
 }
 customElements.define('omni-purpose-card', OmniPurposeCard);
 
-//TIMELINE ITEM
+// TIMELINE ITEM
 class OmniTimelineItem extends HTMLElement {
-  static get observedAttributes() {
-    return ['date', 'text'];
-  }
-
   connectedCallback() {
-    this.render();
-  }
-
-  attributeChangedCallback() {
-    this.render();
-  }
-
-  render() {
     const date = this.getAttribute('date') || '';
     const text = this.getAttribute('text') || '';
 
     this.innerHTML = `
-      <article class="titem">
-        <time datetime="${date}">${date}</time>
-        <span>${text}</span>
+      <article class="tcard">
+        <div class="tdate">
+          <span class="ticon">🕒</span>
+          <time>${date}</time>
+        </div>
+        <p class="ttext">${text}</p>
       </article>
     `;
   }
@@ -65,11 +51,19 @@ class OmniTeamMember extends HTMLElement {
   }
 
   connectedCallback() {
+    this.updateSideClass();
     this.render();
   }
 
-  attributeChangedCallback() {
-    this.render();
+  attributeChangedCallback() { this.render(); }
+
+  updateSideClass() {
+    const parent = this.parentElement;
+    if (!parent) return;
+
+    const items = Array.from(parent.querySelectorAll('omni-team-member'));
+    const index = items.indexOf(this); // 0-based
+    this.classList.toggle('is-even', index % 2 === 1);
   }
 
   render() {
@@ -83,8 +77,8 @@ class OmniTeamMember extends HTMLElement {
         <img src="${img}" alt="${name}">
         <div class="infomem">
           <h3>${name}</h3>
-          <p>${role}</p>
-          <p>${desc}</p>
+          <p class="role">${role}</p>
+          <p class="desc">${desc}</p>
         </div>
       </article>
     `;

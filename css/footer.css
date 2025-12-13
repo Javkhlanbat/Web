@@ -2,7 +2,7 @@
 .footer {
   margin-top: 80px;
   padding: 48px 0 24px;
-  background: var(--gradient-soft);
+  background: var(--footer-bg);
   border-top: 2px solid var(--line);
 }
 

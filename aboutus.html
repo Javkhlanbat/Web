@@ -5,9 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>OmniCredit — Бидний тухай</title>
 
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-  <!-- Төслийн үндсэн stylesheet-үүд -->
   <link rel="stylesheet" href="css/variables.css">
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/navigation.css">
@@ -16,221 +15,208 @@
   <link rel="stylesheet" href="css/hero.css">
   <link rel="stylesheet" href="css/footer.css">
 
-  <!-- Энэ хуудсанд зориулагдсан шинэ дизайн (нав/фүүтерд хүрэхгүй) -->
   <style>
-    /* INTRO HERO – FIXED FOR DESKTOP */
-
-    .intro {
-      width: 100%;
-      margin: 2rem auto 1rem;
-      padding: 2.5rem 2rem 2.8rem;
-      border-radius: 18px;
-      background-color: #103C4C;
-      color: #ffffff;
+    /* ===== GLOBAL ===== */
+    :root{
+      --about-h1: clamp(1.8rem, 3vw, 2.1rem);
+      --about-h2: 1.4rem;
+      --about-body: .95rem;
+      --about-muted: .9rem;
     }
 
-    .intro .smalltitle {
-      letter-spacing: 0.35em;
-      font-weight: 600;
-      font-size: 0.85rem;
+    body{
+      font-size: 16px;
+      background: #ffffff;
     }
 
-    .intro h1 {
-      margin: 1.2rem 0 1.4rem;
-      color: #ffffff;
-      font-size: 2.2rem;
-      line-height: 1.25;
+    /* ===== INTRO ===== */
+    .intro{
+      margin-top: 2rem;
+      margin-bottom: 2.5rem;
+      padding: 2.4rem 2.6rem;
+      border-radius: var(--radius-lg);
+      background: #103C4C;
+      color: #fff;
+    }
+
+    .intro h1{
+      margin: 0 0 1rem;
+      font-size: var(--about-h1);
+      line-height: 1.3;
       font-weight: 800;
     }
 
-    .intro .hylbar {
+    .intro .hylbar{
       background: linear-gradient(90deg, #29C8C9, #41DB96);
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
     }
 
-    .intro .desc {
-      font-size: 1rem;
-      font-weight: 400;
+    .intro .desc{
       max-width: 46rem;
+      font-size: var(--about-body);
+      line-height: 1.7;
+      color: rgba(255,255,255,.9);
+      margin: 0;
     }
 
-    @media (min-width: 1024px) {
-      .intro h1 {
-        font-size: 2.6rem;
-      }
-      .intro .desc {
-        font-size: 1.1rem;
-      }
+    @media (max-width: 768px){
+      .intro{ padding: 2rem 1.6rem; }
+    }
+    @media (max-width: 540px){
+      .intro{ padding: 1.6rem 1.2rem; }
     }
 
-    @media (max-width: 768px) {
-      .intro {
-        padding: 2rem 1.5rem;
-      }
-      .intro h1 {
-        font-size: 1.9rem;
-      }
-      .intro .desc {
-        font-size: 0.95rem;
-      }
-    }
-
-    @media (max-width: 540px) {
-      .intro {
-        padding: 1.6rem 1.2rem;
-      }
-      .intro h1 {
-        font-size: 1.7rem;
-        line-height: 1.2;
-      }
-      .intro .desc {
-        font-size: 0.9rem;
-      }
-    }
-
-    /* PURPOSE – 2 карт */
-
-    .purpose {
+    /* ===== PURPOSE ===== */
+    .purpose{
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 2.4rem;
-      width: 95%;
-      margin: 3.2rem auto;
-      align-items: stretch;
+      margin-bottom: 3.5rem;
+      align-items:stretch;
     }
 
-    .purpose article {
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-      background: #fff;
-      border: 1px solid #e0e0e0;
-      border-radius: 10px;
+    @media (max-width: 768px){
+      .purpose{ grid-template-columns: 1fr; }
+    }
+
+    omni-purpose-card article.first{
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      border-radius: var(--radius-lg);
       overflow: hidden;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, .08);
+      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
     }
 
-    .purpose img {
+    omni-purpose-card article.first img{
       width: 100%;
-      aspect-ratio: 16 / 9;
-      height: auto;
+      height: 200px;
       object-fit: cover;
       display: block;
     }
 
-    .purpose h2 {
-      font-size: 1.8rem;
-      margin: 1.2rem 1.6rem 0.4rem;
+    omni-purpose-card article.first h2{
+      margin: 1.2rem 1.4rem .4rem;
+      font-size: 1.05rem;
+      font-weight: 800;
     }
 
-    .purpose p {
-      font-size: 1.4rem;
-      color: #444;
-      margin: 0 1.6rem 1.2rem;
-    }
-
-    @media (max-width: 768px) {
-      .purpose {
-        grid-template-columns: 1fr;
-      }
+    omni-purpose-card article.first p{
+      margin: 0 1.4rem .8rem;
+      font-size: var(--about-muted);
+      line-height: 1.6;
+      color: #4b5563;
     }
 
     /* TIMELINE */
-
-    .timeline {
-      width: 95%;
-      max-width: 100rem;
-      margin: 5rem auto;
-      position: relative;
+    .timeline{
+      margin: 4.5rem auto;
     }
 
-    .timeline h2 {
-      font-size: 2.4rem;
-      font-weight: 700;
+    .timeline h2{
+      font-size: var(--about-h2);
+      font-weight: 600;
       text-align: center;
-      margin-bottom: 3rem;
+      margin: 0 0 3rem;
     }
 
-    .timeline .list {
-      position: relative;
+    .timeline-list{
+      display: flex;
+      flex-direction: column;
+      gap: 2.2rem;
+    }
+
+    @media (min-width: 860px){
+      omni-timeline-item:nth-child(odd){ align-self: flex-start; }
+      omni-timeline-item:nth-child(even){ align-self: flex-end; }
+    }
+    @media (max-width: 859px){
+      omni-timeline-item{ align-self: stretch; }
+    }
+
+    omni-timeline-item{
       display: block;
+      width: min(520px, 100%);
     }
 
-    .titem {
-      width: min(48rem, 90%);
-      background: #D9FBE7;
-      border: 0;
-      border-radius: 8px;
-      padding: 1.6rem 2rem;
-      margin: 2.8rem 0;
-      box-shadow: 0 10px 14px -6px rgba(0, 0, 0, .25);
+    .tcard{
+      position: relative;
+      background: #fff;
+      border: 1px solid #e6e6e6;
+      border-radius: 12px;
+      padding: 2.2rem 1.8rem 1.6rem;
+      box-shadow: 0 10px 16px -10px rgba(0,0,0,.35);
     }
 
-    .titem:nth-child(odd) {
-      margin-left: 1.6rem;
+    .tdate{
+      position: absolute;
+      top: -14px;
+      left: -14px;
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      background: #fff;
+      border: 2px solid #29C8C9;
+      border-radius: 12px;
+      padding: .55rem .8rem;
+      box-shadow: 0 10px 14px -10px rgba(0,0,0,.35);
     }
 
-    .titem:nth-child(even) {
-      margin-left: auto;
-      margin-right: 1.6rem;
-    }
-
-    .titem time {
+    .tdate time{
       font-weight: 800;
-      font-size: 1.8rem;
-      color: #064E3B;
-      margin-right: .8rem;
-      position: relative;
-      display: inline-block;
-    }
-
-    .titem span {
-      display: block;
-      font-size: 1.6rem;
+      font-size: .95rem;
       color: #0F172A;
-      margin-top: .4rem;
     }
 
-    @media (max-width: 700px) {
-      .titem {
-        width: 100%;
-        margin-left: 0;
-        margin-right: 0;
-      }
+    .ttext{
+      margin: 0;
+      font-size: var(--about-muted);
+      line-height: 1.6;
+      color: #4b5563;
     }
 
-    /* TEAM */
-
-    .team {
-      width: 95%;
-      margin: 3.2rem auto;
+    @media (max-width: 540px){
+      .tcard{ padding: 2.1rem 1.2rem 1.2rem; }
+      .tdate{ top: -12px; left: -10px; padding: .45rem .7rem; }
     }
 
-    .team h2 {
-      font-size: 2.4rem;
-      margin-bottom: 1.6rem;
+    /* ===== TEAM ===== */
+    .team{
+      margin: 3.5rem auto;
     }
 
-    .listmem {
+    .team h2{
+      font-size: var(--about-h2);
+      font-weight: 600;
+      margin: 0 0 1.6rem;
+    }
+
+    .listmem{
       display: flex;
       flex-direction: column;
       gap: 6rem;
-      width: 90%;
-      margin: 4rem auto;
+      width: 100%;
+      margin: 3rem auto 0;
     }
 
-    .member {
+    omni-team-member .member{
       display: flex;
       align-items: center;
       gap: 3rem;
+      flex-direction: row;
+      text-align: left;
       background: none;
       border: none;
       box-shadow: none;
     }
 
-    .member img {
+    omni-team-member.is-even .member{
+      flex-direction: row-reverse;
+      text-align: right;
+    }
+
+    omni-team-member .member img{
       width: 30rem;
       height: 20rem;
       border-radius: 12px;
@@ -238,98 +224,95 @@
       box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
     }
 
-    .member .infomem,
-    .member .meminfo {
-      max-width: 40rem;
+    omni-team-member .member .infomem{ max-width: 40rem; }
+
+    omni-team-member .member h3{
+      font-size: 1rem;
+      font-weight: 800;
+      margin: 0 0 .4rem;
     }
 
-    .member h3 {
-      font-size: 1.8rem;
-      font-weight: 700;
-      margin-bottom: 0.5rem;
+    omni-team-member .member p{
+      margin: 0;
+      font-size: var(--about-muted);
+      line-height: 1.6;
+      color: #4b5563;
     }
 
-    .member p {
-      font-size: 1.4rem;
-      color: #333;
-      line-height: 1.4;
+    omni-team-member .member p.role{
+      font-weight: 600;
+      margin-bottom: .3rem;
+      color: #111827;
     }
 
-    .member:nth-child(even) {
-      flex-direction: row-reverse;
-      text-align: right;
-    }
-
-    @media (max-width: 768px) {
-      .member {
-        flex-direction: column;
-        text-align: center;
+    @media (max-width: 768px){
+      omni-team-member .member,
+      omni-team-member.is-even .member{
+        flex-direction: column !important;
+        text-align: center !important;
       }
 
-      .member img {
+      omni-team-member .member img{
         width: 95%;
         height: auto;
       }
     }
 
-    /* REQUEST CTA */
-
-    .request {
-      width: 95%;
+    /* ===== REQUEST ===== */
+    .request{
       margin: 4rem auto 5rem;
-      background: #E9FBF3;
+      background: #d1fae5;
       border: 1px solid #CFF3E3;
-      border-radius: 10px;
+      border-radius: var(--radius-lg);
       padding: 2.4rem;
     }
 
-    .request span {
-      font-size: 1rem;
-      font-weight: bold;
-      letter-spacing: 0.5em;
-      color: #000000;
-      text-transform: uppercase;
-      display: block;
-      margin-bottom: .8rem;
+    .request span{
+    display:inline-block;
+  background:var(--bg);
+  padding:6px 16px;
+  border-radius:10px;
+  font-size:12px;
+  font-weight:700;
+  color:#0d9488;
+  letter-spacing:.5px;
+  transform: translateY(-6px);
+  margin-bottom: .8rem;
     }
 
-    .request h2 {
-      font-size: 2.4rem;
-      margin-bottom: 0.8rem;
+    .request h2{
+      font-size: var(--about-h2);
+      font-weight: 600;
+      margin: 0 0 .8rem;
     }
 
-    .request p {
-      font-size: 1.4rem;
-      color: #000000;
-      margin-bottom: 1.6rem;
+    .request p{
+      font-size: var(--about-muted);
+      line-height: 1.6;
+      color: #4b5563;
+      margin: 0 0 1.4rem;
     }
 
-    #openform {
+    #openform{
       border: none;
-      border-radius: 50px;
+      border-radius: 999px;
       padding: 1rem 2rem;
-      background: linear-gradient(90deg, #29C8C9, #41DB96);
-      color: #000000;
+      background: linear-gradient(90deg, #111827 0%, #16a34a 100%);
+      color: #fff;
       font-weight: 700;
       cursor: pointer;
-      transition: 0.2s;
+      transition: .2s;
     }
 
-    #openform:hover {
+    #openform:hover{
       transform: translateY(-2px);
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     }
-
-    @media (max-width: 600px) {
-      .purpose img {
-        height: 16rem;
-      }
-    }
   </style>
 </head>
+
 <body>
   <div class="container">
-
     <!-- NAVIGATION -->
     <nav class="nav">
       <a href="index.html" class="brand">OmniCredit</a>
@@ -349,17 +332,14 @@
     <main>
       <!-- INTRO -->
       <section class="intro">
-        <p class="smalltitle">ABOUT US</p>
-        <h1>
-          Бид санхүүжилтийг <span class="hylbar">хялбар</span> болгоно.
-        </h1>
+        <h1>Бид санхүүжилтийг <span class="hylbar">хялбар</span> болгоно.</h1>
         <p class="desc">
           OmniCredit нь хэрэглэгчдэд тод, уян хатан санхүүгийн үйлчилгээ хүргэх зорилготой финтек баг.
           Бидний түүх, үнэт зүйлтэй танилцаарай.
         </p>
       </section>
 
-      <!-- PURPOSE (Эрхэм зорилго / Алсын хараа) -->
+      <!-- PURPOSE -->
       <section class="purpose">
         <omni-purpose-card
           img="images/workspace.jpg"
@@ -379,21 +359,10 @@
       <!-- TIMELINE -->
       <section class="timeline">
         <h2>Түүхэн товчоо</h2>
-        <div class="list">
-          <omni-timeline-item
-            date="2025-01-01"
-            text="OmniCredit албан ёсоор байгуулагдаж, платформын хөгжүүлэлт эхэлсэн.">
-          </omni-timeline-item>
-
-          <omni-timeline-item
-            date="2025-06-01"
-            text="Анхны туршилтын хэрэглэгчид зээл авч, бүтээгдэхүүний үндсэн боломжууд нээгдсэн.">
-          </omni-timeline-item>
-
-          <omni-timeline-item
-            date="2026-01-01"
-            text="Хамтрагч байгууллагын сүлжээ өргөжиж, OmniCredit олон сувгаар хүрч эхэлнэ.">
-          </omni-timeline-item>
+        <div class="timeline-list">
+          <omni-timeline-item date="2025.01.01" text="OmniCredit албан ёсоор байгуулагдаж, платформын хөгжүүлэлт эхэлсэн."></omni-timeline-item>
+          <omni-timeline-item date="2025.06.01" text="Анхны туршилтын хэрэглэгчид зээл авч, бүтээгдэхүүний үндсэн боломжууд нээгдсэн."></omni-timeline-item>
+          <omni-timeline-item date="2026.01.01" text="Хамтрагч байгууллагын сүлжээ өргөжиж, OmniCredit олон сувгаар хүрч эхэлнэ."></omni-timeline-item>
         </div>
       </section>
 
@@ -401,44 +370,30 @@
       <section class="team">
         <h2>Гүйцэтгэх удирдлагын баг</h2>
         <div class="listmem">
-          <omni-team-member
-            img="images/coworker.webp"
-            name="Б. Жавхланбат"
-            role="Хөгжүүлэгч"
-            desc="Back-end / Front-end хөгжүүлэлт, системийн архитектур дээр ажиллаж байна.">
-          </omni-team-member>
+          <omni-team-member img="images/coworker.webp" name="Б. Жавхланбат" role="Хөгжүүлэгч"
+            desc="Back-end / Front-end хөгжүүлэлт, системийн архитектур дээр ажиллаж байна."></omni-team-member>
 
-          <omni-team-member
-            img="images/coworker.webp"
-            name="Т. Марал"
-            role="Дизайнер"
-            desc="Хэрэглэгчийн туршлага, интерфэйсийн дизайн, брэндийн визуал бодлогыг хариуцдаг.">
-          </omni-team-member>
+          <omni-team-member img="images/coworker.webp" name="Т. Марал" role="Дизайнер"
+            desc="Хэрэглэгчийн туршлага, интерфэйсийн дизайн, брэндийн визуал бодлогыг хариуцдаг."></omni-team-member>
 
-          <omni-team-member
-            img="images/coworker.webp"
-            name="Д. Анар"
-            role="Гүйцэтгэх захирал"
-            desc="Стратеги, бүтээгдэхүүний чиглэл, багийн зохион байгуулалт, хамтын ажиллагааг удирдана.">
-          </omni-team-member>
+          <omni-team-member img="images/coworker.webp" name="Д. Анар" role="Гүйцэтгэх захирал"
+            desc="Стратеги, бүтээгдэхүүний чиглэл, багийн зохион байгуулалт, хамтын ажиллагааг удирдана."></omni-team-member>
         </div>
       </section>
 
-      <!-- REQUEST CTA -->
+      <!-- REQUEST -->
       <section class="request">
         <span>Хамтрах хүсэлт илгээх</span>
         <h2>Бидэнтэй хамт өсөе</h2>
         <p>
           OmniCredit танай бизнесийн <strong>борлуулалтыг</strong> өсгөхөд тусална.
-          Богино маягт илгээвэл бид тантай холбогдож, хамтын ажиллагааны боломжийг
-          танилцуулах болно.
+          Богино маягт илгээвэл бид тантай холбогдож, хамтын ажиллагааны боломжийг танилцуулах болно.
         </p>
         <button id="openform">Илгээх</button>
       </section>
     </main>
   </div>
 
-  <!-- FOOTER -->
   <footer class="footer">
     <div class="container">
       <div class="footer-content">
@@ -446,10 +401,7 @@
           <div class="footer-brand">OmniCredit</div>
           <p>Монголын хамгийн хялбар бөгөөд найдвартай зээлийн үйлчилгээ.</p>
           <div class="footer-social">
-            <a href="#"></a>
-            <a href="#"></a>
-            <a href="#"></a>
-            <a href="#"></a>
+            <a href="#"></a><a href="#"></a><a href="#"></a><a href="#"></a>
           </div>
         </div>
         <div class="footer-section">
@@ -475,24 +427,7 @@
     </div>
   </footer>
 
-  <!-- COMPONENTS -->
   <script type="module" src="components/omni-aboutus.js"></script>
-
   <script src="components/navigation.component.js"></script>
-  <script>
-    // Нэвтэрсэн бол товчнуудыг өөрчлөх
-    if (typeof TokenManager !== 'undefined' && TokenManager.isAuthenticated()) {
-      const user = UserManager.getUser();
-      const authButtonsContainer = document.querySelector('.auth-buttons');
-      if (authButtonsContainer && user) {
-        const firstName = user.first_name || user.firstName || user.email?.split('@')[0] || 'Хэрэглэгч';
-        authButtonsContainer.innerHTML = `
-          <a href="profile.html" class="btn btn-ghost btn-sm" style="margin-right: 8px;">👤 ${firstName}</a>
-          <button class="btn btn-primary btn-sm" onclick="UserManager.logout()">Гарах</button>
-        `;
-      }
-    }
-  </script>
-
 </body>
 </html>

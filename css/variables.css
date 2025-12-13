@@ -7,7 +7,9 @@
   --accent: #10b981;
   --gradient-peachy: linear-gradient(135deg, #14b8a6, #10b981);
   --gradient-sunset: linear-gradient(135deg, #0d9488, #14b8a6);
-  --gradient-soft: linear-gradient(135deg, #E0F7FA, #E8F5E9);
+  --footer-bg:#E0F7FA;
+  --gradient-button2: linear-gradient(90deg, #111827 0%, #16a34a 100%);
+  --gradient-button1: linear-gradient(90deg, #29C8C9, #41DB96);
   --bg: #f0fdf4;
   --text: #064e3b;
   --text-muted: #047857;
@@ -24,6 +26,8 @@
   --radius-xl: 32px;
   --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   --transition-fast: 0.15s ease;
+  --page-width: 1120px;
+  --page-pad: 1.25rem;
 }
 
 
