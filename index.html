@@ -19,9 +19,7 @@
   <!-- Энэ хуудсанд зориулсан CSS -->
   <style>
     :root {
-      --page-bg: #f5f7fb;
-      --hero-main-bg: #e1ffe9;
-      --hero-main-bg-soft: #f0fff6;
+  
       --hero-side-bg: #ffffff;
       --accent: #1bbf7a;
       --accent-dark: #12a264;
@@ -29,7 +27,6 @@
       --text-muted: #6b7280;
       --shadow-soft: 0 18px 40px rgba(15, 23, 42, 0.08);
       --shadow-card: 0 14px 32px rgba(15, 23, 42, 0.12);
-      --radius-lg: 24px;
       --radius-md: 18px;
       --radius-pill: 999px;
     }
@@ -37,15 +34,9 @@
     body {
       margin: 0;
       font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: #ffffff;
+      background: var(--bg);
       color: var(--text-main);
       -webkit-font-smoothing: antialiased;
-    }
-
-    .container {
-      max-width: 1120px;
-      margin: 0 auto;
-      padding: 0 1.25rem;
     }
 
     /* NAVIGATION */
@@ -72,7 +63,7 @@
     /* HERO */
 
     .hero-wrapper {
-      background: linear-gradient(180deg, #f2fbff 0%, #ffffff 60%);
+      background:var(--bg);
       padding: 36px 0 28px;
     }
 

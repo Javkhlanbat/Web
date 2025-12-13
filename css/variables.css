@@ -4,10 +4,12 @@
   --primary-dark: #0d9488;
   --primary-light: #2dd4bf;
   --secondary: #a7f3d0;
+  --color1:  #d1fae5;
+  --color2:  #103C4C;
   --accent: #10b981;
   --gradient-peachy: linear-gradient(135deg, #14b8a6, #10b981);
   --gradient-sunset: linear-gradient(135deg, #0d9488, #14b8a6);
-  --footer-bg:#E0F7FA;
+  --footer-bg:#cfe4e7;
   --gradient-button2: linear-gradient(90deg, #111827 0%, #16a34a 100%);
   --gradient-button1: linear-gradient(90deg, #29C8C9, #41DB96);
   --bg: #f0fdf4;
