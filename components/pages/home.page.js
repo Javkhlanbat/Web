@@ -6,7 +6,6 @@ export function renderHome(app) {
   const user = UserManager.getUser();
 
   app.innerHTML = `
-    <!-- HERO + STATS -->
     <div class="hero-wrapper">
       <div class="container">
         <section class="hero">
