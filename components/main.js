@@ -4,7 +4,8 @@ import { Navigation } from './navigation.component.js';
 import { registerRoutes, initRouter, navigate, rerender } from './router.js';
 import { TokenManager, UserManager } from './mock-api.component.js';
 
-// pages (ALL under ./pages/)
+import { Footer } from './footer.component.js';
+
 import { renderHome } from './pages/home.page.js';
 
 import { renderLogin } from './pages/login.page.js';
@@ -29,6 +30,9 @@ import { renderAdmin } from './pages/admin.page.js';
 --------------------- */
 const navMount = document.getElementById('navMount');
 if (navMount) navMount.innerHTML = Navigation.render();
+const footerMount = document.getElementById('footerMount');
+if (footerMount) footerMount.innerHTML = Footer.render();
+
 
 const nav = new Navigation();
 nav.init();
@@ -81,14 +85,10 @@ registerRoutes({
   '/admin': { render: withAfter(renderAdmin), auth: true, admin: true },
 });
 
-/* --------------------
-   start router
---------------------- */
+
 initRouter({ mount: '#app' });
 
-/* --------------------
-   global logout
---------------------- */
+
 window.__spaLogout = () => {
   if (!confirm('Гарахдаа итгэлтэй байна уу?')) return;
 
