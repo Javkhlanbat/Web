@@ -1,7 +1,3 @@
-/**
- * Mock API Component - Backend-гүй ажиллах хувилбар
- * LocalStorage ашиглан бүх өгөгдлийг хөтөч дээр хадгална
- */
 
 // LocalStorage-д хадгалах түлхүүрнүүд
 const STORAGE_KEYS = {
@@ -9,7 +5,9 @@ const STORAGE_KEYS = {
     LOANS: 'omnicredit_loans',
     PAYMENTS: 'omnicredit_payments',
     CURRENT_USER: 'omnicredit_current_user',
-    WALLET: 'omnicredit_wallet'
+    WALLET: 'omnicredit_wallet',
+    
+
 };
 
 // Анхны өгөгдөл үүсгэх

@@ -1,8 +1,4 @@
-/**
- * Auth Component - SPA (Hash router) хувилбар
- * - window.location.href ашиглахгүй
- * - #/route дээр ажиллана
- */
+
 
 import { TokenManager, UserManager, AuthAPI } from './api.component.js';
 import { navigate } from './router.js'; // ✅ SPA navigate
