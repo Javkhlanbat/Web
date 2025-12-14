@@ -1,121 +1,157 @@
 /**
- * Auth Component - Нэвтрэх эрх шалгалт
- * Хуудас хоорондын auth guard
+ * Auth Component - SPA (Hash router) хувилбар
+ * - window.location.href ашиглахгүй
+ * - #/route дээр ажиллана
  */
 
 import { TokenManager, UserManager, AuthAPI } from './api.component.js';
+import { navigate } from './router.js'; // ✅ SPA navigate
 
-// Нийтэд нээлттэй хуудсууд
-const PUBLIC_PAGES = [
-    'index.html',
-    'login.html',
-    'register.html',
-    'aboutus.html',
-    'FAQ.html',
-    'zeelhuudas.html',
-    'purchase-loan.html'
+// Нийтэд нээлттэй SPA routes
+const PUBLIC_ROUTES = [
+  '/',            // home
+  '/login',
+  '/register',
+  '/about',
+  '/faq',
+  '/calculator',
+  '/purchase-loan',
 ];
 
+// admin шаарддаг routes
+const ADMIN_ROUTES = ['/admin'];
+
 export class AuthGuard {
-    constructor() {
-        this.currentPage = window.location.pathname.split('/').pop() || 'index.html';
-        this.isPublicPage = PUBLIC_PAGES.some(page => this.currentPage.includes(page));
+  constructor() {
+    const { path } = this.getHash();
+    this.currentRoute = path;
+    this.isPublicRoute = PUBLIC_ROUTES.includes(path);
+  }
+
+  init() {
+    // эхлэхэд шалгана
+    if (!this.checkAuthentication()) return;
+
+    this.updateAuthUI();
+    this.verifyTokenIfNeeded();
+
+    // route солигдох бүрт дахин шалгана
+    window.addEventListener('hashchange', () => {
+      const { path } = this.getHash();
+      this.currentRoute = path;
+      this.isPublicRoute = PUBLIC_ROUTES.includes(path);
+
+      this.checkAuthentication();
+      this.updateAuthUI();
+    });
+  }
+
+  // Hash-оос route авах (#/x?y=1)
+  getHash() {
+    const raw = location.hash || '#/';
+    const h = raw.replace(/^#/, '');
+    const [p, qs] = h.split('?');
+    const path = this.norm(p || '/');
+    const query = new URLSearchParams(qs || '');
+    return { path, query };
+  }
+
+  norm(p) {
+    let s = String(p || '').trim();
+    if (!s.startsWith('/')) s = '/' + s;
+    if (s.length > 1) s = s.replace(/\/+$/, '');
+    return s;
+  }
+
+  // Нэвтэрсэн эсэх
+  checkAuthentication() {
+    // private route + token байхгүй => login
+    if (!this.isPublicRoute && !TokenManager.isAuthenticated()) {
+      const redirect = encodeURIComponent(this.currentRoute);
+      navigate(`#/login?redirect=${redirect}`, { replace: true });
+      return false;
     }
 
-    // Эхлүүлэх
-    init() {
-        this.checkAuthentication();
-        this.updateAuthUI();
-        this.verifyTokenIfNeeded();
+    // admin route дээр admin биш бол => dashboard
+    if (ADMIN_ROUTES.includes(this.currentRoute)) {
+      const user = UserManager.getUser();
+      const isAdmin = !!(user && (user.is_admin || user.isAdmin));
+      if (!isAdmin) {
+        navigate('#/dashboard', { replace: true });
+        return false;
+      }
     }
 
-    // Нэвтэрсэн эсэхийг шалгах
-    checkAuthentication() {
-        if (!this.isPublicPage && !TokenManager.isAuthenticated()) {
-            console.log('Authentication required. Redirecting to login...');
-            window.location.href = 'login.html';
-            return false;
-        }
-        return true;
+    return true;
+  }
+
+  updateAuthUI() {
+    const authButtonsContainer = document.querySelector('.auth-buttons');
+    if (!authButtonsContainer) return;
+
+    const isAuth = TokenManager.isAuthenticated();
+    if (!isAuth) {
+      // login/register харуулахыг Navigation чинь өөрөө хийдэг бол энд хоосон үлдээж болно
+      return;
     }
 
-    // Auth UI шинэчлэх
-    updateAuthUI() {
-        if (!TokenManager.isAuthenticated()) return;
+    const user = UserManager.getUser();
+    if (!user) return;
 
-        const user = UserManager.getUser();
-        if (!user) return;
-
-        // Admin хандалт шалгах
-        this.checkAdminAccess(user);
-
-        // Navigation дээрх auth button шинэчлэх
-        this.updateAuthButtons(user);
+    // Admin user dashboard дээр байвал admin руу (хүсвэл)
+    if ((user.is_admin || user.isAdmin) && this.currentRoute === '/dashboard') {
+      navigate('#/admin', { replace: true });
+      return;
     }
 
-    // Admin хандалт шалгах
-    checkAdminAccess(user) {
-        // Admin user гэж dashboard хандах гэж байвал admin руу шилжүүлэх
-        if (user.is_admin && this.currentPage.includes('dashboard.html')) {
-            console.log('Admin user detected. Redirecting to admin dashboard...');
-            window.location.href = 'admin.html';
-            return;
-        }
+    const firstName =
+      user.first_name || user.firstName || user.email?.split('@')[0] || 'Хэрэглэгч';
 
-        // Энгийн user гэж admin хандах гэж байвал dashboard руу шилжүүлэх
-        if (!user.is_admin && this.currentPage.includes('admin.html')) {
-            console.log('Non-admin user detected. Redirecting to regular dashboard...');
-            window.location.href = 'dashboard.html';
-            return;
-        }
+    authButtonsContainer.innerHTML = `
+      <a href="#/profile" data-link class="btn btn-ghost btn-sm" style="margin-right: 8px;">👤 ${firstName}</a>
+      <button class="btn btn-primary btn-sm" type="button" id="btnSpaLogout">Гарах</button>
+    `;
+
+    authButtonsContainer.querySelector('#btnSpaLogout')?.addEventListener('click', () => {
+      this.logout();
+    });
+  }
+
+  async verifyTokenIfNeeded() {
+    // public дээр шалгахгүй
+    if (this.isPublicRoute || !TokenManager.isAuthenticated()) return;
+
+    try {
+      const result = await AuthAPI.verifyToken();
+      if (!result) {
+        const redirect = encodeURIComponent(this.currentRoute);
+        navigate(`#/login?redirect=${redirect}`, { replace: true });
+      }
+    } catch (err) {
+      console.error('Token verification error:', err);
+      this.logout(true);
+    }
+  }
+
+  logout(force = false) {
+    if (!force && !confirm('Гарахдаа итгэлтэй байна уу?')) return;
+
+    // SPA дээр main.js-д __spaLogout байгаа бол тэрийг ашиглая
+    if (typeof window.__spaLogout === 'function') {
+      window.__spaLogout();
+      return;
     }
 
-    // Auth buttons шинэчлэх
-    updateAuthButtons(user) {
-        const authButtonsContainer = document.querySelector('.auth-buttons');
-        if (!authButtonsContainer) return;
-
-        const firstName = user.first_name || user.firstName || user.email?.split('@')[0] || 'Хэрэглэгч';
-        authButtonsContainer.innerHTML = `
-            <a href="profile.html" class="btn btn-ghost btn-sm" style="margin-right: 8px;">👤 ${firstName}</a>
-            <button class="btn btn-primary btn-sm" onclick="window.authGuard.logout()">Гарах</button>
-        `;
-    }
-
-    // Token баталгаажуулах
-    async verifyTokenIfNeeded() {
-        if (this.isPublicPage || !TokenManager.isAuthenticated()) return;
-
-        try {
-            const result = await AuthAPI.verifyToken();
-            if (!result) {
-                console.log('Token invalid. Redirecting to login...');
-                window.location.href = 'login.html';
-            }
-        } catch (error) {
-            console.error('Token verification error:', error);
-            this.logout();
-        }
-    }
-
-    // Гарах
-    logout() {
-        if (confirm('Гарахдаа итгэлтэй байна уу?')) {
-            UserManager.logout();
-        }
-    }
+    // fallback
+    TokenManager.removeToken();
+    UserManager.removeUser();
+    navigate('#/login', { replace: true });
+  }
 }
 
 // Автоматаар эхлүүлэх
 export function initAuth() {
-    if (typeof TokenManager === 'undefined') {
-        console.error('TokenManager not found. Make sure api.component.js is loaded first.');
-        return;
-    }
-
-    const authGuard = new AuthGuard();
-    authGuard.init();
-
-    // Global хувьсагч болгох (logout функц дуудахад)
-    window.authGuard = authGuard;
+  const authGuard = new AuthGuard();
+  authGuard.init();
+  window.authGuard = authGuard;
 }

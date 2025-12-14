@@ -30,6 +30,19 @@
   --transition-fast: 0.15s ease;
   --page-width: 1120px;
   --page-pad: 1.25rem;
+  --about-h1: clamp(1.8rem, 3vw, 2.1rem);
+  --about-h2: 1.4rem;
+  --about-body: .95rem;
+  --about-muted: .9rem;
+  --hero-side-bg: #ffffff;
+      --accent: #1bbf7a;
+      --accent-dark: #12a264;
+      --text-main: #111827;
+      --text-muted: #6b7280;
+      --shadow-soft: 0 18px 40px rgba(15, 23, 42, 0.08);
+      --shadow-card: 0 14px 32px rgba(15, 23, 42, 0.12);
+      --radius-md: 18px;
+      --radius-pill: 999px;
 }
 
 

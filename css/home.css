@@ -1,0 +1,470 @@
+ body {
+      margin: 0;
+      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text-main);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* NAVIGATION */
+    .nav {
+      padding: 14px 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .brand {
+      font-weight: 700;
+      font-size: 1.25rem;
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .nav-links a.active {
+      color: var(--accent-dark);
+      font-weight: 600;
+    }
+
+    /* HERO */
+
+    .hero-wrapper {
+      background:var(--bg);
+      padding: 36px 0 28px;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.7fr) minmax(0, 1.3fr);
+      gap: 20px;
+      align-items: stretch;
+    }
+
+    .hero-main-card {
+      background: radial-gradient(circle at top left, #c9ffd9 0, var(--hero-main-bg) 40%, var(--hero-main-bg-soft) 100%);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-soft);
+      padding: 28px 26px 26px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-main-card::after {
+      content: "";
+      position: absolute;
+      width: 210px;
+      height: 210px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(27, 191, 122, 0.22), transparent 65%);
+      right: -40px;
+      top: -40px;
+      opacity: 0.9;
+      pointer-events: none;
+    }
+
+    .hero-kicker {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+    }
+
+    .hero-title {
+      font-size: clamp(1.8rem, 3vw, 2.1rem);
+      line-height: 1.3;
+      margin: 0 0 12px;
+    }
+
+    .hero-title span {
+      color: var(--accent);
+    }
+
+    .hero-description {
+      max-width: 430px;
+      font-size: 0.95rem;
+      line-height: 1.7;
+      color: var(--text-muted);
+      margin-bottom: 22px;
+    }
+
+    .hero-main-card .btn-primary {
+      padding-inline: 1.8rem;
+      border-radius: var(--radius-pill);
+      font-weight: 600;
+      box-shadow: 0 12px 24px rgba(27, 191, 122, 0.35);
+    }
+
+    /* Баруун талын 2 зээлийн карт – зураг + градиент товч */
+
+    .hero-side {
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+
+    .hero-loan-card {
+      background: #ffffff;
+      border-radius: 28px;
+      box-shadow: 0 22px 55px rgba(15, 23, 42, 0.14);
+      padding: 18px 20px;
+      display: grid;
+      grid-template-columns: 190px minmax(0, 1fr);
+      column-gap: 20px;
+      align-items: center;
+    }
+
+    .hero-loan-image {
+      width: 100%;
+      height: 132px;
+      overflow: hidden;
+      border-radius: 20px;
+    }
+
+    .hero-loan-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      animation: floatY 6s ease-in-out infinite;
+    }
+
+    .hero-loan-body {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .hero-loan-title {
+      margin: 0;
+      font-size: 1rem;
+      font-weight: 800;
+      letter-spacing: 0.03em;
+    }
+
+    .hero-loan-text {
+      margin: 0;
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: #4b5563;
+    }
+
+    .hero-loan-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      align-self: flex-start;
+      padding: 9px 26px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #111827 0%, #16a34a 100%);
+      color: #ffffff;
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-decoration: none;
+      box-shadow: 0 12px 26px rgba(0, 0, 0, 0.25);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .hero-loan-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 16px 35px rgba(0, 0, 0, 0.3);
+    }
+
+    @keyframes floatY {
+      0%,
+      100% {
+        transform: translateY(0);
+      }
+
+      50% {
+        transform: translateY(-8px);
+      }
+    }
+
+    /* 2 дахь картанд delay */
+    .hero-side omni-feature-card:nth-child(2) .hero-loan-image img {
+      animation-delay: 1.5s;
+    }
+
+    /* STATS */
+
+    .stats-section {
+      margin-top: 24px;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .stat-card {
+      background: #ffffff;
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-soft);
+      padding: 16px 14px;
+      text-align: center;
+    }
+
+    .stat-value {
+      font-weight: 700;
+      font-size: 1.35rem;
+      margin-bottom: 4px;
+    }
+
+    .stat-label {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    .stat-star {
+      color: #fbbf24;
+      margin-left: 3px;
+      font-size: 1.1rem;
+    }
+
+    /* SECTION COMMON */
+
+    .section-title {
+      text-align: center;
+      font-size: 1.4rem;
+      font-weight: 600;
+      margin: 40px 0 18px;
+    }
+
+    /* TESTIMONIALS */
+
+    .testimonials {
+      padding-bottom: 40px;
+    }
+
+    .testimonial-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .testimonial-arrow {
+      width: 34px;
+      height: 34px;
+      border-radius: 999px;
+      border: 1px solid #e5e7eb;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      color: var(--text-muted);
+      background: #ffffff;
+      box-shadow: 0 8px 18px rgba(15, 23, 42, 0.08);
+      flex-shrink: 0;
+    }
+
+    .testimonial-list {
+      flex: 1;
+      display: grid;
+      grid-auto-flow: column;
+      grid-auto-columns: minmax(260px, 1fr);
+      gap: 18px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+      scroll-snap-type: x mandatory;
+    }
+
+    .testimonial-card {
+      scroll-snap-align: start;
+      background: #d1fae5;
+      border-radius: var(--radius-lg);
+      padding: 18px 18px 16px;
+      box-shadow: var(--shadow-soft);
+      min-height: 140px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .testimonial-name {
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .testimonial-role {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+    }
+
+    .testimonial-card p {
+      font-size: 0.9rem;
+      color: #065f46;
+      margin: 0 0 10px;
+    }
+
+    .testimonial-stars {
+      font-size: 0.85rem;
+      color: #22c55e;
+    }
+
+    /* WHY US */
+
+    .why-section {
+      padding: 20px 0 32px;
+    }
+
+    .why-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .why-card {
+      background: #ffffff;
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-soft);
+      padding: 18px 14px;
+      text-align: center;
+    }
+
+    .why-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 14px;
+      background: #ecfdf5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 10px;
+      font-size: 1.1rem;
+      color: var(--accent-dark);
+    }
+
+    .why-card h3 {
+      font-size: 0.95rem;
+      margin-bottom: 6px;
+    }
+
+    .why-card p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    /* PARTNERS */
+
+    .partners {
+      padding: 16px 0 40px;
+      text-align: center;
+    }
+
+    .partners-text {
+      max-width: 620px;
+      margin: 0 auto 20px;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    .partner-logos {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      justify-content: center;
+    }
+
+    .partner-logo {
+      width: 110px;
+      height: 36px;
+      border-radius: 999px;
+      background: #ffffff;
+      box-shadow: var(--shadow-soft);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    /* RESPONSIVE */
+
+    @media (max-width: 992px) {
+      .hero {
+        grid-template-columns: minmax(0, 1.6fr) minmax(0, 1.4fr);
+      }
+
+      .why-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 768px) {
+      .nav {
+        flex-wrap: true;
+      }
+
+      .hero {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .hero-main-card {
+        order: 1;
+      }
+
+      .hero-side {
+        order: 2;
+      }
+
+      .stats-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .testimonial-arrow {
+        display: none;
+      }
+
+      .hero-loan-card {
+        grid-template-columns: minmax(0, 1fr);
+        row-gap: 14px;
+      }
+
+      .hero-loan-image {
+        height: 160px;
+      }
+
+      .hero-loan-btn {
+        align-self: stretch;
+        justify-content: center;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .hero-wrapper {
+        padding-top: 24px;
+      }
+
+      .hero-main-card {
+        padding: 22px 18px 20px;
+      }
+
+      .hero-main-card::after {
+        display: none;
+      }
+
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .why-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .container {
+        padding: 0 1rem;
+      }
+
+      .hero-loan-card {
+        padding: 16px 16px 18px;
+        border-radius: 24px;
+      }
+
+      .hero-loan-image {
+        height: 150px;
+      }
+    }
