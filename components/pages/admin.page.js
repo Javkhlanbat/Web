@@ -354,7 +354,7 @@ export function afterRenderAdmin() {
       const loansData = await LoansAPI.getAllLoans();
       const loans = loansData.loans || [];
 
-      const usersRes = await api.get('/auth/admin/users');
+      const usersRes = await AuthAPI.getAdminUsers()
       const users = usersRes.users || [];
 
       const pending = loans.filter(l => l.status === 'pending').length;

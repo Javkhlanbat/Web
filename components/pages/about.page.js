@@ -9,7 +9,7 @@ export function renderAbout() {
       <main>
         <!-- INTRO -->
         <section class="intro">
-          <h1>Бид <span class="hylbar">хялбар</span>, <span class="hylbar">ил тод</span> зээлийг бүтээнэ</h1>
+          <h1>Бид <span class="hylbar">хялбар</span>, ил тод зээлийг бүтээнэ</h1>
           <p class="desc">
             OmniCredit бол Монгол хэрэглэгчдэд хурдан, ойлгомжтой, уян хатан санхүүгийн үйлчилгээ хүргэх зорилготой финтек баг.
             Бидний түүх, үнэт зүйлтэй танилцаарай.
@@ -101,7 +101,6 @@ export function renderAbout() {
                 <button class="btn btn-primary btn-block" type="submit">Илгээх</button>
               </form>
               <p style="margin:12px 0 0; font-size:12px; color: var(--text-muted);">
-                * Одоогоор demo — backend руу явуулахгүй, зөвхөн UI-гаар ажиллана.
               </p>
             </div>
           </div>

@@ -125,6 +125,7 @@ export const AuthAPI = {
             isAdmin: false,
             createdAt: new Date().toISOString()
         };
+        
 
         users.push(newUser);
         localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(users));
@@ -144,6 +145,7 @@ export const AuthAPI = {
             user: userWithoutPassword
         };
     },
+    
 
     // Нэвтрэх
     async login(credentials) {
@@ -199,6 +201,41 @@ export const AuthAPI = {
         const user = UserManager.getUser();
         return user ? { valid: true, user } : null;
     },
+        // Admin-бүх хэрэглэгч авах
+async getAdminUsers() {
+  await new Promise(resolve => setTimeout(resolve, 200));
+
+  const user = UserManager.getUser();
+  if (!user || !user.isAdmin) throw new Error('Admin эрх шаардлагатай');
+
+  initMockData();
+  const users = JSON.parse(localStorage.getItem(STORAGE_KEYS.USERS) || '[]');
+
+  // password-гүйгээр буцаах
+  const safe = users.map(({ password, ...rest }) => rest);
+
+  return { success: true, users: safe };
+},
+
+// Admin - хэрэглэгч устгах
+async deleteUserAsAdmin(userId) {
+  await new Promise(resolve => setTimeout(resolve, 200));
+
+  const user = UserManager.getUser();
+  if (!user || !user.isAdmin) throw new Error('Admin эрх шаардлагатай');
+
+  initMockData();
+  const users = JSON.parse(localStorage.getItem(STORAGE_KEYS.USERS) || '[]');
+
+  const id = Number(userId);
+  const next = users.filter(u => u.id !== id);
+
+  if (next.length === users.length) throw new Error('Хэрэглэгч олдсонгүй');
+
+  localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(next));
+  return { success: true };
+},
+
 
     // Гарах
     logout() {
