@@ -1,6 +1,5 @@
-// components/omni-calculator.js
 
-/* ============ HERO ============ */
+
 class OmniCalcHero extends HTMLElement {
   static get observedAttributes() { return ['tag', 'title']; }
 
@@ -24,7 +23,6 @@ class OmniCalcHero extends HTMLElement {
 customElements.define('omni-calc-hero', OmniCalcHero);
 
 
-/* ============ LOAN TYPE SWITCH ============ */
 class OmniLoanTypeSwitch extends HTMLElement {
   static get observedAttributes() { return ['active', 'purchase-href']; }
 
@@ -52,7 +50,6 @@ class OmniLoanTypeSwitch extends HTMLElement {
 customElements.define('omni-loan-type-switch', OmniLoanTypeSwitch);
 
 
-/* ============ INFO TABS (conditions / requirements / faq) ============ */
 class OmniInfoTabs extends HTMLElement {
   // content-уудаа slot-оор авна
   connectedCallback() {
@@ -109,7 +106,6 @@ class OmniInfoTabs extends HTMLElement {
 customElements.define('omni-info-tabs', OmniInfoTabs);
 
 
-/* ============ KPI STRIP (3 KPI) ============ */
 class OmniKpiStrip extends HTMLElement {
   connectedCallback() {
     // ID-ууд чинь JS дээр ашиглагддаг тул default-оор хуучин ID-уудаа хадгаллаа
@@ -129,7 +125,6 @@ class OmniKpiStrip extends HTMLElement {
 customElements.define('omni-kpi-strip', OmniKpiStrip);
 
 
-/* ============ CHART TABS (pay/bal + 2 canvas) ============ */
 class OmniChartTabs extends HTMLElement {
   connectedCallback() {
     const uid = this.getAttribute('uid') || ('c' + Math.random().toString(36).slice(2));
@@ -165,7 +160,6 @@ class OmniChartTabs extends HTMLElement {
       pPay.style.display = rPay.checked ? 'block' : 'none';
       pBal.style.display = rBal.checked ? 'block' : 'none';
 
-      // ✅ хамгийн чухал: tab солиход canvas width=0 болсон асуудлыг засна
       this.dispatchEvent(new CustomEvent('omni-chart-tab-change', { bubbles: true }));
     };
 
