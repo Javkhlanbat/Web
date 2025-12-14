@@ -4,10 +4,12 @@
   --primary-dark: #0d9488;
   --primary-light: #2dd4bf;
   --secondary: #a7f3d0;
+  --color1:  #d1fae5;
+  --color2:  #103C4C;
   --accent: #10b981;
   --gradient-peachy: linear-gradient(135deg, #14b8a6, #10b981);
   --gradient-sunset: linear-gradient(135deg, #0d9488, #14b8a6);
-  --footer-bg:#E0F7FA;
+  --footer-bg:#cfe4e7;
   --gradient-button2: linear-gradient(90deg, #111827 0%, #16a34a 100%);
   --gradient-button1: linear-gradient(90deg, #29C8C9, #41DB96);
   --bg: #f0fdf4;
@@ -28,6 +30,19 @@
   --transition-fast: 0.15s ease;
   --page-width: 1120px;
   --page-pad: 1.25rem;
+  --about-h1: clamp(1.8rem, 3vw, 2.1rem);
+  --about-h2: 1.4rem;
+  --about-body: .95rem;
+  --about-muted: .9rem;
+  --hero-side-bg: #ffffff;
+      --accent: #1bbf7a;
+      --accent-dark: #12a264;
+      --text-main: #111827;
+      --text-muted: #6b7280;
+      --shadow-soft: 0 18px 40px rgba(15, 23, 42, 0.08);
+      --shadow-card: 0 14px 32px rgba(15, 23, 42, 0.12);
+      --radius-md: 18px;
+      --radius-pill: 999px;
 }
 
 

@@ -8,7 +8,8 @@ const STORAGE_KEYS = {
     USERS: 'omnicredit_users',
     LOANS: 'omnicredit_loans',
     PAYMENTS: 'omnicredit_payments',
-    CURRENT_USER: 'omnicredit_current_user'
+    CURRENT_USER: 'omnicredit_current_user',
+    WALLET: 'omnicredit_wallet'
 };
 
 // Анхны өгөгдөл үүсгэх
@@ -49,8 +50,13 @@ function initMockData() {
     if (!localStorage.getItem(STORAGE_KEYS.PAYMENTS)) {
         localStorage.setItem(STORAGE_KEYS.PAYMENTS, JSON.stringify([]));
     }
+     if (!localStorage.getItem(STORAGE_KEYS.WALLET)) {
+    localStorage.setItem(
+      STORAGE_KEYS.WALLET,
+      JSON.stringify({ balance: 0, currency: 'MNT' })
+    );
 }
-
+}
 // Token Manager (LocalStorage ашиглана)
 export const TokenManager = {
     setToken(token) {
@@ -86,10 +92,13 @@ export const UserManager = {
     },
 
     logout() {
-        TokenManager.removeToken();
-        this.removeUser();
-        window.location.href = 'login.html';
-    }
+    TokenManager.removeToken();
+      this.removeUser();
+
+       // SPA руу
+      location.hash = '#/login';
+}
+
 };
 
 // Mock Auth API
@@ -395,20 +404,24 @@ export const PaymentsAPI = {
         };
     }
 };
-
-// Wallet API (Энгийн хувилбар)
 export const WalletAPI = {
-    async getMyWallet() {
-        await new Promise(resolve => setTimeout(resolve, 300));
+  async getMyWallet() {
+    await new Promise(r => setTimeout(r, 200));
+    return {
+      success: true,
+      wallet: { balance: 0, currency: 'MNT' }
+    };
+  },
 
-        return {
-            success: true,
-            wallet: {
-                balance: 0,
-                currency: 'MNT'
-            }
-        };
-    }
+  async depositToWallet() {
+    await new Promise(r => setTimeout(r, 200));
+    return { success: true };
+  },
+
+  async withdrawToBank() {
+    await new Promise(r => setTimeout(r, 200));
+    return { success: true };
+  }
 };
 
 // Promo Code API (Энгийн хувилбар)
@@ -426,7 +439,7 @@ export const PromoCodeAPI = {
 // Анхны өгөгдөл эхлүүлэх
 initMockData();
 
-console.log('📦 Mock API initialized (LocalStorage mode)');
-console.log('🧪 Test accounts:');
-console.log('   Email: bat@test.com, Password: 123456');
-console.log('   Email: admin@test.com, Password: admin123 (Admin)');
+console.log('Mock API initialized (LocalStorage mode)');
+console.log('Test accounts:');
+console.log('  Email: bat@test.com, Password: 123456');
+console.log('  Email: admin@test.com, Password: admin123 (Admin)');
