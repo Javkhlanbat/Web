@@ -1,14 +1,9 @@
 const { query } = require('../config/database');
 const bcrypt = require('bcrypt');
-
-// Хэрэглэгч үүсгэх
 const createUser = async (userData) => {
   const { email, password, first_name, last_name, phone, register_number, id_front, id_back } = userData;
-
-  // Нууц үг hash-лах
   const salt = await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash(password, salt);
-
   const result = await query(
     `INSERT INTO users (email, password, first_name, last_name, phone, register_number, id_front, id_back)
      VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
@@ -19,7 +14,6 @@ const createUser = async (userData) => {
   return result.rows[0];
 };
 
-// И-мэйлээр хэрэглэгч хайх
 const findUserByEmail = async (email) => {
   const result = await query(
     'SELECT * FROM users WHERE email = $1',
@@ -35,8 +29,6 @@ const findUserByPhone = async (phone) => {
   );
   return result.rows[0];
 };
-
-// ID-гаар хэрэглэгч хайх
 const findUserById = async (id) => {
   const result = await query(
     'SELECT id, email, first_name, last_name, phone, register_number, is_admin, profile_image, created_at FROM users WHERE id = $1',
@@ -45,7 +37,6 @@ const findUserById = async (id) => {
   return result.rows[0];
 };
 
-// ID-гаар хэрэглэгч хайх (ID зургуудтай - админд зориулсан)
 const findUserByIdWithIdImages = async (id) => {
   const result = await query(
     'SELECT id, email, first_name, last_name, phone, register_number, is_admin, id_front, id_back, profile_image, created_at FROM users WHERE id = $1',
@@ -53,13 +44,9 @@ const findUserByIdWithIdImages = async (id) => {
   );
   return result.rows[0];
 };
-
-// Нууц үг шалгах
 const verifyPassword = async (plainPassword, hashedPassword) => {
   return await bcrypt.compare(plainPassword, hashedPassword);
 };
-
-// Хэрэглэгчийн мэдээлэл шинэчлэх
 const updateUser = async (id, updates) => {
   const { first_name, last_name, phone, register_number } = updates;
 
@@ -77,8 +64,6 @@ const updateUser = async (id, updates) => {
 
   return result.rows[0];
 };
-
-// Нууц үг солих
 const updatePassword = async (id, newPassword) => {
   const salt = await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash(newPassword, salt);
@@ -88,21 +73,15 @@ const updatePassword = async (id, newPassword) => {
     [hashedPassword, id]
   );
 };
-
-// Хэрэглэгч устгах
 const deleteUser = async (id) => {
   await query('DELETE FROM users WHERE id = $1', [id]);
 };
-
-// Бүх хэрэглэгчид (админд зориулсан)
 const getAllUsers = async () => {
   const result = await query(
     'SELECT id, email, first_name, last_name, phone, register_number, is_admin, id_front, id_back, profile_image, created_at FROM users ORDER BY created_at DESC'
   );
   return result.rows;
 };
-
-// Профайл зураг шинэчлэх
 const updateProfileImage = async (id, profileImage) => {
   const result = await query(
     `UPDATE users SET profile_image = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2

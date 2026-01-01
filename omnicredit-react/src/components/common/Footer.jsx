@@ -26,12 +26,11 @@ const Footer = () => {
         </div>
         <div className="footer-bottom">
           <div className="footer-copyright">
-            <span>© 2025 OmniCredit. Бүх эрх хуулиар хамгаалагдсан.</span>
+            <span>© 2025 OmniCredit.</span>
           </div>
         </div>
       </div>
     </footer>
   );
 };
-
 export default Footer;
