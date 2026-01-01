@@ -38,8 +38,6 @@ const loanRoutes = require('./src/routes/loanRoutes');
 const paymentRoutes = require('./src/routes/paymentRoutes');
 const walletRoutes = require('./src/routes/walletRoutes');
 const promoCodeRoutes = require('./src/routes/promoCodeRoutes');
-const analyticsRoutes = require('./src/routes/analyticsRoutes');
-const trackingRoutes = require('./src/routes/tracking');
 
 // Test route
 app.get('/', (req, res) => {
@@ -73,8 +71,6 @@ app.use('/api/loans', loanRoutes);
 app.use('/api/payments', paymentRoutes);
 app.use('/api/wallet', walletRoutes);
 app.use('/api/promo', promoCodeRoutes);
-app.use('/api/analytics', analyticsRoutes);
-app.use('/api/tracking', trackingRoutes);
 
 // Error handler
 app.use((err, req, res, next) => {

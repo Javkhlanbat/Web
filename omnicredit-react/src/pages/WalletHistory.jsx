@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/wallet-history.css';
-import { WalletAPI } from '../services/api';
-import TokenManager from '../services/auth';
+import { WalletAPI, TokenManager } from '../services/api';
 
 export default function WalletHistory() {
   const navigate = useNavigate();

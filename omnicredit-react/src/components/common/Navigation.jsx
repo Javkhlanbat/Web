@@ -104,93 +104,95 @@ const Navigation = () => {
 
   return (
     <nav className={`nav ${isScrolled ? 'scrolled' : ''}`}>
-      <Link to="/" className="brand">OmniCredit</Link>
+      <div className="container nav-container">
+        <Link to="/" className="brand">OmniCredit</Link>
 
-      <div className={`nav-links ${isMenuActive ? 'active' : ''}`}>
-        <Link to="/" className={isActive('/') ? 'active' : ''}>Нүүр</Link>
-        <Link to="/zeelhuudas" className={isActive('/zeelhuudas') ? 'active' : ''}>Зээлийн тооцоолуур</Link>
-        <Link to="/aboutus" className={isActive('/aboutus') ? 'active' : ''}>Бидний тухай</Link>
-        <Link to="/faq" className={isActive('/faq') ? 'active' : ''}>Түгээмэл асуулт</Link>
-        {isAuthenticated && (
-          <Link to="/my-loans" className={isActive('/my-loans') ? 'active' : ''}>Миний зээл</Link>
-        )}
+        <div className={`nav-links ${isMenuActive ? 'active' : ''}`}>
+          <Link to="/" className={isActive('/') ? 'active' : ''}>Нүүр</Link>
+          <Link to="/zeelhuudas" className={isActive('/zeelhuudas') ? 'active' : ''}>Зээлийн тооцоолуур</Link>
+          <Link to="/aboutus" className={isActive('/aboutus') ? 'active' : ''}>Бидний тухай</Link>
+          <Link to="/faq" className={isActive('/faq') ? 'active' : ''}>Түгээмэл асуулт</Link>
+          {isAuthenticated && (
+            <Link to="/my-loans" className={isActive('/my-loans') ? 'active' : ''}>Миний зээл</Link>
+          )}
 
-        <div className="auth-mobile">
+          <div className="auth-mobile">
+            {isAuthenticated ? (
+              <>
+                <Link to="/profile" className="btn btn-ghost btn-sm">Профайл</Link>
+                <Link to={dashboardLink} className="btn btn-secondary btn-sm">
+                  {isAdmin ? 'Admin Panel' : 'Dashboard'}
+                </Link>
+                <button id="mobileLogoutBtn" className="btn btn-primary btn-sm" onClick={handleMobileLogout}>
+                  Гарах
+                </button>
+              </>
+            ) : (
+              <>
+                <Link to="/login" className="btn btn-secondary btn-sm">Нэвтрэх</Link>
+                <Link to="/register" className="btn btn-primary btn-sm">Бүртгүүлэх</Link>
+              </>
+            )}
+          </div>
+        </div>
+
+        <div className="auth-buttons">
           {isAuthenticated ? (
             <>
-              <Link to="/profile" className="btn btn-ghost btn-sm">Профайл</Link>
-              <Link to={dashboardLink} className="btn btn-secondary btn-sm">
+              <Link to={dashboardLink} className="btn btn-dashboard">
                 {isAdmin ? 'Admin Panel' : 'Dashboard'}
               </Link>
-              <button id="mobileLogoutBtn" className="btn btn-primary btn-sm" onClick={handleMobileLogout}>
-                Гарах
-              </button>
+              <div
+                className={`profile-dropdown ${isProfileDropdownActive ? 'active' : ''}`}
+                id="profileDropdown"
+              >
+                <button
+                  className="profile-trigger"
+                  id="profileTrigger"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setIsProfileDropdownActive(!isProfileDropdownActive);
+                  }}
+                >
+                  <span className="profile-avatar">{initials}</span>
+                  <span className="profile-name">{userName}</span>
+                  <span className="dropdown-arrow">▼</span>
+                </button>
+                <div className="profile-menu">
+                  <div className="profile-menu-header">
+                    <div className="user-name">{userName}</div>
+                    <div className="user-email">{userEmail}</div>
+                  </div>
+                  <div className="profile-menu-items">
+                    <Link to="/profile" className="profile-menu-item">Профайл</Link>
+                    <Link to="/profile#wallet" className="profile-menu-item">Wallet</Link>
+                    <Link to="/profile#security" className="profile-menu-item">Нууцлал</Link>
+                    <Link to="/profile#preferences" className="profile-menu-item">Тохиргоо</Link>
+                    <div className="profile-menu-divider"></div>
+                    <button className="profile-menu-item logout" id="logoutBtn" onClick={handleLogout}>
+                      Гарах
+                    </button>
+                  </div>
+                </div>
+              </div>
             </>
           ) : (
             <>
-              <Link to="/login" className="btn btn-secondary btn-sm">Нэвтрэх</Link>
+              <Link to="/login" className="btn btn-ghost btn-sm">Нэвтрэх</Link>
               <Link to="/register" className="btn btn-primary btn-sm">Бүртгүүлэх</Link>
             </>
           )}
         </div>
-      </div>
 
-      <div className="auth-buttons">
-        {isAuthenticated ? (
-          <>
-            <Link to={dashboardLink} className="btn btn-dashboard">
-              {isAdmin ? 'Admin Panel' : 'Dashboard'}
-            </Link>
-            <div
-              className={`profile-dropdown ${isProfileDropdownActive ? 'active' : ''}`}
-              id="profileDropdown"
-            >
-              <button
-                className="profile-trigger"
-                id="profileTrigger"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setIsProfileDropdownActive(!isProfileDropdownActive);
-                }}
-              >
-                <span className="profile-avatar">{initials}</span>
-                <span className="profile-name">{userName}</span>
-                <span className="dropdown-arrow">▼</span>
-              </button>
-              <div className="profile-menu">
-                <div className="profile-menu-header">
-                  <div className="user-name">{userName}</div>
-                  <div className="user-email">{userEmail}</div>
-                </div>
-                <div className="profile-menu-items">
-                  <Link to="/profile" className="profile-menu-item">Профайл</Link>
-                  <Link to="/profile#wallet" className="profile-menu-item">Wallet</Link>
-                  <Link to="/profile#security" className="profile-menu-item">Нууцлал</Link>
-                  <Link to="/profile#preferences" className="profile-menu-item">Тохиргоо</Link>
-                  <div className="profile-menu-divider"></div>
-                  <button className="profile-menu-item logout" id="logoutBtn" onClick={handleLogout}>
-                    Гарах
-                  </button>
-                </div>
-              </div>
-            </div>
-          </>
-        ) : (
-          <>
-            <Link to="/login" className="btn btn-ghost btn-sm">Нэвтрэх</Link>
-            <Link to="/register" className="btn btn-primary btn-sm">Бүртгүүлэх</Link>
-          </>
-        )}
+        <button
+          className="mobile-menu-toggle"
+          onClick={toggleMobileMenu}
+          aria-label="Toggle menu"
+          aria-expanded={isMenuActive}
+        >
+          {isMenuActive ? '✕' : '☰'}
+        </button>
       </div>
-
-      <button
-        className="mobile-menu-toggle"
-        onClick={toggleMobileMenu}
-        aria-label="Toggle menu"
-        aria-expanded={isMenuActive}
-      >
-        {isMenuActive ? '✕' : '☰'}
-      </button>
     </nav>
   );
 };

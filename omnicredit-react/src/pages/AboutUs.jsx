@@ -64,20 +64,6 @@ const AboutUs = () => {
       </section>
 
       <section style={{ marginTop: '80px' }}>
-        <div className="card card-peachy" style={{ padding: '64px 48px' }}>
-          <h2 style={{ color: 'white', textAlign: 'center', marginBottom: '24px' }}>
-            Бидний эрхэм зорилго
-          </h2>
-          <p style={{ color: 'white', textAlign: 'center', fontSize: '1.125rem', maxWidth: '800px', margin: '0 auto', lineHeight: '1.8' }}>
-            Санхүүгийн үйлчилгээг хүн бүрт хүртээмжтэй болгож,
-            технологийн тусламжтайгаар хүмүүсийн амьдралын чанарыг
-            сайжруулахад хувь нэмэр оруулах. Бид ил тод, шударга,
-            хариуцлагатай зарчмаар үйл ажиллагаа явуулдаг.
-          </p>
-        </div>
-      </section>
-
-      <section style={{ marginTop: '80px' }}>
         <h2 className="text-center mb-4">Бидний үнэт зүйлс</h2>
         <div className="values-grid">
           {values.map((value, index) => (

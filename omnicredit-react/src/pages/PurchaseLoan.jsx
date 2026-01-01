@@ -1,8 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import '../styles/purchase-loan.css';
-import { LoansAPI } from '../services/api';
-import TokenManager from '../services/auth';
+import { LoansAPI, TokenManager } from '../services/api';
 
 export default function PurchaseLoan() {
   const navigate = useNavigate();
@@ -58,41 +57,9 @@ export default function PurchaseLoan() {
 
   return (
     <div className="container">
-      <div style={{
-        background: 'linear-gradient(135deg, #E0F7FA 0%, #E8F5E9 100%)',
-        padding: '24px',
-        borderRadius: '16px',
-        marginTop: '24px',
-        marginBottom: '24px'
-      }}>
-        <div style={{ textAlign: 'center', marginBottom: '4px' }}>
-          <span style={{
-            display: 'inline-block',
-            background: 'rgba(255,255,255,0.7)',
-            padding: '6px 16px',
-            borderRadius: '20px',
-            fontSize: '12px',
-            fontWeight: '700',
-            color: '#0d9488',
-            letterSpacing: '0.5px'
-          }}>
-            ТООЦООЛУУР
-          </span>
-        </div>
-        <h2 style={{
-          margin: 0,
-          textAlign: 'center',
-          fontSize: '32px',
-          fontWeight: '800',
-          background: 'linear-gradient(135deg, #0d9488, #10b981)',
-          WebkitBackgroundClip: 'text',
-          WebkitTextFillColor: 'transparent',
-          backgroundClip: 'text'
-        }}>
-          Зээлийн нөхцөл харах ба баталгаажуулах
-        </h2>
-      </div>
-
+      <h2 style={{ textAlign: 'center', marginTop: '40px', marginBottom: '24px', fontSize: '28px', fontWeight: '700' }}>
+        Зээл тооцоолох
+      </h2>
       <div className="loan-type-tabs">
         <Link to="/zeelhuudas" className="btn btn-secondary">Хэрэглээний зээл</Link>
         <Link to="/purchase-loan" className="btn btn-primary">Худалдан авалтын зээл</Link>

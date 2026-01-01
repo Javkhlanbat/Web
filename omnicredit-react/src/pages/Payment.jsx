@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import '../styles/payment.css';
-import { LoansAPI, WalletAPI, PaymentsAPI } from '../services/api';
-import TokenManager from '../services/auth';
+import { LoansAPI, WalletAPI, PaymentsAPI, TokenManager } from '../services/api';
 
 export default function Payment() {
   const navigate = useNavigate();

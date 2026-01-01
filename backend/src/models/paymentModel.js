@@ -1,6 +1,4 @@
 const { query } = require('../config/database');
-
-// Төлбөр үүсгэх (хүү болон үндсэн зээлийг тусад нь тооцоолох)
 const createPayment = async (paymentData) => {
   const { loan_id, amount, payment_method } = paymentData;
 

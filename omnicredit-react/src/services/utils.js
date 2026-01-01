@@ -222,33 +222,6 @@ const Utils = {
     return re.test(phone.replace(/\s/g, ''));
   },
 
-  // Toast мэдэгдэл харуулах
-  showToast(message, type = 'info', duration = 3000) {
-    const toast = document.createElement('div');
-    toast.className = `toast toast-${type}`;
-    toast.textContent = message;
-    toast.style.cssText = `
-      position: fixed;
-      bottom: 24px;
-      right: 24px;
-      padding: 16px 24px;
-      background: var(--gradient-peachy);
-      color: white;
-      border-radius: var(--radius);
-      box-shadow: var(--shadow-lg);
-      z-index: 9999;
-      animation: slideIn 0.3s ease;
-      max-width: 400px;
-    `;
-
-    document.body.appendChild(toast);
-
-    setTimeout(() => {
-      toast.style.animation = 'slideOut 0.3s ease';
-      setTimeout(() => toast.remove(), 300);
-    }, duration);
-  },
-
   // LocalStorage хадгалах системчилсэн функцууд
   storage: {
     // Утга хадгалах

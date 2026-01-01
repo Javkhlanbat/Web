@@ -3,7 +3,6 @@ const jwt = require('jsonwebtoken');
 // JWT token шалгах middleware
 const authenticateToken = (req, res, next) => {
   try {
-    // Header-ээс token авах
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1]; // Bearer TOKEN
 
@@ -13,8 +12,6 @@ const authenticateToken = (req, res, next) => {
         message: 'Token олдсонгүй'
       });
     }
-
-    // Token баталгаажуулах
     jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
       if (err) {
         return res.status(403).json({
@@ -22,8 +19,6 @@ const authenticateToken = (req, res, next) => {
           message: 'Token хүчинтэй биш эсвэл хугацаа дууссан'
         });
       }
-
-      // User мэдээллийг request-д хадгалах
       req.user = user;
       next();
     });
@@ -36,27 +31,6 @@ const authenticateToken = (req, res, next) => {
   }
 };
 
-const optionalAuth = (req, res, next) => {
-  try {
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1];
-
-    if (!token) {
-      return next();
-    }
-
-    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-      if (!err) {
-        req.user = user;
-      }
-      next();
-    });
-  } catch (error) {
-    next();
-  }
-};
-
 module.exports = {
-  authenticateToken,
-  optionalAuth
+  authenticateToken
 };

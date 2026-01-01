@@ -1,7 +1,5 @@
 const { query } = require('../config/database');
 const { addToWallet } = require('./walletModel');
-
-// Зээл үүсгэх
 const createLoan = async (loanData) => {
   const {
     user_id,
@@ -29,8 +27,6 @@ const createLoan = async (loanData) => {
 
   return result.rows[0];
 };
-
-// Хэрэглэгчийн зээлүүд
 const getLoansByUserId = async (userId) => {
   const result = await query(
     'SELECT * FROM loans WHERE user_id = $1 ORDER BY created_at DESC',
@@ -39,7 +35,6 @@ const getLoansByUserId = async (userId) => {
   return result.rows;
 };
 
-// ID-гаар зээл хайх
 const getLoanById = async (id) => {
   const result = await query(
     'SELECT * FROM loans WHERE id = $1',
@@ -47,8 +42,6 @@ const getLoanById = async (id) => {
   );
   return result.rows[0];
 };
-
-// Бүх зээлүүд (админд зориулсан)
 const getAllLoans = async () => {
   const result = await query(
     `SELECT l.*, u.email, u.first_name, u.last_name
@@ -58,8 +51,6 @@ const getAllLoans = async () => {
   );
   return result.rows;
 };
-
-// Зээлийн статус өөрчлөх
 const updateLoanStatus = async (id, status) => {
   const result = await query(
     `UPDATE loans
@@ -72,7 +63,6 @@ const updateLoanStatus = async (id, status) => {
   return result.rows[0];
 };
 
-// Зээл олгох (disburse) - approved зээлийг disbursed болгох, wallet-д мөнгө нэмэх
 const disburseLoan = async (id) => {
   const result = await query(
     `UPDATE loans
@@ -93,13 +83,9 @@ const disburseLoan = async (id) => {
 
   return loan;
 };
-
-// Зээл устгах
 const deleteLoan = async (id) => {
   await query('DELETE FROM loans WHERE id = $1', [id]);
 };
-
-// Зээлийн статистик
 const getLoanStats = async (userId) => {
   const result = await query(
     `SELECT
@@ -113,8 +99,6 @@ const getLoanStats = async (userId) => {
   );
   return result.rows[0];
 };
-
-// Purchase loan үүсгэх (0% хүүтэй)
 const createPurchaseLoan = async (purchaseData) => {
   const { user_id, invoice_code, amount, duration_months, monthly_payment } = purchaseData;
 
@@ -127,8 +111,6 @@ const createPurchaseLoan = async (purchaseData) => {
 
   return result.rows[0];
 };
-
-// Хэрэглэгчийн purchase loans
 const getPurchaseLoansByUserId = async (userId) => {
   const result = await query(
     'SELECT * FROM purchase_loans WHERE user_id = $1 ORDER BY created_at DESC',
@@ -136,8 +118,6 @@ const getPurchaseLoansByUserId = async (userId) => {
   );
   return result.rows;
 };
-
-// Invoice code-оор хайх
 const getPurchaseLoanByInvoice = async (invoiceCode) => {
   const result = await query(
     'SELECT * FROM purchase_loans WHERE invoice_code = $1',

@@ -1,10 +1,4 @@
 const { query } = require('../config/database');
-
-// ==========================================
-// КОМПАНИ (COMPANIES)
-// ==========================================
-
-// Компани үүсгэх
 const createCompany = async (companyData) => {
   const { name, description, contact_email, contact_phone, address, is_active = true } = companyData;
 
@@ -18,15 +12,12 @@ const createCompany = async (companyData) => {
   return result.rows[0];
 };
 
-// Бүх компаниуд
 const getAllCompanies = async () => {
   const result = await query(
     'SELECT * FROM companies ORDER BY created_at DESC'
   );
   return result.rows;
 };
-
-// Компани ID-аар олох
 const getCompanyById = async (id) => {
   const result = await query(
     'SELECT * FROM companies WHERE id = $1',
@@ -34,11 +25,8 @@ const getCompanyById = async (id) => {
   );
   return result.rows[0];
 };
-
-// Компани шинэчлэх
 const updateCompany = async (id, companyData) => {
   const { name, description, contact_email, contact_phone, address, is_active } = companyData;
-
   const result = await query(
     `UPDATE companies
      SET name = COALESCE($1, name),
@@ -55,17 +43,9 @@ const updateCompany = async (id, companyData) => {
 
   return result.rows[0];
 };
-
-// Компани устгах
 const deleteCompany = async (id) => {
   await query('DELETE FROM companies WHERE id = $1', [id]);
 };
-
-// ==========================================
-// НЭМЭГДЛИЙН КОД (PROMO CODES)
-// ==========================================
-
-// Random код үүсгэх функц
 const generatePromoCode = () => {
   const characters = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
   let code = 'OMNI-';
@@ -74,8 +54,6 @@ const generatePromoCode = () => {
   }
   return code;
 };
-
-// Нэмэгдлийн код үүсгэх
 const createPromoCode = async (promoData) => {
   const {
     company_id,
@@ -97,8 +75,6 @@ const createPromoCode = async (promoData) => {
 
   return result.rows[0];
 };
-
-// Бүх нэмэгдлийн кодууд
 const getAllPromoCodes = async () => {
   const result = await query(
     `SELECT p.*, c.name as company_name
@@ -108,8 +84,6 @@ const getAllPromoCodes = async () => {
   );
   return result.rows;
 };
-
-// Компаний нэмэгдлийн кодууд
 const getPromoCodesByCompany = async (companyId) => {
   const result = await query(
     `SELECT * FROM promo_codes WHERE company_id = $1 ORDER BY created_at DESC`,
@@ -118,7 +92,6 @@ const getPromoCodesByCompany = async (companyId) => {
   return result.rows;
 };
 
-// Код-аар хайх (хэрэглэгч ашиглахад)
 const getPromoCodeByCode = async (code) => {
   const result = await query(
     `SELECT p.*, c.name as company_name, c.is_active as company_active
@@ -129,13 +102,11 @@ const getPromoCodeByCode = async (code) => {
   );
   return result.rows[0];
 };
-
-// Код хүчинтэй эсэх шалгах
 const validatePromoCode = async (code) => {
   const promo = await getPromoCodeByCode(code);
 
   if (!promo) {
-    return { valid: false, error: 'Нэмэгдлийн код олдсонгүй' };
+    return { valid: false, error: 'promo код олдсонгүй' };
   }
 
   if (!promo.is_active) {
@@ -157,7 +128,6 @@ const validatePromoCode = async (code) => {
   return { valid: true, promo };
 };
 
-// Код ашигласан тоо нэмэх
 const incrementPromoCodeUsage = async (id) => {
   const result = await query(
     `UPDATE promo_codes
@@ -169,7 +139,6 @@ const incrementPromoCodeUsage = async (id) => {
   return result.rows[0];
 };
 
-// Код ID-аар олох
 const getPromoCodeById = async (id) => {
   const result = await query(
     `SELECT p.*, c.name as company_name
@@ -181,7 +150,6 @@ const getPromoCodeById = async (id) => {
   return result.rows[0];
 };
 
-// Код шинэчлэх
 const updatePromoCode = async (id, promoData) => {
   const { discount_percent, interest_rate_override, max_loan_amount, max_uses, expires_at, is_active, description } = promoData;
 
@@ -202,7 +170,6 @@ const updatePromoCode = async (id, promoData) => {
   return result.rows[0];
 };
 
-// Код устгах
 const deletePromoCode = async (id) => {
   await query('DELETE FROM promo_codes WHERE id = $1', [id]);
 };

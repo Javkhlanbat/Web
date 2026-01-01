@@ -4,7 +4,6 @@ import '../styles/faq.css';
 const FAQ = () => {
   const [activeCategory, setActiveCategory] = useState('general');
   const [openItems, setOpenItems] = useState([]);
-  const [searchQuery, setSearchQuery] = useState('');
 
   const categories = [
     { id: 'general', label: 'Ерөнхий', icon: '' },
@@ -121,20 +120,6 @@ const FAQ = () => {
     );
   };
 
-  const handleSearch = (e) => {
-    setSearchQuery(e.target.value.toLowerCase());
-  };
-
-  const getFilteredFaqs = () => {
-    const faqs = faqData[activeCategory];
-    if (!searchQuery) return faqs;
-
-    return faqs.filter(faq =>
-      faq.question.toLowerCase().includes(searchQuery) ||
-      faq.answer.toLowerCase().includes(searchQuery)
-    );
-  };
-
   return (
     <div className="container">
       <section style={{ textAlign: 'center', margin: '64px 0 32px' }}>
@@ -143,15 +128,6 @@ const FAQ = () => {
           Таны асуултын хариултыг эндээс олоорой
         </p>
       </section>
-
-      <div className="search-box">
-        <input
-          type="text"
-          placeholder="Асуулт хайх..."
-          value={searchQuery}
-          onChange={handleSearch}
-        />
-      </div>
 
       <div className="faq-categories">
         {categories.map(cat => (
@@ -168,7 +144,7 @@ const FAQ = () => {
 
       <div className="faq-section">
         <div className={`faq-list active`}>
-          {getFilteredFaqs().map(faq => (
+          {faqData[activeCategory].map(faq => (
             <div
               key={faq.id}
               className={`faq-item ${openItems.includes(faq.id) ? 'open' : ''}`}

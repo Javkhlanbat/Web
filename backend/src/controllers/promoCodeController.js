@@ -358,23 +358,6 @@ const verifyPromoCode = async (req, res) => {
   }
 };
 
-// Код ашиглах (зээл үүсгэх үед дуудагдана)
-const usePromoCode = async (codeString) => {
-  const result = await validatePromoCode(codeString);
-
-  if (!result.valid) {
-    return { success: false, error: result.error };
-  }
-
-  // Ашигласан тоог нэмэгдүүлэх
-  await incrementPromoCodeUsage(result.promo.id);
-
-  return {
-    success: true,
-    promo: result.promo
-  };
-};
-
 module.exports = {
   // Company Admin
   adminCreateCompany,
@@ -391,6 +374,5 @@ module.exports = {
   adminDeletePromoCode,
 
   // User
-  verifyPromoCode,
-  usePromoCode
+  verifyPromoCode
 };

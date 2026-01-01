@@ -25,7 +25,29 @@ const TokenManager = {
         localStorage.removeItem('authToken');
     },
 
-    // Нэвтэрсэн эсэхийг шалгах
+    // JWT token-ий хугацааг шалгах
+    isTokenExpired() {
+        const token = this.getToken();
+        if (!token) return true;
+
+        try {
+            // JWT token-ий payload хэсгийг задлах
+            const payload = JSON.parse(atob(token.split('.')[1]));
+
+            // exp (expiration time) нь секундээр байдаг, Date.now() нь миллисекундээр байдаг
+            if (payload.exp) {
+                return payload.exp * 1000 < Date.now();
+            }
+
+            // exp байхгүй бол хугацаа дуусаагүй гэж үзнэ
+            return false;
+        } catch (error) {
+            console.error('Token шалгахад алдаа гарлаа:', error);
+            return true; // Алдаа гарвал дууссан гэж үзнэ
+        }
+    },
+
+    // Нэвтэрсэн эсэхийг шалгах (зөвхөн token байгаа эсэхийг шалгах, backend дахин баталгаажуулна)
     isAuthenticated() {
         return !!this.getToken();
     }
@@ -146,7 +168,13 @@ class APIClient {
                 if (response.status === 401 || response.status === 403) {
                     TokenManager.removeToken();
                     UserManager.removeUser();
-                    // Нэвтрэх хуудсанд шууд чиглүүлэхгүй, хэрэглэгчид мэдэгдэл харуулах
+                    LastPageManager.removeLastPage();
+
+                    // 2 секундын дараа login хуудас руу чиглүүлэх
+                    setTimeout(() => {
+                        window.location.href = '/login';
+                    }, 2000);
+
                     throw new Error('Нэвтрэх хугацаа дууссан байна. Дахин нэвтэрнэ үү.');
                 }
 
@@ -451,33 +479,5 @@ const PromoCodeAPI = {
     }
 };
 
-// Tracking API
-const TrackingAPI = {
-    // Funnel data
-    async getFunnelData() {
-        return await api.get('/tracking/funnel');
-    },
-
-    // Bounce rate
-    async getBounceRate() {
-        return await api.get('/tracking/bounce-rate');
-    },
-
-    // Summary stats
-    async getSummary() {
-        return await api.get('/tracking/summary');
-    },
-
-    // Page analytics
-    async getPageAnalytics() {
-        return await api.get('/tracking/page-analytics');
-    },
-
-    // User behavior analysis
-    async getBehaviorAnalysis() {
-        return await api.get('/tracking/behavior-analysis');
-    }
-};
-
 // Export for React
-export { API_CONFIG, TokenManager, UserManager, LastPageManager, api, AuthAPI, LoansAPI, PaymentsAPI, WalletAPI, PromoCodeAPI, TrackingAPI };
+export { API_CONFIG, TokenManager, UserManager, LastPageManager, api, AuthAPI, LoansAPI, PaymentsAPI, WalletAPI, PromoCodeAPI };

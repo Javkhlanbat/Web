@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { TokenManager, UserManager, AuthAPI } from '../services/api';
 import '../styles/hero.css';
 import '../styles/home-features.css';
+import '../styles/services.css';
 
 const Home = () => {
   const [allRegisteredUsers, setAllRegisteredUsers] = useState([]);
@@ -76,9 +77,9 @@ const Home = () => {
       const register = (user.register_number || '').toLowerCase();
 
       return fullName.includes(searchTerm) ||
-             email.includes(searchTerm) ||
-             phone.includes(searchTerm) ||
-             register.includes(searchTerm);
+        email.includes(searchTerm) ||
+        phone.includes(searchTerm) ||
+        register.includes(searchTerm);
     });
 
     setDisplayedUsers(filtered);
@@ -89,93 +90,227 @@ const Home = () => {
       <section className="hero">
         <div className="hero-content">
           <div className="hero-text">
-            <h1>Бид ногоон ирээдүйг
-              <span className="highlight">Санхүүжүүлдэг!</span>
-            </h1>
+            <h1>Хялбар, Хурдан<br />Зээл Таны<br />Санхүүгийн Хэрэгцээнд</h1>
             <p className="hero-description">
-              Хялбар, шуурхай, найдвартай. OmniCredit-ээр хүссэн
-              зээлээ 5 минутад авах боломжтой. Та зөвхөн өөрийн
-              зээлийн нөхцөлийг сонгоод, шууд хүсэлт илгээж болно.
+
             </p>
             <div className="hero-buttons">
-              <Link to="/zeelhuudas" className="btn btn-primary btn-lg">Зээл авах</Link>
-              <a href="#why" className="btn btn-secondary btn-lg">Дэлгэрэнгүй</a>
+              <Link to="/zeelhuudas" className="btn btn-primary btn-lg">Эхлэх</Link>
             </div>
           </div>
 
           <div className="hero-image">
-            <img src="/images/hero-illustration.svg" alt="OmniCredit - Ногоон санхүүжилт" />
+            <svg viewBox="0 0 400 400" className="bank-illustration">
+              <rect x="100" y="150" width="200" height="180" fill="#E3F2FF" rx="5" />
+              <rect x="120" y="120" width="160" height="40" fill="#4A90E2" />
+              <rect x="130" y="170" width="20" height="120" fill="#FFF" />
+              <rect x="180" y="170" width="20" height="120" fill="#FFF" />
+              <rect x="230" y="170" width="20" height="120" fill="#FFF" />
+              <rect x="165" y="240" width="50" height="90" fill="#2E5C8A" />
+              <circle cx="80" cy="200" r="25" fill="#4A90E2" opacity="0.6" />
+              <text x="75" y="210" fontSize="24" fill="#2E5C8A">₮</text>
+              <circle cx="320" cy="180" r="20" fill="#4A90E2" opacity="0.6" />
+              <text x="315" y="188" fontSize="20" fill="#2E5C8A">₮</text>
+            </svg>
           </div>
         </div>
       </section>
 
-      <section className="features-hero" id="products">
+      {/* Features Section */}
+      <section className="features-section">
         <div className="container">
+          <h2 className="section-title">Яагаад OmniCredit-ийг сонгох вэ?</h2>
           <div className="features-grid">
-
-            <div className="feature-card">
-              <div className="feature-image">
-                <img src="/images/consumer-loan.svg" alt="Хэрэглээний зээл" />
+            <div className="feature-box">
+              <div className="feature-icon-wrapper">
+                <svg viewBox="0 0 100 100" width="50" height="50">
+                  <circle cx="50" cy="50" r="40" fill="#E3F2FF" />
+                  <path d="M 30 50 L 45 65 L 70 35" stroke="#4A90E2" strokeWidth="6" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
               </div>
-              <div className="feature-content">
-                <h3>Хэрэглээний зээл</h3>
-                <p>Өдөр тутмын зардал, гэр ахуйн хэрэгцээнд зориулсан хурдан зээл.</p>
-                <Link to="/zeelhuudas" className="btn btn-primary">
-                  Дэлгэрэнгүй
-                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                    <path d="M6 3L11 8L6 13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                </Link>
-              </div>
+              <h3>Хурдан Зөвшөөрөл</h3>
+              <p>24 цагийн дотор зээлийн шийдвэр авна</p>
             </div>
 
-            <div className="feature-card">
-              <div className="feature-image">
-                <img src="/images/purchase-loan.svg" alt="Худалдан авалтын зээл" />
+            <div className="feature-box">
+              <div className="feature-icon-wrapper">
+                <svg viewBox="0 0 100 100" width="50" height="50">
+                  <circle cx="50" cy="50" r="40" fill="#E3F2FF" />
+                  <rect x="30" y="35" width="40" height="30" fill="none" stroke="#4A90E2" strokeWidth="5" rx="3" />
+                  <circle cx="50" cy="50" r="6" fill="#4A90E2" />
+                </svg>
               </div>
-              <div className="feature-content">
-                <h3>Худалдан авалтын зээл</h3>
-                <p>Бараа авахдаа урьдчилгаа төлөхгүйгээр хэсэгчлэн төлөх боломж.</p>
-                <Link to="/purchase-loan" className="btn btn-primary">
-                  Дэлгэрэнгүй
-                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                    <path d="M6 3L11 8L6 13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                </Link>
-              </div>
+              <h3>Найдвартай Баталгаа</h3>
+              <p>Таны мэдээллийг бүрэн хамгаална</p>
             </div>
 
+            <div className="feature-box">
+              <div className="feature-icon-wrapper">
+                <svg viewBox="0 0 100 100" width="50" height="50">
+                  <circle cx="50" cy="50" r="40" fill="#E3F2FF" />
+                  <text x="50" y="65" fontSize="40" fill="#4A90E2" textAnchor="middle" fontWeight="bold">%</text>
+                </svg>
+              </div>
+              <h3>Өрсөлдөхүйц Хүү</h3>
+              <p>Зах зээлийн хамгийн сайн нөхцөл</p>
+            </div>
+
+            <div className="feature-box">
+              <div className="feature-icon-wrapper">
+                <svg viewBox="0 0 100 100" width="50" height="50">
+                  <circle cx="50" cy="50" r="40" fill="#E3F2FF" />
+                  <circle cx="50" cy="35" r="12" fill="#4A90E2" />
+                  <path d="M 30 70 Q 50 80, 70 70 L 70 55 Q 50 65, 30 55 Z" fill="#4A90E2" />
+                </svg>
+              </div>
+              <h3>24/7 Дэмжлэг</h3>
+              <p>Хэдийд ч тусламж үзүүлнэ</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Loan Types Section */}
+      <section className="loan-types-section">
+        <div className="container">
+          <h2 className="section-title">Зээлийн Төрлүүд</h2>
+          <div className="loan-types-grid">
+            <Link to="/zeelhuudas?type=personal" className="loan-type-card">
+              <div className="loan-card-header">
+                <div className="loan-icon">
+                  <svg viewBox="0 0 100 100" width="40" height="40">
+                    <circle cx="50" cy="40" r="18" fill="#4A90E2" />
+                    <path d="M 30 70 Q 50 80, 70 70 L 70 60 Q 50 70, 30 60 Z" fill="#4A90E2" />
+                  </svg>
+                </div>
+                <h3>Хэрэглээний Зээл</h3>
+              </div>
+              <ul className="loan-features-list">
+                <li>✓ 500,000₮ - 10,000,000₮ хүртэл</li>
+                <li>✓ 12-36 сарын хугацаа</li>
+                <li>✓ Уян хатан төлбөрийн нөхцөл</li>
+                <li>✓ Ямар ч зориулалтад</li>
+              </ul>
+              <div className="loan-card-footer">
+                <span className="loan-rate">1.5% сараар</span>
+                <span className="loan-cta">Дэлгэрэнгүй →</span>
+              </div>
+            </Link>
+
+            <Link to="/zeelhuudas?type=purchase" className="loan-type-card featured">
+              <div className="featured-badge">Эрэлттэй</div>
+              <div className="loan-card-header">
+                <div className="loan-icon">
+                  <svg viewBox="0 0 100 100" width="40" height="40">
+                    <rect x="28" y="38" width="44" height="35" fill="white" rx="3" />
+                    <rect x="35" y="28" width="30" height="10" fill="white" />
+                    <circle cx="50" cy="55" r="7" fill="#4A90E2" />
+                  </svg>
+                </div>
+                <h3>Худалдан Авалтын Зээл</h3>
+              </div>
+              <ul className="loan-features-list">
+                <li>✓ 1,000,000₮ - 20,000,000₮ хүртэл</li>
+                <li>✓ 6-24 сарын хугацаа</li>
+                <li>✓ Урьдчилгаа шаардлагагүй</li>
+                <li>✓ Барааг шууд авна</li>
+              </ul>
+              <div className="loan-card-footer">
+                <span className="loan-rate">1.2% сараар</span>
+                <span className="loan-cta">Дэлгэрэнгүй →</span>
+              </div>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* How It Works Section */}
+      <section className="how-it-works-section">
+        <div className="container">
+          <h2 className="section-title">Хэрхэн Ажилладаг Вэ?</h2>
+          <p className="section-subtitle">4 хялбар алхамаар зээл авна</p>
+          <div className="steps-grid">
+            <div className="step-card">
+              <div className="step-number">1</div>
+              <div className="step-icon">
+                <svg viewBox="0 0 100 100" width="60" height="60">
+                  <circle cx="50" cy="50" r="35" fill="#E3F2FF" />
+                  <rect x="30" y="25" width="40" height="50" fill="none" stroke="#4A90E2" strokeWidth="4" rx="2" />
+                  <line x1="38" y1="38" x2="62" y2="38" stroke="#4A90E2" strokeWidth="3" />
+                  <line x1="38" y1="48" x2="62" y2="48" stroke="#4A90E2" strokeWidth="3" />
+                  <line x1="38" y1="58" x2="50" y2="58" stroke="#4A90E2" strokeWidth="3" />
+                </svg>
+              </div>
+              <h3>Хүсэлт илгээх</h3>
+              <p>Онлайн маягтаа 5 минутад бөглөнө үү</p>
+            </div>
+
+            <div className="step-card">
+              <div className="step-number">2</div>
+              <div className="step-icon">
+                <svg viewBox="0 0 100 100" width="60" height="60">
+                  <circle cx="50" cy="50" r="35" fill="#E3F2FF" />
+                  <rect x="30" y="30" width="40" height="40" fill="none" stroke="#4A90E2" strokeWidth="4" rx="2" />
+                  <circle cx="50" cy="50" r="8" fill="#4A90E2" />
+                </svg>
+              </div>
+              <h3>Баталгаажуулалт</h3>
+              <p>Мэдээллээ баталгаажуулж баримт илгээнэ</p>
+            </div>
+
+            <div className="step-card">
+              <div className="step-number">3</div>
+              <div className="step-icon">
+                <svg viewBox="0 0 100 100" width="60" height="60">
+                  <circle cx="50" cy="50" r="35" fill="#E3F2FF" />
+                  <circle cx="50" cy="50" r="25" fill="#4A90E2" />
+                  <path d="M 38 50 L 46 58 L 64 40" stroke="white" strokeWidth="4" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </div>
+              <h3>Шалгалт хийх</h3>
+              <p>24 цагт зээлийн зөвшөөрөл авна</p>
+            </div>
+
+            <div className="step-card">
+              <div className="step-number">4</div>
+              <div className="step-icon">
+                <svg viewBox="0 0 100 100" width="60" height="60">
+                  <circle cx="50" cy="50" r="35" fill="#E3F2FF" />
+                  <text x="50" y="65" fontSize="45" fill="#4A90E2" textAnchor="middle" fontWeight="bold">₮</text>
+                </svg>
+              </div>
+              <h3>Мөнгө авах</h3>
+              <p>Таны дансанд шууд орно</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Stats Section */}
+      <section className="stats-section">
+        <div className="container">
+          <div className="stats-grid">
+            <div className="stat-box">
+              <div className="stat-number">10,000+</div>
+              <div className="stat-label">Баярлуулсан үйлчлүүлэгч</div>
+            </div>
+            <div className="stat-box">
+              <div className="stat-number">₮5 тэрбум+</div>
+              <div className="stat-label">Олгосон зээл</div>
+            </div>
+            <div className="stat-box">
+              <div className="stat-number">98%</div>
+              <div className="stat-label">Сэтгэл ханамжийн түвшин</div>
+            </div>
+            <div className="stat-box">
+              <div className="stat-number">24/7</div>
+              <div className="stat-label">Үйлчилгээний цаг</div>
+            </div>
           </div>
         </div>
       </section>
 
       <div className="container">
-
-        <section className="why-us" id="why">
-          <h2 className="section-title">Та яагаад биднийг сонгох ёстой вэ?</h2>
-          <div className="why-grid">
-            <div className="why-card">
-              <div className="why-icon"></div>
-              <h3>Бүх зүйл ойлгомжтой</h3>
-              <p>Та ямар хураамж, хүү төлөхөө урьдчилан мэдэх боломжтой. Ямар ч нууц зардал байхгүй.</p>
-            </div>
-            <div className="why-card">
-              <div className="why-icon"></div>
-              <h3>5 минутад шийдэх</h3>
-              <p>Хүсэлт илгээснээс хойш 5 минутын дотор танд хариу ирнэ. Хүлээх хэрэггүй.</p>
-            </div>
-            <div className="why-card">
-              <div className="why-icon"></div>
-              <h3>Та төлөх хугацаагаа сонгоно</h3>
-              <p>2-24 сарын хооронд сонгох боломжтой. Хугацаанаас өмнө төлбөл хөнгөлөлттэй.</p>
-            </div>
-            <div className="why-card">
-              <div className="why-icon"></div>
-              <h3>Мэдээлэл нууцлалт</h3>
-              <p> Таны нууц мэдээлэл бидэнд чухал.</p>
-            </div>
-          </div>
-        </section>
 
         {isAdminSectionVisible && (
           <section id="registeredUsersSection" style={{ marginTop: '60px' }}>

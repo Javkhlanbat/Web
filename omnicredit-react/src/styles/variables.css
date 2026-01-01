@@ -1,29 +1,53 @@
-
+/* Light theme (default) - Loaner Template Blue */
 :root {
-  --primary: #14b8a6;
-  --primary-dark: #0d9488;
-  --primary-light: #2dd4bf;
-  --secondary: #a7f3d0;
-  --accent: #10b981;
-  --gradient-peachy: linear-gradient(135deg, #14b8a6, #10b981);
-  --gradient-sunset: linear-gradient(135deg, #0d9488, #14b8a6);
-  --gradient-soft: linear-gradient(135deg, #E0F7FA, #E8F5E9);
-  --bg: #f0fdf4;
-  --text: #064e3b;
-  --text-muted: #047857;
+  --primary: #4A90E2;
+  --primary-dark: #2E5C8A;
+  --primary-light: #7AB8F5;
+  --secondary: #F0F7FF;
+  --accent: #4A90E2;
+  --gradient-primary: linear-gradient(135deg, #4A90E2, #2E5C8A);
+  --gradient-peachy: linear-gradient(135deg, #4A90E2, #2E5C8A);
+  --gradient-sunset: linear-gradient(135deg, #F0F7FF, #E3F2FF);
+  --gradient-soft: linear-gradient(135deg, #E3F2FF, #F0F7FF);
+  --bg: #FFFFFF;
+  --text: #222222;
+  --text-muted: #666666;
   --card: #FFFFFF;
-  --card-hover: #d1fae5;
-  --line: #a7f3d0;
-  --shadow-sm: 0 2px 8px rgba(20, 184, 166, 0.08);
-  --shadow: 0 8px 24px rgba(20, 184, 166, 0.12);
-  --shadow-lg: 0 16px 40px rgba(20, 184, 166, 0.15);
-  --shadow-hover: 0 12px 32px rgba(20, 184, 166, 0.18);
-  --radius-sm: 12px;
-  --radius: 18px;
-  --radius-lg: 24px;
-  --radius-xl: 32px;
+  --card-hover: #F0F7FF;
+  --line: #E3F2FF;
+  --shadow-sm: 0 2px 8px rgba(74, 144, 226, 0.08);
+  --shadow: 0 8px 24px rgba(74, 144, 226, 0.12);
+  --shadow-lg: 0 16px 40px rgba(74, 144, 226, 0.15);
+  --shadow-hover: 0 12px 32px rgba(74, 144, 226, 0.18);
+  --radius-sm: 8px;
+  --radius: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
   --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   --transition-fast: 0.15s ease;
+}
+
+/* Dark theme - Харанхуй загвар */
+[data-theme="dark"] {
+  --primary: #7AB8F5;
+  --primary-dark: #4A90E2;
+  --primary-light: #A5CEFF;
+  --secondary: #1e293b;
+  --accent: #7AB8F5;
+  --gradient-primary: linear-gradient(135deg, #7AB8F5, #4A90E2);
+  --gradient-peachy: linear-gradient(135deg, #7AB8F5, #4A90E2);
+  --gradient-sunset: linear-gradient(135deg, #1e293b, #0f172a);
+  --gradient-soft: linear-gradient(135deg, #1e293b, #0f172a);
+  --bg: #0f172a;
+  --text: #f1f5f9;
+  --text-muted: #94a3b8;
+  --card: #1e293b;
+  --card-hover: #334155;
+  --line: #334155;
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.5);
+  --shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+  --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.7);
+  --shadow-hover: 0 12px 32px rgba(0, 0, 0, 0.65);
 }
 
 

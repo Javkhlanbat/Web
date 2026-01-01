@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { TokenManager, LoansAPI } from '../services/api';
 import { showToast } from '../services/utils';
-import analytics from '../services/analytics';
+
 import '../styles/loan-calculator.css';
 
 const LoanCalculator = () => {
@@ -103,7 +103,7 @@ const LoanCalculator = () => {
 
       ctx.fillStyle = '#f59e0b';
       ctx.fillRect(x, yB - intH, bw, intH);
-      ctx.fillStyle = '#10b981';
+      ctx.fillStyle = '#8b5cf6';
       ctx.fillRect(x, yB - intH - prinH, bw, prinH);
       ctx.fillStyle = '#4b5563';
       ctx.fillText(`${i + 1}-р сар`, x + bw / 2, yB + 6);
@@ -121,7 +121,7 @@ const LoanCalculator = () => {
     ctx.fillRect(margin, margin - 14, 10, 10);
     ctx.fillStyle = '#111827';
     ctx.fillText('Бодогдсон хүү', margin + 16, margin - 6);
-    ctx.fillStyle = '#10b981';
+    ctx.fillStyle = '#8b5cf6';
     ctx.fillRect(margin + 120, margin - 14, 10, 10);
     ctx.fillStyle = '#111827';
     ctx.fillText('Үндсэн зээл', margin + 136, margin - 6);
@@ -302,15 +302,7 @@ const LoanCalculator = () => {
   };
 
   const handleApply = async () => {
-    // Track calculator apply button click
-    analytics.track('calculator_apply_clicked', {
-      amount,
-      term,
-      rate
-    });
-
     if (!TokenManager.isAuthenticated()) {
-      analytics.track('calculator_apply_blocked', { reason: 'not_authenticated' });
       if (window.confirm('Зээл авахын тулд нэвтрэх хэрэгтэй. Нэвтрэх хуудас руу шилжих үү?')) {
         navigate('/login');
       }
@@ -318,13 +310,11 @@ const LoanCalculator = () => {
     }
 
     if (amount < 10000 || amount > 3000000) {
-      analytics.track('calculator_validation_error', { field: 'amount', value: amount, error: 'out_of_range' });
       showToast('Зээлийн дүн ₮10,000 - ₮3,000,000 хооронд байх ёстой', 'error');
       return;
     }
 
     if (term < 1 || term > 24) {
-      analytics.track('calculator_validation_error', { field: 'term', value: term, error: 'out_of_range' });
       showToast('Хугацаа 1-24 сарын хооронд байх ёстой', 'error');
       return;
     }
@@ -341,13 +331,6 @@ const LoanCalculator = () => {
           occupation: 'Хэрэглэгч'
         });
 
-        // Track successful loan application from calculator
-        analytics.track('calculator_loan_completed', {
-          amount,
-          term,
-          rate
-        });
-
         showToast('Амжилттай илгээлээ!', 'success');
 
         setTimeout(() => {
@@ -356,18 +339,8 @@ const LoanCalculator = () => {
       } catch (error) {
         console.error('Loan application error:', error);
 
-        // Track failed loan application
-        analytics.track('calculator_loan_failed', {
-          error: error.message,
-          amount,
-          term
-        });
-
         showToast(error.message || 'Хүсэлт илгээхэд алдаа гарлаа', 'error');
       }
-    } else {
-      // User cancelled the confirmation
-      analytics.track('calculator_apply_cancelled', { amount, term, rate });
     }
   };
 
@@ -377,17 +350,9 @@ const LoanCalculator = () => {
 
   return (
     <div className="container">
-      <div style={{ background: 'linear-gradient(135deg, #E0F7FA 0%, #E8F5E9 100%)', padding: '24px', borderRadius: '16px', marginTop: '16px', marginBottom: '24px' }}>
-        <div style={{ textAlign: 'center', marginBottom: '4px' }}>
-          <span style={{ display: 'inline-block', background: 'rgba(255,255,255,0.7)', padding: '6px 16px', borderRadius: '20px', fontSize: '12px', fontWeight: '700', color: '#0d9488', letterSpacing: '0.5px' }}>
-            ТООЦООЛУУР
-          </span>
-        </div>
-        <h2 style={{ margin: 0, textAlign: 'center', fontSize: '32px', fontWeight: '800', background: 'linear-gradient(135deg, #0d9488, #10b981)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
-          Зээлийн нөхцөл харах ба баталгаажуулах
-        </h2>
-      </div>
-
+      <h2 style={{ textAlign: 'center', marginTop: '40px', marginBottom: '24px', fontSize: '28px', fontWeight: '700' }}>
+        Зээл тооцоолох
+      </h2>
       {/* Loan Type Buttons */}
       <div className="loan-type-buttons" style={{ display: 'flex', gap: '12px', marginBottom: '24px', justifyContent: 'center', flexWrap: 'wrap' }}>
         <button className="btn btn-primary loan-type-btn active">
@@ -543,7 +508,6 @@ const LoanCalculator = () => {
             <button
               className="btn btn-primary"
               onClick={() => {
-                analytics.track('calculator_navigate_to_application', { amount, term, rate });
                 navigate('/application-new');
               }}
             >
@@ -552,7 +516,6 @@ const LoanCalculator = () => {
             <button
               className="btn btn-ghost"
               onClick={() => {
-                analytics.track('calculator_pdf_download', { amount, term, rate });
                 handlePDF();
               }}
             >

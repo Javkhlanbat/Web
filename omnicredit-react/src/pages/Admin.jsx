@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/admin.css';
-import { LoansAPI, AuthAPI, PromoCodeAPI, TrackingAPI, api } from '../services/api';
-import TokenManager from '../services/auth';
+import { LoansAPI, AuthAPI, PromoCodeAPI, TokenManager, api } from '../services/api';
 
 export default function Admin() {
   const navigate = useNavigate();
@@ -32,20 +31,6 @@ export default function Admin() {
   // Companies & Promo Codes
   const [allCompanies, setAllCompanies] = useState([]);
   const [allPromoCodes, setAllPromoCodes] = useState([]);
-
-  // Analytics - Real data!
-  const [analyticsData, setAnalyticsData] = useState({
-    funnel: [],
-    devices: [],
-    errors: [],
-    summary: null,
-    loading: true
-  });
-
-  // Real tracking data
-  const [realFunnelData, setRealFunnelData] = useState([]);
-  const [realBounceData, setRealBounceData] = useState(null);
-  const [pageAnalyticsData, setPageAnalyticsData] = useState([]);
 
   // Modals
   const [userProfileModal, setUserProfileModal] = useState(false);
@@ -89,11 +74,12 @@ export default function Admin() {
     filterUsers();
   }, [userSearchTerm, allUsers]);
 
-  useEffect(() => {
-    if (activeTab === 'analytics') {
-      loadAnalytics();
-    }
-  }, [activeTab]);
+  // Analytics removed
+  // useEffect(() => {
+  //   if (activeTab === 'analytics') {
+  //     loadAnalytics();
+  //   }
+  // }, [activeTab]);
 
   const loadStatistics = async () => {
     try {
@@ -124,42 +110,6 @@ export default function Admin() {
       setAllLoans(data.loans || []);
     } catch (error) {
       console.error('Error loading loans:', error);
-    }
-  };
-
-  const loadAnalytics = async () => {
-    try {
-      setAnalyticsData(prev => ({ ...prev, loading: true }));
-
-      // Load real tracking data using TrackingAPI
-      const [funnelData, bounceData, summaryData, pageAnalytics] = await Promise.all([
-        TrackingAPI.getFunnelData(),
-        TrackingAPI.getBounceRate(),
-        TrackingAPI.getSummary(),
-        TrackingAPI.getPageAnalytics()
-      ]);
-
-      setRealFunnelData(funnelData.stages || []);
-      setRealBounceData(bounceData);
-      setPageAnalyticsData(pageAnalytics.pages || []);
-
-      setAnalyticsData({
-        funnel: funnelData.stages || [],
-        devices: [],
-        errors: [],
-        summary: summaryData.summary || null,
-        loading: false
-      });
-
-      console.log('📊 Real tracking data loaded:', {
-        funnel: funnelData.stages,
-        bounce: bounceData,
-        summary: summaryData.summary,
-        pageAnalytics: pageAnalytics.pages
-      });
-    } catch (error) {
-      console.error('Error loading analytics:', error);
-      setAnalyticsData(prev => ({ ...prev, loading: false }));
     }
   };
 
@@ -460,18 +410,6 @@ export default function Admin() {
           onClick={() => setActiveTab('payments')}
         >
           Төлбөр
-        </button>
-        <button
-          className={`admin-tab ${activeTab === 'settings' ? 'active' : ''}`}
-          onClick={() => setActiveTab('settings')}
-        >
-          Тохиргоо
-        </button>
-        <button
-          className={`admin-tab ${activeTab === 'analytics' ? 'active' : ''}`}
-          onClick={() => setActiveTab('analytics')}
-        >
-          Хэрэглэгчийн шинжилгээ
         </button>
       </div>
 
@@ -796,313 +734,6 @@ export default function Admin() {
                 </tr>
               </tbody>
             </table>
-          </div>
-        </div>
-      )}
-
-      {/* Settings Tab */}
-      {activeTab === 'settings' && (
-        <div className="tab-content active">
-          <div className="card">
-            <div className="card-body">
-              <h3>Системийн тохиргоо</h3>
-              <p style={{ color: 'var(--text-muted)', margin: '16px 0' }}>Зээлийн үндсэн тохиргоо</p>
-
-              <div style={{ margin: '24px 0' }}>
-                <label style={{ display: 'block', marginBottom: '8px', fontWeight: '600' }}>
-                  Хүүгийн хувь (%)
-                </label>
-                <input
-                  type="number"
-                  className="btn btn-secondary"
-                  style={{ width: '100%', padding: '12px' }}
-                  placeholder="1.5"
-                  defaultValue="1.5"
-                />
-              </div>
-
-              <div style={{ margin: '24px 0' }}>
-                <label style={{ display: 'block', marginBottom: '8px', fontWeight: '600' }}>
-                  Хамгийн их зээлийн дүн (₮)
-                </label>
-                <input
-                  type="number"
-                  className="btn btn-secondary"
-                  style={{ width: '100%', padding: '12px' }}
-                  placeholder="10000000"
-                  defaultValue="10000000"
-                />
-              </div>
-
-              <div style={{ margin: '24px 0' }}>
-                <label style={{ display: 'block', marginBottom: '8px', fontWeight: '600' }}>
-                  Хамгийн бага зээлийн дүн (₮)
-                </label>
-                <input
-                  type="number"
-                  className="btn btn-secondary"
-                  style={{ width: '100%', padding: '12px' }}
-                  placeholder="100000"
-                  defaultValue="100000"
-                />
-              </div>
-
-              <button
-                className="btn btn-primary btn-lg"
-                onClick={() => alert('Тохиргоо хадгалагдлаа!\n\nЭнэ функц удахгүй бүрэн ажиллах болно.')}
-              >
-                Хадгалах
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Analytics Tab - User Behavior Tracking */}
-      {activeTab === 'analytics' && (
-        <div className="tab-content active">
-          {/* Real-time Analytics Summary */}
-          {!analyticsData.loading && analyticsData.summary && (
-            <div className="card" style={{ marginBottom: '24px', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', color: 'white' }}>
-              <div className="card-body">
-                <h3 style={{ marginBottom: '16px', color: 'white' }}> хэрэглэгчийн статистик (30 хоног)</h3>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px' }}>
-                  <div style={{ background: 'rgba(255,255,255,0.2)', padding: '16px', borderRadius: '8px', backdropFilter: 'blur(10px)' }}>
-                    <div style={{ fontSize: '14px', opacity: 0.9, marginBottom: '8px' }}>Нийт Session</div>
-                    <div style={{ fontSize: '32px', fontWeight: '800' }}>{analyticsData.summary.total_sessions?.toLocaleString() || 0}</div>
-                  </div>
-                  <div style={{ background: 'rgba(255,255,255,0.2)', padding: '16px', borderRadius: '8px', backdropFilter: 'blur(10px)' }}>
-                    <div style={{ fontSize: '14px', opacity: 0.9, marginBottom: '8px' }}>Хэрэглэгчид</div>
-                    <div style={{ fontSize: '32px', fontWeight: '800' }}>{analyticsData.summary.unique_users?.toLocaleString() || 0}</div>
-                  </div>
-                  <div style={{ background: 'rgba(255,255,255,0.2)', padding: '16px', borderRadius: '8px', backdropFilter: 'blur(10px)' }}>
-                    <div style={{ fontSize: '14px', opacity: 0.9, marginBottom: '8px' }}>Хуудас үзсэн</div>
-                    <div style={{ fontSize: '32px', fontWeight: '800' }}>{analyticsData.summary.page_views?.toLocaleString() || 0}</div>
-                  </div>
-                  <div style={{ background: 'rgba(255,255,255,0.2)', padding: '16px', borderRadius: '8px', backdropFilter: 'blur(10px)' }}>
-                    <div style={{ fontSize: '14px', opacity: 0.9, marginBottom: '8px' }}>Дундаж хугацаа</div>
-                    <div style={{ fontSize: '32px', fontWeight: '800' }}>{Math.round(analyticsData.summary.avg_session_duration_sec || 0)} сек</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Funnel Overview */}
-          <div className="card" style={{ marginBottom: '24px' }}>
-            <div className="card-body">
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px', flexWrap: 'wrap', gap: '12px' }}>
-                <h3 style={{ margin: 0 }}>Хэрэглэгчийн урсгал </h3>
-              </div>
-
-              {/* Funnel Visualization - REAL DATA */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '32px', overflowX: 'auto', opacity: (!analyticsData.loading && analyticsData.summary?.total_sessions === 0) ? 0.5 : 1 }}>
-                {realFunnelData.length > 0 ? (
-                  realFunnelData.map((stage, index) => (
-                    <div key={index} style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                      <div style={{ flex: 1, textAlign: 'center', minWidth: '150px' }}>
-                        <div style={{ background: stage.color || 'var(--primary)', color: 'white', padding: '24px', borderRadius: '8px' }}>
-                          <div style={{ fontSize: '32px', fontWeight: '800' }}>{stage.value.toLocaleString()}</div>
-                          <div style={{ fontSize: '14px', marginTop: '8px' }}>{stage.name}</div>
-                          <div style={{ fontSize: '12px', opacity: 0.9 }}>
-                            {realFunnelData[0]?.value > 0 ? ((stage.value / realFunnelData[0].value) * 100).toFixed(1) : 0}%
-                          </div>
-                        </div>
-                        {index > 0 && realFunnelData[index - 1]?.value > stage.value && (
-                          <div style={{ marginTop: '8px', fontSize: '13px', color: '#dc2626' }}>
-                            {(realFunnelData[index - 1].value - stage.value).toLocaleString()} унасан
-                          </div>
-                        )}
-                      </div>
-                      {index < realFunnelData.length - 1 && (
-                        <div style={{ fontSize: '24px', color: 'var(--text-muted)' }}>→</div>
-                      )}
-                    </div>
-                  ))
-                ) : (
-                  <>
-                    <div style={{ flex: 1, textAlign: 'center' }}>
-                      <div style={{ background: 'var(--primary)', color: 'white', padding: '24px', borderRadius: '8px' }}>
-                        <div style={{ fontSize: '32px', fontWeight: '800' }}>0</div>
-                        <div style={{ fontSize: '14px', marginTop: '8px' }}>Нүүр хуудас</div>
-                        <div style={{ fontSize: '12px', opacity: 0.9 }}>-</div>
-                      </div>
-                    </div>
-                    <div style={{ fontSize: '24px', color: 'var(--text-muted)' }}>→</div>
-                    <div style={{ flex: 1, textAlign: 'center' }}>
-                      <div style={{ background: '#10b981', color: 'white', padding: '24px', borderRadius: '8px' }}>
-                        <div style={{ fontSize: '32px', fontWeight: '800' }}>0</div>
-                        <div style={{ fontSize: '14px', marginTop: '8px' }}>Зээлийн хуудас</div>
-                        <div style={{ fontSize: '12px', opacity: 0.9 }}>-</div>
-                      </div>
-                    </div>
-                    <div style={{ fontSize: '24px', color: 'var(--text-muted)' }}>→</div>
-                    <div style={{ flex: 1, textAlign: 'center' }}>
-                      <div style={{ background: '#f59e0b', color: 'white', padding: '24px', borderRadius: '8px' }}>
-                        <div style={{ fontSize: '32px', fontWeight: '800' }}>0</div>
-                        <div style={{ fontSize: '14px', marginTop: '8px' }}>Тооцоолуур</div>
-                        <div style={{ fontSize: '12px', opacity: 0.9 }}>-</div>
-                      </div>
-                    </div>
-                    <div style={{ fontSize: '24px', color: 'var(--text-muted)' }}>→</div>
-                    <div style={{ flex: 1, textAlign: 'center' }}>
-                      <div style={{ background: '#8b5cf6', color: 'white', padding: '24px', borderRadius: '8px' }}>
-                        <div style={{ fontSize: '32px', fontWeight: '800' }}>0</div>
-                        <div style={{ fontSize: '14px', marginTop: '8px' }}>Зээл авах</div>
-                        <div style={{ fontSize: '12px', opacity: 0.9 }}>-</div>
-                      </div>
-                    </div>
-                  </>
-                )}
-              </div>
-
-              <div style={{ padding: '16px', background: '#fef3c7', borderRadius: '8px', border: '1px solid #fbbf24' }}>
-                <strong>Нийт хөрвөлт:</strong> {realFunnelData.length > 0 && realFunnelData[0]?.value > 0
-                  ? `${((realFunnelData[realFunnelData.length - 1]?.value / realFunnelData[0].value) * 100).toFixed(1)}% (${realFunnelData[0].value.toLocaleString()} → ${realFunnelData[realFunnelData.length - 1]?.value.toLocaleString()} хэрэглэгч)`
-                  : 'Өгөгдөл байхгүй'}
-              </div>
-            </div>
-          </div>
-
-          {/* Critical Friction Points - REAL DATA */}
-          <div className="card" style={{ marginBottom: '24px', border: realBounceData?.bounceRate > 20 ? '2px solid #dc2626' : '2px solid #10b981' }}>
-            <div className="card-body">
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
-                <span style={{ fontSize: '24px' }}>{realBounceData?.bounceRate > 20 ? 'BAD' : 'GOOD'}</span>
-                <h3 style={{ margin: 0, color: realBounceData?.bounceRate > 20 ? '#dc2626' : '#10b981' }}>
-                  {realBounceData?.bounceRate > 20 ? 'Анхааруулга: Bounce Rate' : 'Сайн байна: Bounce Rate'}
-                </h3>
-              </div>
-
-              <div style={{ background: realBounceData?.bounceRate > 20 ? '#fee2e2' : '#d1fae5', padding: '16px', borderRadius: '8px', marginBottom: '16px' }}>
-                <div style={{ fontSize: '15px', lineHeight: '1.6' }}>
-                  <strong>{realBounceData?.bounceRate?.toFixed(1) || 0}%</strong> bounce rate
-                  ({realBounceData?.bouncedSessions || 0} sessions / {realBounceData?.totalSessions || 0} нийт)
-                  {realBounceData?.bounceRate > 20 && (
-                    <div style={{ marginTop: '8px', color: '#dc2626' }}>
-                      Энэ нь хэт өндөр дүн. Хэрэглэгчид сайтад удаан үлдэхгүй байна.
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              <div style={{ marginBottom: '24px' }}>
-                <h4 style={{ marginBottom: '12px' }}>Төхөөрөмжөөр bounce rate:</h4>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                  {realBounceData?.chromeBouncePercent > 0 && (
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                      <div style={{ flex: 1, background: '#e5e7eb', borderRadius: '4px', height: '32px', position: 'relative' }}>
-                        <div style={{ position: 'absolute', left: 0, top: 0, height: '100%', width: `${realBounceData.chromeBouncePercent}%`, background: '#dc2626', borderRadius: '4px', display: 'flex', alignItems: 'center', paddingLeft: '8px', color: 'white', fontSize: '13px', fontWeight: '600' }}>
-                          {realBounceData.chromeBouncePercent}% - Chrome
-                        </div>
-                      </div>
-                      <span style={{ fontSize: '13px', color: 'var(--text-muted)', minWidth: '80px' }}>хэрэглэгч</span>
-                    </div>
-                  )}
-                  {realBounceData?.mobileBouncePercent > 0 && (
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                      <div style={{ flex: 1, background: '#e5e7eb', borderRadius: '4px', height: '32px', position: 'relative' }}>
-                        <div style={{ position: 'absolute', left: 0, top: 0, height: '100%', width: `${realBounceData.mobileBouncePercent}%`, background: '#f59e0b', borderRadius: '4px', display: 'flex', alignItems: 'center', paddingLeft: '8px', color: 'white', fontSize: '13px', fontWeight: '600' }}>
-                          {realBounceData.mobileBouncePercent}% - Mobile
-                        </div>
-                      </div>
-                      <span style={{ fontSize: '13px', color: 'var(--text-muted)', minWidth: '80px' }}>хэрэглэгч</span>
-                    </div>
-                  )}
-                  {(!realBounceData || (realBounceData.chromeBouncePercent === 0 && realBounceData.mobileBouncePercent === 0)) && (
-                    <div style={{ padding: '16px', textAlign: 'center', color: 'var(--text-muted)' }}>
-                      Одоогоор өгөгдөл байхгүй байна
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {realBounceData && realBounceData.totalSessions > 0 && (
-                <div style={{ background: '#dbeafe', padding: '16px', borderRadius: '8px', border: '1px solid #3b82f6' }}>
-                  <h4 style={{ marginBottom: '12px', color: '#1e40af' }}>Дэлгэрэнгүй шинжилгээ</h4>
-                  <p style={{ fontSize: '14px', lineHeight: '1.6', margin: 0 }}>
-                    Bounce rate: {realBounceData.bounceRate.toFixed(1)}% ({realBounceData.bouncedSessions} / {realBounceData.totalSessions} sessions)
-                  </p>
-                </div>
-              )}
-            </div>
-          </div>
-
-
-          {/* Tracking Status */}
-          <div className="card">
-            <div className="card-body">
-              <h3 style={{ marginBottom: '16px' }}>Tracking системийн статус</h3>
-              <div style={{ padding: '16px', background: analyticsData.loading ? '#fef3c7' : '#d1fae5', borderRadius: '8px', border: `1px solid ${analyticsData.loading ? '#fbbf24' : '#10b981'}` }}>
-                <strong style={{ color: analyticsData.loading ? '#92400e' : '#065f46' }}>
-                  {analyticsData.loading ? 'Өгөгдөл уншиж байна...' : ' хэрэглэгчийн өгөгдөл'}
-                </strong>
-                <p style={{ fontSize: '13px', margin: '8px 0 0 0', color: analyticsData.loading ? '#92400e' : '#065f46' }}>
-                  {analyticsData.loading
-                    ? 'системээс  өгөгдөл татаж байна. Event tracking идэвхтэй ажиллаж байна.'
-                    : `Сүүлийн 30 хоногийн өгөгдөл. Нийт ${analyticsData.summary?.total_sessions || 0} session, ${analyticsData.summary?.unique_users || 0} хэрэглэгч track хийгдсэн.`
-                  }
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Page Analytics - Time spent per page */}
-          <div className="card" style={{ marginTop: '24px' }}>
-            <div className="card-body">
-              <h3 style={{ marginBottom: '16px' }}>Хуудас шинжилгээ - Хэрэглэгчид хаана их цаг зарцуулж байна</h3>
-              {pageAnalyticsData.length === 0 ? (
-                <div style={{ padding: '32px', textAlign: 'center', color: 'var(--text-muted)', background: '#f9fafb', borderRadius: '8px' }}>
-                  <div style={{ fontSize: '48px', marginBottom: '12px' }}></div>
-                  <p>Одоогоор хуудас шинжилгээний өгөгдөл байхгүй байна.</p>
-                  <p style={{ fontSize: '14px', marginTop: '8px' }}>Хэрэглэгчид сайт ашиглаж эхлэхэд өгөгдөл цуглуулна.</p>
-                </div>
-              ) : (
-                <div className="data-table">
-                  <table>
-                    <thead>
-                      <tr>
-                        <th>Хуудас</th>
-                        <th>Үзсэн тоо</th>
-                        <th>Хэрэглэгч</th>
-                        <th>Дундаж хугацаа</th>
-                        <th>Нийт хугацаа</th>
-                        <th>Дарсан тоо</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {pageAnalyticsData.map((page, index) => (
-                        <tr key={index}>
-                          <td>
-                            <div style={{ fontWeight: '600', marginBottom: '4px' }}>{page.title || page.url}</div>
-                            <div style={{ fontSize: '12px', color: 'var(--text-muted)', fontFamily: 'monospace' }}>{page.url}</div>
-                          </td>
-                          <td style={{ fontWeight: '700' }}>{page.visits.toLocaleString()}</td>
-                          <td>{page.uniqueUsers.toLocaleString()}</td>
-                          <td>
-                            <span style={{
-                              background: page.avgTimeMinutes > 2 ? '#d1fae5' : page.avgTimeMinutes > 1 ? '#fef3c7' : '#fee2e2',
-                              color: page.avgTimeMinutes > 2 ? '#065f46' : page.avgTimeMinutes > 1 ? '#92400e' : '#991b1b',
-                              padding: '4px 12px',
-                              borderRadius: '12px',
-                              fontSize: '13px',
-                              fontWeight: '600'
-                            }}>
-                              {page.avgTimeMinutes.toFixed(1)} мин
-                            </span>
-                          </td>
-                          <td>{Math.round(page.totalTimeSeconds / 60).toLocaleString()} мин</td>
-                          <td>{page.totalClicks.toLocaleString()}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              )}
-              <div style={{ marginTop: '16px', padding: '12px', background: '#eff6ff', borderRadius: '8px', fontSize: '13px', color: '#1e40af' }}>  
-                 <strong>Тайлбар:</strong> Энэ хүснэгт нь хэрэглэгчид ямар хуудсанд хамгийн их цаг зарцуулж байгааг харуулна.
-              </div>*/
-            </div>
           </div>
         </div>
       )}

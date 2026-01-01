@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import '../styles/my-loans.css';
-import { LoansAPI } from '../services/api';
-import TokenManager from '../services/auth';
+import { LoansAPI, TokenManager } from '../services/api';
 
 export default function MyLoans() {
   const navigate = useNavigate();

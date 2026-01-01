@@ -39,14 +39,15 @@
 }
 
 .card-peachy {
-  background: var(--gradient-peachy);
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
   color: white;
 }
 
+.card-peachy h2,
 .card-peachy h3,
 .card-peachy h4,
 .card-peachy p {
-  color: white;
+  color: white !important;
 }
 
 /* Compact card */
@@ -87,7 +88,7 @@
   left: 0;
   right: 0;
   height: 4px;
-  background: var(--gradient-peachy);
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
   border-radius: var(--radius-lg) var(--radius-lg) 0 0;
 }
 
@@ -116,7 +117,7 @@
 
 /* Stats card */
 .stats-card {
-  background: var(--gradient-peachy);
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
   color: white;
   padding: 28px;
   border-radius: var(--radius-lg);
