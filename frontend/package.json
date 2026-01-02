@@ -11,6 +11,7 @@
     "serve": "vite preview --port 3000"
   },
   "devDependencies": {
+    "terser": "^5.44.1",
     "vite": "^7.2.4"
   }
 }

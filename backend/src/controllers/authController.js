@@ -1,18 +1,38 @@
 const jwt = require('jsonwebtoken');
-const { createUser, findUserByEmail, findUserByPhone, verifyPassword, findUserById, findUserByIdWithIdImages, getAllUsers, deleteUser, updateProfileImage } = require('../models/userModel');
+const {
+  createUser,
+  findUserByEmail,
+  findUserByPhone,
+  findUserById,
+  getAllUsers,
+  updateUserProfile,
+  deleteUser,
+  comparePassword
+} = require('../models/userModel');
+
 const generateToken = (user) => {
   return jwt.sign(
     {
       id: user.id,
-      email: user.email
+      email: user.email,
+      is_admin: user.is_admin
     },
     process.env.JWT_SECRET,
     { expiresIn: '7d' }
   );
 };
+
 const register = async (req, res) => {
   try {
     const { email, password, first_name, last_name, phone, register_number, id_front, id_back } = req.body;
+
+    if (!email || !password || !first_name || !last_name || !phone) {
+      return res.status(400).json({
+        error: 'Шаардлагатай талбаруудыг бөглөнө үү',
+        message: 'И-мэйл, нууц үг, нэр, утас шаардлагатай'
+      });
+    }
+
     const existingUser = await findUserByEmail(email);
     if (existingUser) {
       return res.status(400).json({
@@ -20,6 +40,15 @@ const register = async (req, res) => {
         message: 'Энэ и-мэйл хаягаар аль хэдийн бүртгүүлсэн байна'
       });
     }
+
+    const existingPhone = await findUserByPhone(phone);
+    if (existingPhone) {
+      return res.status(400).json({
+        error: 'Утас бүртгэлтэй байна',
+        message: 'Энэ утасны дугаараар аль хэдийн бүртгүүлсэн байна'
+      });
+    }
+
     const newUser = await createUser({
       email,
       password,
@@ -28,8 +57,10 @@ const register = async (req, res) => {
       phone,
       register_number,
       id_front,
-      id_back
+      id_back,
+      is_admin: false
     });
+
     const token = generateToken(newUser);
 
     res.status(201).json({
@@ -40,43 +71,49 @@ const register = async (req, res) => {
         first_name: newUser.first_name,
         last_name: newUser.last_name,
         phone: newUser.phone,
-        register_number: newUser.register_number,
-        is_admin: newUser.is_admin || false
+        is_admin: newUser.is_admin
       },
       token
     });
 
   } catch (error) {
-    console.error('Register алдаа:', error);
+    console.error('Бүртгэлийн алдаа:', error);
     res.status(500).json({
       error: 'Серверт алдаа гарлаа',
       message: error.message
     });
   }
 };
+
 const login = async (req, res) => {
   try {
-    const { email, phone, password } = req.body;
-    let user = null;
-    if (email) {
-      user = await findUserByEmail(email);
-    } else if (phone) {
-      user = await findUserByPhone(phone);
+    const { phone, password } = req.body;
+
+    if (!phone || !password) {
+      return res.status(400).json({
+        error: 'Утас болон нууц үг шаардлагатай',
+        message: 'Бүх талбаруудыг бөглөнө үү'
+      });
     }
+
+    const user = await findUserByPhone(phone);
     if (!user) {
       return res.status(401).json({
         error: 'Нэвтрэх нэр эсвэл нууц үг буруу',
-        message: 'И-мэйл эсвэл нууц үг таарахгүй байна'
+        message: 'Хэрэглэгч олдсонгүй'
       });
     }
-    const isValidPassword = await verifyPassword(password, user.password);
+
+    const isValidPassword = await comparePassword(password, user.password);
     if (!isValidPassword) {
       return res.status(401).json({
         error: 'Нэвтрэх нэр эсвэл нууц үг буруу',
-        message: 'И-мэйл эсвэл нууц үг таарахгүй байна'
+        message: 'Нууц үг буруу байна'
       });
     }
+
     const token = generateToken(user);
+
     res.json({
       message: 'Амжилттай нэвтэрлээ',
       user: {
@@ -86,22 +123,24 @@ const login = async (req, res) => {
         last_name: user.last_name,
         phone: user.phone,
         register_number: user.register_number,
-        is_admin: user.is_admin || false
+        is_admin: user.is_admin
       },
       token
     });
 
   } catch (error) {
-    console.error('Login алдаа:', error);
+    console.error('Нэвтрэх алдаа:', error);
     res.status(500).json({
       error: 'Серверт алдаа гарлаа',
       message: error.message
     });
   }
 };
+
 const getProfile = async (req, res) => {
   try {
-    const user = await findUserById(req.user.id);
+    const userId = req.user.id;
+    const user = await findUserById(userId);
 
     if (!user) {
       return res.status(404).json({
@@ -118,91 +157,64 @@ const getProfile = async (req, res) => {
         last_name: user.last_name,
         phone: user.phone,
         register_number: user.register_number,
-        is_admin: user.is_admin || false,
-        profile_image: user.profile_image || null,
+        id_front: user.id_front,
+        id_back: user.id_back,
+        is_admin: user.is_admin,
         created_at: user.created_at
       }
     });
 
   } catch (error) {
-    console.error('Get profile алдаа:', error);
+    console.error('Профайл унших алдаа:', error);
     res.status(500).json({
       error: 'Серверт алдаа гарлаа',
       message: error.message
     });
   }
 };
+
 const uploadProfileImage = async (req, res) => {
   try {
-    const { profile_image } = req.body;
+    const userId = req.user.id;
+    const { id_front, id_back } = req.body;
 
-    if (!profile_image) {
-      return res.status(400).json({
-        error: 'Зураг байхгүй',
-        message: 'Профайл зураг оруулна уу'
-      });
-    }
-
-    const updated = await updateProfileImage(req.user.id, profile_image);
+    const updatedUser = await updateUserProfile(userId, { id_front, id_back });
 
     res.json({
-      message: 'Профайл зураг амжилттай шинэчлэгдлээ',
-      user: updated
-    });
-
-  } catch (error) {
-    console.error('Upload profile image алдаа:', error);
-    res.status(500).json({
-      error: 'Серверт алдаа гарлаа',
-      message: error.message
-    });
-  }
-};
-const adminGetUserDetails = async (req, res) => {
-  try {
-    const userId = parseInt(req.params.id);
-    const user = await findUserByIdWithIdImages(userId);
-
-    if (!user) {
-      return res.status(404).json({
-        error: 'Хэрэглэгч олдсонгүй',
-        message: 'Хэрэглэгчийн мэдээлэл олдсонгүй'
-      });
-    }
-
-    res.json({
+      message: 'Зураг амжилттай хадгалагдлаа',
       user: {
-        id: user.id,
-        email: user.email,
-        first_name: user.first_name,
-        last_name: user.last_name,
-        phone: user.phone,
-        register_number: user.register_number,
-        is_admin: user.is_admin || false,
-        id_front: user.id_front || null,
-        id_back: user.id_back || null,
-        profile_image: user.profile_image || null,
-        created_at: user.created_at
+        id: updatedUser.id,
+        email: updatedUser.email,
+        first_name: updatedUser.first_name,
+        last_name: updatedUser.last_name,
+        phone: updatedUser.phone,
+        id_front: updatedUser.id_front,
+        id_back: updatedUser.id_back,
+        is_admin: updatedUser.is_admin
       }
     });
 
   } catch (error) {
-    console.error('Admin get user details алдаа:', error);
+    console.error('Зураг хадгалах алдаа:', error);
     res.status(500).json({
       error: 'Серверт алдаа гарлаа',
       message: error.message
     });
   }
 };
+
 const verifyToken = async (req, res) => {
   try {
-    const user = await findUserById(req.user.id);
+    const userId = req.user.id;
+    const user = await findUserById(userId);
 
     if (!user) {
       return res.status(404).json({
-        error: 'Хэрэглэгч олдсонгүй'
+        error: 'Хэрэглэгч олдсонгүй',
+        message: 'Токен хүчинтэй боловч хэрэглэгч олдсонгүй'
       });
     }
+
     res.json({
       valid: true,
       user: {
@@ -210,63 +222,137 @@ const verifyToken = async (req, res) => {
         email: user.email,
         first_name: user.first_name,
         last_name: user.last_name,
-        is_admin: user.is_admin || false
+        phone: user.phone,
+        is_admin: user.is_admin
       }
     });
+
   } catch (error) {
-    console.error('Verify token алдаа:', error);
+    console.error('Токен шалгах алдаа:', error);
     res.status(500).json({
       error: 'Серверт алдаа гарлаа',
       message: error.message
     });
   }
 };
+
 const adminGetAllUsers = async (req, res) => {
   try {
     const users = await getAllUsers();
 
     res.json({
-      count: users.length,
-      users
+      users: users.map(user => ({
+        id: user.id,
+        email: user.email,
+        first_name: user.first_name,
+        last_name: user.last_name,
+        phone: user.phone,
+        register_number: user.register_number,
+        is_admin: user.is_admin,
+        created_at: user.created_at
+      }))
     });
 
   } catch (error) {
-    console.error('Admin get all users алдаа:', error);
+    console.error('Хэрэглэгчдийг унших алдаа:', error);
     res.status(500).json({
       error: 'Серверт алдаа гарлаа',
       message: error.message
     });
   }
 };
-const adminDeleteUser = async (req, res) => {
+
+const adminGetUserDetails = async (req, res) => {
   try {
-    const userId = parseInt(req.params.id);
-    if (userId === req.user.id) {
-      return res.status(400).json({
-        error: 'Өөрийгөө устгах боломжгүй',
-        message: 'Та өөрийн account-ийг устгах боломжгүй'
+    const { userId } = req.params;
+    const user = await findUserById(userId);
+
+    if (!user) {
+      return res.status(404).json({
+        error: 'Хэрэглэгч олдсонгүй',
+        message: 'Хэрэглэгчийн мэдээлэл олдсонгүй'
       });
     }
-    const user = await findUserById(userId);
-    if (!user) {
+
+    res.json({ user });
+
+  } catch (error) {
+    console.error('Хэрэглэгчийн дэлгэрэнгүй унших алдаа:', error);
+    res.status(500).json({
+      error: 'Серверт алдаа гарлаа',
+      message: error.message
+    });
+  }
+};
+
+const adminDeleteUser = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    const deletedUser = await deleteUser(userId);
+
+    if (!deletedUser) {
       return res.status(404).json({
         error: 'Хэрэглэгч олдсонгүй',
         message: 'Устгах хэрэглэгч олдсонгүй'
       });
     }
-    await deleteUser(userId);
+
     res.json({
       message: 'Хэрэглэгч амжилттай устгагдлаа',
-      deletedUser: {
-        id: user.id,
-        email: user.email,
-        first_name: user.first_name,
-        last_name: user.last_name
-      }
+      userId: deletedUser.id
     });
 
   } catch (error) {
-    console.error('Admin delete user алдаа:', error);
+    console.error('Хэрэглэгч устгах алдаа:', error);
+    res.status(500).json({
+      error: 'Серверт алдаа гарлаа',
+      message: error.message
+    });
+  }
+};
+
+const createAdminUser = async (req, res) => {
+  try {
+    const { email = 'admin@omnicredit.mn', password = 'admin123', phone = '99887766' } = req.body;
+
+    const existingUser = await findUserByEmail(email);
+    if (existingUser) {
+      return res.status(400).json({
+        error: 'И-мэйл бүртгэлтэй байна',
+        message: 'Энэ и-мэйл хаягаар аль хэдийн бүртгүүлсэн байна'
+      });
+    }
+
+    const newUser = await createUser({
+      email,
+      password,
+      first_name: 'Admin',
+      last_name: 'User',
+      phone,
+      register_number: null,
+      id_front: null,
+      id_back: null,
+      is_admin: true
+    });
+
+    const token = generateToken(newUser);
+
+    res.status(201).json({
+      message: 'Админ амжилттай үүсгэгдлээ',
+      user: {
+        id: newUser.id,
+        email: newUser.email,
+        first_name: newUser.first_name,
+        last_name: newUser.last_name,
+        phone: newUser.phone,
+        is_admin: newUser.is_admin
+      },
+      token
+    });
+
+  } catch (error) {
+    console.error('Create admin алдаа:', error);
     res.status(500).json({
       error: 'Серверт алдаа гарлаа',
       message: error.message
@@ -282,5 +368,6 @@ module.exports = {
   verifyToken,
   adminGetAllUsers,
   adminGetUserDetails,
-  adminDeleteUser
+  adminDeleteUser,
+  createAdminUser
 };

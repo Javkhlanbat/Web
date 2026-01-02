@@ -1,166 +1,64 @@
 const {
-  getOrCreateWallet,
   getWalletByUserId,
   getWalletTransactions,
-  withdrawToBank,
-  deductFromWallet,
   addToWallet
 } = require('../models/walletModel');
-const getMyWallet = async (req, res) => {
+
+const getWallet = async (req, res) => {
   try {
     const userId = req.user.id;
-    const wallet = await getOrCreateWallet(userId);
+    const wallet = await getWalletByUserId(userId);
 
-    res.json({
-      wallet: {
-        id: wallet.id,
-        balance: parseFloat(wallet.balance),
-        created_at: wallet.created_at,
-        updated_at: wallet.updated_at
-      }
-    });
+    res.json({ wallet });
+
   } catch (error) {
-    console.error('Get wallet алдаа:', error);
+    console.error('Хэтэвч унших алдаа:', error);
     res.status(500).json({
       error: 'Серверт алдаа гарлаа',
       message: error.message
     });
   }
 };
-const getMyTransactions = async (req, res) => {
+
+const getTransactions = async (req, res) => {
   try {
     const userId = req.user.id;
-    const { limit = 20 } = req.query;
+    const limit = parseInt(req.query.limit) || 50;
 
-    const transactions = await getWalletTransactions(userId, parseInt(limit));
+    const transactions = await getWalletTransactions(userId, limit);
 
-    res.json({
-      count: transactions.length,
-      transactions
-    });
+    res.json({ transactions });
+
   } catch (error) {
-    console.error('Get transactions алдаа:', error);
+    console.error('Гүйлгээ унших алдаа:', error);
     res.status(500).json({
       error: 'Серверт алдаа гарлаа',
       message: error.message
     });
   }
 };
-const withdrawToBankAccount = async (req, res) => {
+
+const adminAddToWallet = async (req, res) => {
   try {
-    const userId = req.user.id;
-    const { amount, bank_name, account_number, account_holder } = req.body;
+    const { userId } = req.params;
+    const { amount, description } = req.body;
+
     if (!amount || amount <= 0) {
       return res.status(400).json({
         error: 'Буруу дүн',
-        message: 'Шилжүүлэх дүн 0-ээс их байх ёстой'
+        message: 'Дүн 0-ээс их байх ёстой'
       });
     }
 
-    if (!bank_name || !account_number) {
-      return res.status(400).json({
-        error: 'Мэдээлэл дутуу',
-        message: 'Банкны нэр болон дансны дугаар заавал шаардлагатай'
-      });
-    }
-
-    const wallet = await withdrawToBank(userId, amount, bank_name, account_number);
+    const wallet = await addToWallet(userId, amount, description || 'Админ нэмсэн', null, 'admin_add');
 
     res.json({
-      message: 'Шилжүүлэг амжилттай',
-      withdrawal: {
-        amount: parseFloat(amount),
-        bank_name,
-        account_number,
-        account_holder,
-        new_balance: parseFloat(wallet.balance)
-      }
+      message: 'Хэтэвчинд амжилттай нэмэгдлээ',
+      wallet
     });
+
   } catch (error) {
-    console.error('Withdraw алдаа:', error);
-
-    if (error.message === 'Үлдэгдэл хүрэлцэхгүй байна') {
-      return res.status(400).json({
-        error: 'Үлдэгдэл хүрэлцэхгүй',
-        message: 'Таны wallet үлдэгдэл хүрэлцэхгүй байна'
-      });
-    }
-
-    res.status(500).json({
-      error: 'Серверт алдаа гарлаа',
-      message: error.message
-    });
-  }
-};
-const payLoanFromWallet = async (req, res) => {
-  try {
-    const userId = req.user.id;
-    const { loan_id, amount } = req.body;
-
-    if (!loan_id || !amount || amount <= 0) {
-      return res.status(400).json({
-        error: 'Буруу мэдээлэл',
-        message: 'Зээлийн ID болон дүн заавал шаардлагатай'
-      });
-    }
-
-    const description = `Зээл #${loan_id} төлбөр`;
-    const wallet = await deductFromWallet(userId, amount, description, loan_id, 'loan_payment');
-
-    res.json({
-      message: 'Төлбөр амжилттай төлөгдлөө',
-      payment: {
-        loan_id,
-        amount: parseFloat(amount),
-        new_balance: parseFloat(wallet.balance)
-      }
-    });
-  } catch (error) {
-    console.error('Pay loan алдаа:', error);
-
-    if (error.message === 'Үлдэгдэл хүрэлцэхгүй байна') {
-      return res.status(400).json({
-        error: 'Үлдэгдэл хүрэлцэхгүй',
-        message: 'Таны wallet үлдэгдэл хүрэлцэхгүй байна'
-      });
-    }
-
-    res.status(500).json({
-      error: 'Серверт алдаа гарлаа',
-      message: error.message
-    });
-  }
-};
-const depositToWallet = async (req, res) => {
-  try {
-    const userId = req.user.id;
-    const { amount, payment_method = 'qpay' } = req.body;
-    if (!amount || amount <= 0) {
-      return res.status(400).json({
-        error: 'Буруу дүн',
-        message: 'Нэмэх дүн 0-ээс их байх ёстой'
-      });
-    }
-
-    if (amount < 1000) {
-      return res.status(400).json({
-        error: 'Буруу дүн',
-        message: 'Хамгийн багадаа ₮1,000 нэмэх боломжтой'
-      });
-    }
-    const description = `QPay мөнгө нэмэлт`;
-    const wallet = await addToWallet(userId, amount, description, null, 'qpay_deposit');
-
-    res.json({
-      message: 'Wallet руу амжилттай нэмэгдлээ',
-      deposit: {
-        amount: parseFloat(amount),
-        payment_method,
-        new_balance: parseFloat(wallet.balance)
-      }
-    });
-  } catch (error) {
-    console.error('Deposit алдаа:', error);
+    console.error('Хэтэвчинд нэмэх алдаа:', error);
     res.status(500).json({
       error: 'Серверт алдаа гарлаа',
       message: error.message
@@ -169,9 +67,7 @@ const depositToWallet = async (req, res) => {
 };
 
 module.exports = {
-  getMyWallet,
-  getMyTransactions,
-  depositToWallet,
-  withdrawToBankAccount,
-  payLoanFromWallet
+  getWallet,
+  getTransactions,
+  adminAddToWallet
 };

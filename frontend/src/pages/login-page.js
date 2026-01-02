@@ -41,9 +41,13 @@ class LoginPage extends HTMLElement {
                 // Success message
                 this.showSuccess('Амжилттай нэвтэрлээ!');
 
-                // Redirect to dashboard
+                // Redirect based on user role
                 setTimeout(() => {
-                    router.navigate('/dashboard');
+                    if (response.user.is_admin) {
+                        router.navigate('/admin');
+                    } else {
+                        router.navigate('/dashboard');
+                    }
                 }, 500);
             } else {
                 throw new Error('Нэвтрэх мэдээлэл алдаатай байна');

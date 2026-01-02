@@ -3,21 +3,19 @@ const router = express.Router();
 const {
   makePayment,
   getLoanPayments,
-  getMyPayments,
-  getPaymentDetails,
-  getMyPaymentStats,
-  checkLoanBalance,
-  adminGetAllPayments
+  getUserPayments,
+  adminGetAllPayments,
+  getUserPaymentStats
 } = require('../controllers/paymentController');
-const { authenticateToken } = require('../middleware/authMiddleware');
-const { validatePayment } = require('../middleware/validationMiddleware');
+const { authMiddleware, adminMiddleware } = require('../middleware/authMiddleware');
 
-router.post('/', authenticateToken, validatePayment, makePayment);
-router.get('/my', authenticateToken, getMyPayments);
-router.get('/stats', authenticateToken, getMyPaymentStats);
-router.get('/loan/:loanId', authenticateToken, getLoanPayments);
-router.get('/loan/:loanId/balance', authenticateToken, checkLoanBalance);
-router.get('/:id', authenticateToken, getPaymentDetails);
-router.get('/admin/all', authenticateToken, adminGetAllPayments);
+// Admin routes
+router.get('/all', authMiddleware, adminMiddleware, adminGetAllPayments);
+
+// User routes
+router.post('/', authMiddleware, makePayment);
+router.get('/my-payments', authMiddleware, getUserPayments);
+router.get('/stats', authMiddleware, getUserPaymentStats);
+router.get('/loan/:loanId', authMiddleware, getLoanPayments);
 
 module.exports = router;

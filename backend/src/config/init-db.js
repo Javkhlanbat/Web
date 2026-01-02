@@ -167,19 +167,7 @@ const initDatabase = async () => {
       END $$;
     `);
     console.log('Payments table-д principal_amount, interest_amount columns нэмэгдлээ');
-    await pool.query(`
-      CREATE TABLE IF NOT EXISTS purchase_loans (
-        id SERIAL PRIMARY KEY,
-        user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
-        invoice_code VARCHAR(100) NOT NULL,
-        amount DECIMAL(12, 2) NOT NULL,
-        duration_months INTEGER NOT NULL,
-        monthly_payment DECIMAL(12, 2) NOT NULL,
-        status VARCHAR(50) DEFAULT 'pending',
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-      );
-    `);
-    console.log('Purchase loans table үүсгэсэн');
+
     await pool.query(`
       CREATE TABLE IF NOT EXISTS wallets (
         id SERIAL PRIMARY KEY,
@@ -248,6 +236,20 @@ const initDatabase = async () => {
       END $$;
     `);
     console.log('Loans table-д promo_code_id column нэмэгдлээ');
+
+    // Add invoice_code column to loans table for purchase loans
+    await pool.query(`
+      DO $$
+      BEGIN
+        IF NOT EXISTS (
+          SELECT 1 FROM information_schema.columns
+          WHERE table_name = 'loans' AND column_name = 'invoice_code'
+        ) THEN
+          ALTER TABLE loans ADD COLUMN invoice_code VARCHAR(100);
+        END IF;
+      END $$;
+    `);
+    console.log('Loans table-д invoice_code column нэмэгдлээ');
 
     // Add is_admin column to users table
     await pool.query(`

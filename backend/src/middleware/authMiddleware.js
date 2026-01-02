@@ -1,34 +1,35 @@
 const jwt = require('jsonwebtoken');
-const authenticateToken = (req, res, next) => {
+
+const authMiddleware = (req, res, next) => {
   try {
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1]; 
+    const token = req.header('Authorization')?.replace('Bearer ', '');
 
     if (!token) {
       return res.status(401).json({
         error: 'Нэвтрэх шаардлагатай',
-        message: 'Token олдсонгүй'
+        message: 'Токен олдсонгүй'
       });
     }
-    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-      if (err) {
-        return res.status(403).json({
-          error: 'Хүчингүй token',
-          message: 'Token хүчинтэй биш эсвэл хугацаа дууссан'
-        });
-      }
-      req.user = user;
-      next();
-    });
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = decoded;
+    next();
   } catch (error) {
-    console.error('Auth middleware алдаа:', error);
-    res.status(500).json({
-      error: 'Серверт алдаа гарлаа',
-      message: error.message
+    res.status(401).json({
+      error: 'Буруу токен',
+      message: 'Токен хүчингүй байна'
     });
   }
 };
 
-module.exports = {
-  authenticateToken
+const adminMiddleware = (req, res, next) => {
+  if (!req.user || !req.user.is_admin) {
+    return res.status(403).json({
+      error: 'Эрх хүрэхгүй',
+      message: 'Админ эрх шаардлагатай'
+    });
+  }
+  next();
 };
+
+module.exports = { authMiddleware, adminMiddleware };

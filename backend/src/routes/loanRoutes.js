@@ -2,26 +2,24 @@ const express = require('express');
 const router = express.Router();
 const {
   applyForLoan,
-  getMyLoans,
-  getLoanDetails,
-  getMyLoanStats,
-  applyForPurchaseLoan,
-  getMyPurchaseLoans,
+  getUserLoans,
+  getLoan,
   adminGetAllLoans,
   adminUpdateLoanStatus,
-  adminDisburseLoan
+  adminDisburseLoan,
+  getUserLoanStats
 } = require('../controllers/loanController');
-const { authenticateToken } = require('../middleware/authMiddleware');
-const { requireAdmin } = require('../middleware/adminMiddleware');
-const { validateLoanApplication } = require('../middleware/validationMiddleware');
-router.post('/apply', authenticateToken, validateLoanApplication, applyForLoan);
-router.get('/my', authenticateToken, getMyLoans);
-router.get('/stats', authenticateToken, getMyLoanStats);
-router.post('/purchase', authenticateToken, applyForPurchaseLoan);
-router.get('/purchase/my', authenticateToken, getMyPurchaseLoans);
-router.get('/admin/all', authenticateToken, requireAdmin, adminGetAllLoans);
-router.put('/admin/:id/status', authenticateToken, requireAdmin, adminUpdateLoanStatus);
-router.post('/admin/:id/disburse', authenticateToken, requireAdmin, adminDisburseLoan);
-router.get('/:id', authenticateToken, getLoanDetails);
+const { authMiddleware, adminMiddleware } = require('../middleware/authMiddleware');
+
+// Admin routes (must be before /:loanId)
+router.get('/', authMiddleware, adminMiddleware, adminGetAllLoans);
+
+// User routes (specific routes before dynamic params)
+router.post('/apply', authMiddleware, applyForLoan);
+router.get('/my-loans', authMiddleware, getUserLoans);
+router.get('/stats', authMiddleware, getUserLoanStats);
+router.get('/:loanId', authMiddleware, getLoan);
+router.patch('/:loanId/status', authMiddleware, adminMiddleware, adminUpdateLoanStatus);
+router.post('/:loanId/disburse', authMiddleware, adminMiddleware, adminDisburseLoan);
 
 module.exports = router;

@@ -1,101 +1,132 @@
-const { query } = require('../config/database');
+const { query, pool } = require('../config/database');
 
-const getOrCreateWallet = async (userId) => {
+const getWalletByUserId = async (userId) => {
   let result = await query(
     'SELECT * FROM wallets WHERE user_id = $1',
     [userId]
   );
 
-  if (result.rows.length > 0) {
-    return result.rows[0];
+  if (result.rows.length === 0) {
+    result = await query(
+      'INSERT INTO wallets (user_id, balance) VALUES ($1, 0) RETURNING *',
+      [userId]
+    );
   }
-  result = await query(
-    'INSERT INTO wallets (user_id, balance) VALUES ($1, 0) RETURNING *',
-    [userId]
-  );
 
   return result.rows[0];
 };
-const getWalletByUserId = async (userId) => {
-  const result = await query(
-    'SELECT * FROM wallets WHERE user_id = $1',
+
+const addToWallet = async (userId, amount, description, loanId = null, transactionType = 'loan_disbursement') => {
+  const client = await pool.connect();
+
+  try {
+    await client.query('BEGIN');
+
+    const walletResult = await client.query(
+      'SELECT * FROM wallets WHERE user_id = $1 FOR UPDATE',
+      [userId]
+    );
+
+    let wallet;
+    if (walletResult.rows.length === 0) {
+      const newWalletResult = await client.query(
+        'INSERT INTO wallets (user_id, balance) VALUES ($1, $2) RETURNING *',
+        [userId, amount]
+      );
+      wallet = newWalletResult.rows[0];
+    } else {
+      wallet = walletResult.rows[0];
+      const updateResult = await client.query(
+        'UPDATE wallets SET balance = balance + $1 WHERE user_id = $2 RETURNING *',
+        [amount, userId]
+      );
+      wallet = updateResult.rows[0];
+    }
+
+    await client.query(
+      `INSERT INTO wallet_transactions (wallet_id, loan_id, amount, transaction_type, description)
+       VALUES ($1, $2, $3, $4, $5)`,
+      [wallet.id, loanId, amount, transactionType, description]
+    );
+
+    await client.query('COMMIT');
+    return wallet;
+  } catch (error) {
+    await client.query('ROLLBACK');
+    throw error;
+  } finally {
+    client.release();
+  }
+};
+
+const deductFromWallet = async (userId, amount, description, loanId = null, transactionType = 'payment') => {
+  const client = await pool.connect();
+
+  try {
+    await client.query('BEGIN');
+
+    const walletResult = await client.query(
+      'SELECT * FROM wallets WHERE user_id = $1 FOR UPDATE',
+      [userId]
+    );
+
+    if (walletResult.rows.length === 0) {
+      throw new Error('Хэтэвч олдсонгүй');
+    }
+
+    const wallet = walletResult.rows[0];
+
+    if (wallet.balance < amount) {
+      throw new Error('Хэтэвчний үлдэгдэл хүрэлцэхгүй байна');
+    }
+
+    const updateResult = await client.query(
+      'UPDATE wallets SET balance = balance - $1 WHERE user_id = $2 RETURNING *',
+      [amount, userId]
+    );
+
+    await client.query(
+      `INSERT INTO wallet_transactions (wallet_id, loan_id, amount, transaction_type, description)
+       VALUES ($1, $2, $3, $4, $5)`,
+      [wallet.id, loanId, -amount, transactionType, description]
+    );
+
+    await client.query('COMMIT');
+    return updateResult.rows[0];
+  } catch (error) {
+    await client.query('ROLLBACK');
+    throw error;
+  } finally {
+    client.release();
+  }
+};
+
+const getWalletTransactions = async (userId, limit = 50) => {
+  const walletResult = await query(
+    'SELECT id FROM wallets WHERE user_id = $1',
     [userId]
   );
-  return result.rows[0];
-};
-const addToWallet = async (userId, amount, description, referenceId, referenceType) => {
-  const wallet = await getOrCreateWallet(userId);
-  const newBalance = parseFloat(wallet.balance) + parseFloat(amount);
 
-  await query(
-    'UPDATE wallets SET balance = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2',
-    [newBalance, wallet.id]
-  );
-  await query(
-    `INSERT INTO wallet_transactions
-     (wallet_id, user_id, type, amount, description, reference_id, reference_type, balance_after)
-     VALUES ($1, $2, 'credit', $3, $4, $5, $6, $7)`,
-    [wallet.id, userId, amount, description, referenceId, referenceType, newBalance]
-  );
-
-  return { ...wallet, balance: newBalance };
-};
-const deductFromWallet = async (userId, amount, description, referenceId, referenceType) => {
-  const wallet = await getWalletByUserId(userId);
-
-  if (!wallet) {
-    throw new Error('Wallet олдсонгүй');
+  if (walletResult.rows.length === 0) {
+    return [];
   }
 
-  if (parseFloat(wallet.balance) < parseFloat(amount)) {
-    throw new Error('Үлдэгдэл хүрэлцэхгүй байна');
-  }
-  const newBalance = parseFloat(wallet.balance) - parseFloat(amount);
+  const walletId = walletResult.rows[0].id;
 
-  await query(
-    'UPDATE wallets SET balance = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2',
-    [newBalance, wallet.id]
-  );
-  await query(
-    `INSERT INTO wallet_transactions
-     (wallet_id, user_id, type, amount, description, reference_id, reference_type, balance_after)
-     VALUES ($1, $2, 'debit', $3, $4, $5, $6, $7)`,
-    [wallet.id, userId, amount, description, referenceId, referenceType, newBalance]
-  );
-
-  return { ...wallet, balance: newBalance };
-};
-const getWalletTransactions = async (userId, limit = 20) => {
   const result = await query(
     `SELECT * FROM wallet_transactions
-     WHERE user_id = $1
+     WHERE wallet_id = $1
      ORDER BY created_at DESC
      LIMIT $2`,
-    [userId, limit]
+    [walletId, limit]
   );
+
   return result.rows;
-};
-const withdrawToBank = async (userId, amount, bankName, accountNumber) => {
-  const wallet = await getWalletByUserId(userId);
-
-  if (!wallet) {
-    throw new Error('Wallet олдсонгүй');
-  }
-
-  if (parseFloat(wallet.balance) < parseFloat(amount)) {
-    throw new Error('Үлдэгдэл хүрэлцэхгүй байна');
-  }
-
-  const description = `Банк руу шилжүүлэг: ${bankName} - ${accountNumber}`;
-
-  return await deductFromWallet(userId, amount, description, null, 'bank_withdrawal');
 };
 
 module.exports = {
-  getOrCreateWallet,
   getWalletByUserId,
   addToWallet,
   deductFromWallet,
-  getWalletTransactions,
-  withdrawToBank
+  getWalletTransactions
 };

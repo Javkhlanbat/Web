@@ -1,14 +1,15 @@
-const { query } = require('../config/database');
 const bcrypt = require('bcrypt');
+const { query } = require('../config/database');
+
 const createUser = async (userData) => {
-  const { email, password, first_name, last_name, phone, register_number, id_front, id_back } = userData;
+  const { email, password, first_name, last_name, phone, register_number, id_front, id_back, is_admin } = userData;
   const salt = await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash(password, salt);
   const result = await query(
-    `INSERT INTO users (email, password, first_name, last_name, phone, register_number, id_front, id_back)
-     VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-     RETURNING id, email, first_name, last_name, phone, register_number, created_at`,
-    [email, hashedPassword, first_name, last_name, phone, register_number, id_front || null, id_back || null]
+    `INSERT INTO users (email, password, first_name, last_name, phone, register_number, id_front, id_back, is_admin)
+     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+     RETURNING id, email, first_name, last_name, phone, register_number, is_admin, created_at`,
+    [email, hashedPassword, first_name, last_name, phone, register_number, id_front || null, id_back || null, is_admin || false]
   );
 
   return result.rows[0];
@@ -29,66 +30,48 @@ const findUserByPhone = async (phone) => {
   );
   return result.rows[0];
 };
+
 const findUserById = async (id) => {
   const result = await query(
-    'SELECT id, email, first_name, last_name, phone, register_number, is_admin, profile_image, created_at FROM users WHERE id = $1',
+    'SELECT id, email, first_name, last_name, phone, register_number, id_front, id_back, is_admin, created_at FROM users WHERE id = $1',
     [id]
   );
   return result.rows[0];
 };
 
-const findUserByIdWithIdImages = async (id) => {
+const getAllUsers = async () => {
   const result = await query(
-    'SELECT id, email, first_name, last_name, phone, register_number, is_admin, id_front, id_back, profile_image, created_at FROM users WHERE id = $1',
-    [id]
+    'SELECT id, email, first_name, last_name, phone, register_number, is_admin, created_at FROM users ORDER BY created_at DESC'
   );
-  return result.rows[0];
+  return result.rows;
 };
-const verifyPassword = async (plainPassword, hashedPassword) => {
-  return await bcrypt.compare(plainPassword, hashedPassword);
-};
-const updateUser = async (id, updates) => {
-  const { first_name, last_name, phone, register_number } = updates;
 
+const updateUserProfile = async (userId, updates) => {
+  const { first_name, last_name, phone, id_front, id_back } = updates;
   const result = await query(
     `UPDATE users
      SET first_name = COALESCE($1, first_name),
          last_name = COALESCE($2, last_name),
          phone = COALESCE($3, phone),
-         register_number = COALESCE($4, register_number),
-         updated_at = CURRENT_TIMESTAMP
-     WHERE id = $5
-     RETURNING id, email, first_name, last_name, phone, register_number, updated_at`,
-    [first_name, last_name, phone, register_number, id]
-  );
-
-  return result.rows[0];
-};
-const updatePassword = async (id, newPassword) => {
-  const salt = await bcrypt.genSalt(10);
-  const hashedPassword = await bcrypt.hash(newPassword, salt);
-
-  await query(
-    'UPDATE users SET password = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2',
-    [hashedPassword, id]
-  );
-};
-const deleteUser = async (id) => {
-  await query('DELETE FROM users WHERE id = $1', [id]);
-};
-const getAllUsers = async () => {
-  const result = await query(
-    'SELECT id, email, first_name, last_name, phone, register_number, is_admin, id_front, id_back, profile_image, created_at FROM users ORDER BY created_at DESC'
-  );
-  return result.rows;
-};
-const updateProfileImage = async (id, profileImage) => {
-  const result = await query(
-    `UPDATE users SET profile_image = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2
-     RETURNING id, email, first_name, last_name, profile_image`,
-    [profileImage, id]
+         id_front = COALESCE($4, id_front),
+         id_back = COALESCE($5, id_back)
+     WHERE id = $6
+     RETURNING id, email, first_name, last_name, phone, register_number, id_front, id_back, is_admin, created_at`,
+    [first_name, last_name, phone, id_front, id_back, userId]
   );
   return result.rows[0];
+};
+
+const deleteUser = async (userId) => {
+  const result = await query(
+    'DELETE FROM users WHERE id = $1 RETURNING id',
+    [userId]
+  );
+  return result.rows[0];
+};
+
+const comparePassword = async (plainPassword, hashedPassword) => {
+  return await bcrypt.compare(plainPassword, hashedPassword);
 };
 
 module.exports = {
@@ -96,11 +79,8 @@ module.exports = {
   findUserByEmail,
   findUserByPhone,
   findUserById,
-  findUserByIdWithIdImages,
-  verifyPassword,
-  updateUser,
-  updatePassword,
-  updateProfileImage,
+  getAllUsers,
+  updateUserProfile,
   deleteUser,
-  getAllUsers
+  comparePassword
 };

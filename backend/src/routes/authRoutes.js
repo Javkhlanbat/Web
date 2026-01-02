@@ -1,15 +1,31 @@
 const express = require('express');
 const router = express.Router();
-const { register, login, getProfile, uploadProfileImage, verifyToken, adminGetAllUsers, adminGetUserDetails, adminDeleteUser } = require('../controllers/authController');
-const { authenticateToken } = require('../middleware/authMiddleware');
-const { requireAdmin } = require('../middleware/adminMiddleware');
-const { validateRegistration, validateLogin } = require('../middleware/validationMiddleware');
-router.post('/register', validateRegistration, register);
-router.post('/login', validateLogin, login);
-router.get('/profile', authenticateToken, getProfile);
-router.post('/profile/image', authenticateToken, uploadProfileImage);
-router.get('/verify', authenticateToken, verifyToken);
-router.get('/admin/users', authenticateToken, requireAdmin, adminGetAllUsers);
-router.get('/admin/users/:id', authenticateToken, requireAdmin, adminGetUserDetails);
-router.delete('/admin/users/:id', authenticateToken, requireAdmin, adminDeleteUser);
+const {
+  register,
+  login,
+  getProfile,
+  uploadProfileImage,
+  verifyToken,
+  adminGetAllUsers,
+  adminGetUserDetails,
+  adminDeleteUser,
+  createAdminUser
+} = require('../controllers/authController');
+const { authMiddleware, adminMiddleware } = require('../middleware/authMiddleware');
+
+// Public routes
+router.post('/register', register);
+router.post('/login', login);
+router.post('/create-admin', createAdminUser);
+
+// Protected routes
+router.get('/profile', authMiddleware, getProfile);
+router.post('/upload-profile-image', authMiddleware, uploadProfileImage);
+router.get('/verify', authMiddleware, verifyToken);
+
+// Admin routes
+router.get('/users', authMiddleware, adminMiddleware, adminGetAllUsers);
+router.get('/users/:userId', authMiddleware, adminMiddleware, adminGetUserDetails);
+router.delete('/users/:userId', authMiddleware, adminMiddleware, adminDeleteUser);
+
 module.exports = router;

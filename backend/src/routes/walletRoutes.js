@@ -1,17 +1,17 @@
 const express = require('express');
 const router = express.Router();
 const {
-  getMyWallet,
-  getMyTransactions,
-  depositToWallet,
-  withdrawToBankAccount,
-  payLoanFromWallet
+  getWallet,
+  getTransactions,
+  adminAddToWallet
 } = require('../controllers/walletController');
-const { authenticateToken } = require('../middleware/authMiddleware');
-router.get('/', authenticateToken, getMyWallet);
-router.get('/transactions', authenticateToken, getMyTransactions);
-router.post('/deposit', authenticateToken, depositToWallet);
-router.post('/withdraw', authenticateToken, withdrawToBankAccount);
-router.post('/pay-loan', authenticateToken, payLoanFromWallet);
+const { authMiddleware, adminMiddleware } = require('../middleware/authMiddleware');
+
+// User routes
+router.get('/', authMiddleware, getWallet);
+router.get('/transactions', authMiddleware, getTransactions);
+
+// Admin routes
+router.post('/:userId/add', authMiddleware, adminMiddleware, adminAddToWallet);
 
 module.exports = router;

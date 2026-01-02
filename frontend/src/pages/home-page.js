@@ -50,7 +50,7 @@ class HomePage extends HTMLElement {
 
                         <div class="grid grid-cols-3 gap-4">
                             <div class="feature-card card animate-slideInUp">
-                                <div class="feature-icon">⚡</div>
+                                <div class="feature-icon"></div>
                                 <h3 class="feature-title">Хурдан шийдвэр</h3>
                                 <p class="feature-text">
                                     Зээлийн хүсэлтийг 24 цагийн дотор шалгаж хариулна.
@@ -58,7 +58,7 @@ class HomePage extends HTMLElement {
                             </div>
 
                             <div class="feature-card card animate-slideInUp">
-                                <div class="feature-icon">🔒</div>
+                                <div class="feature-icon"></div>
                                 <h3 class="feature-title">Найдвартай</h3>
                                 <p class="feature-text">
                                     Таны мэдээллийг бүрэн нууцлалтай хадгална.
@@ -66,7 +66,7 @@ class HomePage extends HTMLElement {
                             </div>
 
                             <div class="feature-card card animate-slideInUp">
-                                <div class="feature-icon">💰</div>
+                                <div class="feature-icon"></div>
                                 <h3 class="feature-title">Боломжийн хүү</h3>
                                 <p class="feature-text">
                                     Өрсөлдөхүйц хүүтэй, уян хатан төлбөрийн нөхцөл.
@@ -88,10 +88,10 @@ class HomePage extends HTMLElement {
                                     Хувийн хэрэгцээнд зориулсан
                                 </p>
                                 <ul class="loan-features">
-                                    <li>✓ 2-24 сарын хугацаатай</li>
-                                    <li>✓ 2% жилийн хүүтэй</li>
-                                    <li>✓ Урьдчилгаагүй</li>
-                                    <li>✓ Хурдан зөвшөөрөл</li>
+                                    <li>2-24 сарын хугацаатай</li>
+                                    <li>2% жилийн хүүтэй</li>
+                                    <li>Урьдчилгаагүй</li>
+                                    <li>Хурдан зөвшөөрөл</li>
                                 </ul>
                                 <a href="#/loan-application" class="btn btn-secondary btn-block mt-4">Зээл хүсэх</a>
                             </div>
@@ -99,15 +99,15 @@ class HomePage extends HTMLElement {
                             <div class="loan-type-card card">
                                 <h3 class="loan-type-title">Худалдан авалтын зээл</h3>
                                 <p class="loan-type-description">
-                                    10,000₮ - 3,000,000₮ хүртэл
+                                    Нэхэмжлэлийн кодоор зээл авах
                                 </p>
                                 <ul class="loan-features">
-                                    <li>✓ 6 сарын хугацаатай (тогтмол)</li>
-                                    <li>✓ 2% жилийн хүүтэй</li>
-                                    <li>✓ Урьдчилгаагүй</li>
-                                    <li>✓ Бараа, үйлчилгээ худалдан авалт</li>
+                                    <li>10,000₮ - 3,000,000₮</li>
+                                    <li>6 сарын хугацаатай (тогтмол)</li>
+                                    <li>2% жилийн хүүтэй</li>
+                                    <li>Нэхэмжлэлийн код шаардлагатай</li>
                                 </ul>
-                                <a href="#/loan-application" class="btn btn-outline btn-block mt-4">Дэлгэрэнгүй</a>
+                                <a href="#/loan-application" class="btn btn-outline btn-block mt-4">Зээл хүсэх</a>
                             </div>
                         </div>
                     </div>
