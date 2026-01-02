@@ -1,14 +1,8 @@
 const { query } = require('../config/database');
 const createPayment = async (paymentData) => {
   const { loan_id, amount, payment_method } = paymentData;
-
-  // Одоогийн үлдэгдэл болон хүүг тооцоолох
   const balance = await getLoanBalance(loan_id);
-
-  // Хүү тооцоолох (сарын хүү * үндсэн үлдэгдэл)
   const interestAmount = balance.accrued_interest;
-
-  // Төлбөр нь хүүг эхлээд барагдуулж, үлдсэн хэсэг нь үндсэн зээлд орно
   let principalAmount = 0;
   let actualInterestPaid = 0;
 
@@ -31,8 +25,6 @@ const createPayment = async (paymentData) => {
 
   return result.rows[0];
 };
-
-// Зээлийн төлбөрүүд
 const getPaymentsByLoanId = async (loanId) => {
   const result = await query(
     'SELECT * FROM payments WHERE loan_id = $1 ORDER BY payment_date DESC',
@@ -40,8 +32,6 @@ const getPaymentsByLoanId = async (loanId) => {
   );
   return result.rows;
 };
-
-// Хэрэглэгчийн бүх төлбөрүүд
 const getPaymentsByUserId = async (userId) => {
   const result = await query(
     `SELECT p.*, l.loan_type, l.amount as loan_amount
@@ -53,8 +43,6 @@ const getPaymentsByUserId = async (userId) => {
   );
   return result.rows;
 };
-
-// ID-гаар төлбөр хайх
 const getPaymentById = async (id) => {
   const result = await query(
     'SELECT * FROM payments WHERE id = $1',
@@ -63,7 +51,6 @@ const getPaymentById = async (id) => {
   return result.rows[0];
 };
 
-// Бүх төлбөрүүд (админд зориулсан)
 const getAllPayments = async () => {
   const result = await query(
     `SELECT p.*, l.loan_type, l.amount as loan_amount, u.email, u.first_name, u.last_name
@@ -74,8 +61,6 @@ const getAllPayments = async () => {
   );
   return result.rows;
 };
-
-// Төлбөрийн статус өөрчлөх
 const updatePaymentStatus = async (id, status) => {
   const result = await query(
     'UPDATE payments SET status = $1 WHERE id = $2 RETURNING *',
@@ -83,13 +68,9 @@ const updatePaymentStatus = async (id, status) => {
   );
   return result.rows[0];
 };
-
-// Төлбөр устгах
 const deletePayment = async (id) => {
   await query('DELETE FROM payments WHERE id = $1', [id]);
 };
-
-// Зээлийн нийт төлсөн дүн (үндсэн болон хүү тусад нь)
 const getTotalPaidByLoanId = async (loanId) => {
   const result = await query(
     `SELECT
@@ -106,8 +87,6 @@ const getTotalPaidByLoanId = async (loanId) => {
     total_interest_paid: parseFloat(result.rows[0].total_interest_paid)
   };
 };
-
-// Зээлийн үлдэгдэл дүн тооцоолох (сар бүрийн хүүтэй)
 const getLoanBalance = async (loanId) => {
   const loanResult = await query(
     `SELECT amount, interest_rate, disbursed_at, term_months
@@ -121,33 +100,20 @@ const getLoanBalance = async (loanId) => {
   }
 
   const loan = loanResult.rows[0];
-  const originalAmount = parseFloat(loan.amount); // Үндсэн зээлийн дүн
-  const annualInterestRate = parseFloat(loan.interest_rate); // Жилийн хүү (%)
-  const monthlyInterestRate = annualInterestRate / 100 / 12; // Сарын хүү (decimal)
+  const originalAmount = parseFloat(loan.amount); 
+  const annualInterestRate = parseFloat(loan.interest_rate);
+  const monthlyInterestRate = annualInterestRate / 100 / 12;
   const disbursedDate = loan.disbursed_at ? new Date(loan.disbursed_at) : new Date();
-
-  // Төлсөн дүнгүүд
   const paymentData = await getTotalPaidByLoanId(loanId);
   const totalPrincipalPaid = paymentData.total_principal_paid;
   const totalInterestPaid = paymentData.total_interest_paid;
-
-  // Үндсэн зээлийн үлдэгдэл
   const principalBalance = originalAmount - totalPrincipalPaid;
-
-  // Хэдэн сар өнгөрсөн тооцоолох
   const now = new Date();
   const monthsElapsed = Math.floor(
     (now.getTime() - disbursedDate.getTime()) / (1000 * 60 * 60 * 24 * 30)
   );
-
-  // Хуримтлагдсан хүү тооцоолох (сар бүрийн compound interest)
-  // Энэ нь зөвхөн үндсэн үлдэгдэл дээр тооцогдоно
   let accruedInterest = 0;
-
-  // Энгийн хүү тооцоо: Үндсэн үлдэгдэл * сарын хүү
-  // (Compound interest-ийн оронд энгийн хүү ашиглах нь илүү ойлгомжтой)
   accruedInterest = principalBalance * monthlyInterestRate;
-
   // Нийт үлдэгдэл = Үндсэн үлдэгдэл + Хуримтлагдсан хүү - Төлсөн хүү
   const totalBalance = principalBalance + accruedInterest;
 
@@ -163,8 +129,6 @@ const getLoanBalance = async (loanId) => {
     months_elapsed: monthsElapsed
   };
 };
-
-// Төлбөрийн статистик
 const getPaymentStats = async (userId) => {
   const result = await query(
     `SELECT

@@ -1,0 +1,16 @@
+{
+  "name": "omnicredit-web-components",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "OmniCredit - Loan Platform with Web Components",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "serve": "vite preview --port 3000"
+  },
+  "devDependencies": {
+    "vite": "^7.2.4"
+  }
+}

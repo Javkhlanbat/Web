@@ -9,14 +9,12 @@ const pool = new Pool({
 });
 
 pool.on('connect', () => {
-  console.log('PostgreSQL-д амжилттай холбогдлоо');
+  console.log('DB амжилттай холбогдлоо');
 });
 
 pool.on('error', (err) => {
-  console.error('PostgreSQL холболтын алдаа:', err);
+  console.error('DB холболтын алдаа:', err);
 });
-
-// Query helper function
 const query = async (text, params) => {
   const start = Date.now();
   try {

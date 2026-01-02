@@ -6,8 +6,6 @@ const {
   deductFromWallet,
   addToWallet
 } = require('../models/walletModel');
-
-// Өөрийн wallet авах
 const getMyWallet = async (req, res) => {
   try {
     const userId = req.user.id;
@@ -29,8 +27,6 @@ const getMyWallet = async (req, res) => {
     });
   }
 };
-
-// Wallet гүйлгээний түүх
 const getMyTransactions = async (req, res) => {
   try {
     const userId = req.user.id;
@@ -50,14 +46,10 @@ const getMyTransactions = async (req, res) => {
     });
   }
 };
-
-// Банк руу шилжүүлэх
 const withdrawToBankAccount = async (req, res) => {
   try {
     const userId = req.user.id;
     const { amount, bank_name, account_number, account_holder } = req.body;
-
-    // Validation
     if (!amount || amount <= 0) {
       return res.status(400).json({
         error: 'Буруу дүн',
@@ -100,8 +92,6 @@ const withdrawToBankAccount = async (req, res) => {
     });
   }
 };
-
-// Wallet-ээс зээлийн төлбөр төлөх
 const payLoanFromWallet = async (req, res) => {
   try {
     const userId = req.user.id;
@@ -141,14 +131,10 @@ const payLoanFromWallet = async (req, res) => {
     });
   }
 };
-
-// Wallet руу мөнгө нэмэх (QPay)
 const depositToWallet = async (req, res) => {
   try {
     const userId = req.user.id;
     const { amount, payment_method = 'qpay' } = req.body;
-
-    // Validation
     if (!amount || amount <= 0) {
       return res.status(400).json({
         error: 'Буруу дүн',
@@ -162,8 +148,6 @@ const depositToWallet = async (req, res) => {
         message: 'Хамгийн багадаа ₮1,000 нэмэх боломжтой'
       });
     }
-
-    // Demo: QPay төлбөр баталгаажсан гэж үзнэ
     const description = `QPay мөнгө нэмэлт`;
     const wallet = await addToWallet(userId, amount, description, null, 'qpay_deposit');
 

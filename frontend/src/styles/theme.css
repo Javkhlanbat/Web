@@ -1,0 +1,255 @@
+/**
+ * Theme CSS
+ * Dark/Light mode transitions and animations
+ */
+
+/* Smooth theme transitions */
+html,
+body,
+.card,
+.btn,
+.form-input,
+.form-select,
+.form-textarea {
+  transition:
+    background-color var(--transition-slow),
+    color var(--transition-slow),
+    border-color var(--transition-slow);
+}
+
+/* Theme Toggle Button Styles */
+.theme-toggle {
+  position: relative;
+  width: 60px;
+  height: 30px;
+  background: var(--bg-secondary);
+  border: 2px solid var(--line);
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: all var(--transition);
+}
+
+.theme-toggle:hover {
+  border-color: var(--primary);
+}
+
+.theme-toggle-slider {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 22px;
+  height: 22px;
+  background: var(--primary);
+  border-radius: var(--radius-full);
+  transition: transform var(--transition);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+}
+
+[data-theme="dark"] .theme-toggle-slider {
+  transform: translateX(30px);
+  background: var(--accent);
+}
+
+/* Animation Classes */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+/* Animation utility classes */
+.animate-fadeIn {
+  animation: fadeIn var(--transition);
+}
+
+.animate-fadeOut {
+  animation: fadeOut var(--transition);
+}
+
+.animate-slideInUp {
+  animation: slideInUp var(--transition);
+}
+
+.animate-slideInDown {
+  animation: slideInDown var(--transition);
+}
+
+.animate-slideInLeft {
+  animation: slideInLeft var(--transition);
+}
+
+.animate-slideInRight {
+  animation: slideInRight var(--transition);
+}
+
+.animate-scaleIn {
+  animation: scaleIn var(--transition);
+}
+
+.animate-pulse {
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.animate-bounce {
+  animation: bounce 1s ease-in-out infinite;
+}
+
+/* Hover effects */
+.hover-lift {
+  transition: transform var(--transition);
+}
+
+.hover-lift:hover {
+  transform: translateY(-4px);
+}
+
+.hover-scale {
+  transition: transform var(--transition);
+}
+
+.hover-scale:hover {
+  transform: scale(1.05);
+}
+
+.hover-glow {
+  transition: box-shadow var(--transition);
+}
+
+.hover-glow:hover {
+  box-shadow: var(--shadow-hover);
+}
+
+/* Focus styles */
+*:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* Reduce motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: var(--radius-sm);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary);
+}
+
+/* Selection styling */
+::selection {
+  background: var(--primary-light);
+  color: var(--white);
+}
+
+::-moz-selection {
+  background: var(--primary-light);
+  color: var(--white);
+}

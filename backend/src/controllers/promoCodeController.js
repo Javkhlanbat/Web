@@ -1,12 +1,9 @@
 const {
-  // Companies
   createCompany,
   getAllCompanies,
   getCompanyById,
   updateCompany,
   deleteCompany,
-
-  // Promo Codes
   createPromoCode,
   getAllPromoCodes,
   getPromoCodesByCompany,
@@ -17,12 +14,6 @@ const {
   updatePromoCode,
   deletePromoCode
 } = require('../models/promoCodeModel');
-
-// ==========================================
-// КОМПАНИ CONTROLLERS (Admin)
-// ==========================================
-
-// Компани үүсгэх
 const adminCreateCompany = async (req, res) => {
   try {
     const { name, description, contact_email, contact_phone, address } = req.body;
@@ -55,8 +46,6 @@ const adminCreateCompany = async (req, res) => {
     });
   }
 };
-
-// Бүх компаниуд
 const adminGetAllCompanies = async (req, res) => {
   try {
     const companies = await getAllCompanies();
@@ -72,8 +61,6 @@ const adminGetAllCompanies = async (req, res) => {
     });
   }
 };
-
-// Компани дэлгэрэнгүй
 const adminGetCompanyDetails = async (req, res) => {
   try {
     const { id } = req.params;
@@ -84,8 +71,6 @@ const adminGetCompanyDetails = async (req, res) => {
         error: 'Компани олдсонгүй'
       });
     }
-
-    // Компанийн нэмэгдлийн кодуудыг авах
     const promoCodes = await getPromoCodesByCompany(parseInt(id));
 
     res.json({
@@ -101,7 +86,6 @@ const adminGetCompanyDetails = async (req, res) => {
   }
 };
 
-// Компани шинэчлэх
 const adminUpdateCompany = async (req, res) => {
   try {
     const { id } = req.params;
@@ -125,8 +109,6 @@ const adminUpdateCompany = async (req, res) => {
     });
   }
 };
-
-// Компани устгах
 const adminDeleteCompany = async (req, res) => {
   try {
     const { id } = req.params;
@@ -152,11 +134,6 @@ const adminDeleteCompany = async (req, res) => {
   }
 };
 
-// ==========================================
-// НЭМЭГДЛИЙН КОД CONTROLLERS (Admin)
-// ==========================================
-
-// Код үүсгэх
 const adminCreatePromoCode = async (req, res) => {
   try {
     const {
@@ -176,8 +153,6 @@ const adminCreatePromoCode = async (req, res) => {
         message: 'Компани заавал сонгох шаардлагатай'
       });
     }
-
-    // Компани байгаа эсэх шалгах
     const company = await getCompanyById(parseInt(company_id));
     if (!company) {
       return res.status(404).json({
@@ -197,7 +172,7 @@ const adminCreatePromoCode = async (req, res) => {
     });
 
     res.status(201).json({
-      message: 'Нэмэгдлийн код амжилттай үүсгэгдлээ',
+      message: 'promo код амжилттай үүсгэгдлээ',
       promoCode
     });
 
@@ -218,8 +193,6 @@ const adminCreatePromoCode = async (req, res) => {
     });
   }
 };
-
-// Бүх кодууд
 const adminGetAllPromoCodes = async (req, res) => {
   try {
     const promoCodes = await getAllPromoCodes();
@@ -235,8 +208,6 @@ const adminGetAllPromoCodes = async (req, res) => {
     });
   }
 };
-
-// Код дэлгэрэнгүй
 const adminGetPromoCodeDetails = async (req, res) => {
   try {
     const { id } = req.params;
@@ -257,8 +228,6 @@ const adminGetPromoCodeDetails = async (req, res) => {
     });
   }
 };
-
-// Код шинэчлэх
 const adminUpdatePromoCode = async (req, res) => {
   try {
     const { id } = req.params;
@@ -282,8 +251,6 @@ const adminUpdatePromoCode = async (req, res) => {
     });
   }
 };
-
-// Код устгах
 const adminDeletePromoCode = async (req, res) => {
   try {
     const { id } = req.params;
@@ -308,12 +275,6 @@ const adminDeletePromoCode = async (req, res) => {
     });
   }
 };
-
-// ==========================================
-// ХЭРЭГЛЭГЧИЙН CONTROLLERS (Public)
-// ==========================================
-
-// Код шалгах (хэрэглэгч ашиглахад)
 const verifyPromoCode = async (req, res) => {
   try {
     const { code } = req.body;
@@ -321,7 +282,7 @@ const verifyPromoCode = async (req, res) => {
     if (!code || code.trim() === '') {
       return res.status(400).json({
         error: 'Код оруулна уу',
-        message: 'Нэмэгдлийн код заавал оруулах шаардлагатай'
+        message: 'promo код заавал оруулах шаардлагатай'
       });
     }
 
@@ -359,20 +320,15 @@ const verifyPromoCode = async (req, res) => {
 };
 
 module.exports = {
-  // Company Admin
   adminCreateCompany,
   adminGetAllCompanies,
   adminGetCompanyDetails,
   adminUpdateCompany,
   adminDeleteCompany,
-
-  // Promo Code Admin
   adminCreatePromoCode,
   adminGetAllPromoCodes,
   adminGetPromoCodeDetails,
   adminUpdatePromoCode,
   adminDeletePromoCode,
-
-  // User
   verifyPromoCode
 };

@@ -76,7 +76,6 @@ const disburseLoan = async (id) => {
   const loan = result.rows[0];
 
   if (loan) {
-    // Wallet-д зээлийн дүн нэмэх
     const description = `Зээл #${loan.id} олгогдсон`;
     await addToWallet(loan.user_id, loan.amount, description, loan.id, 'loan_disbursement');
   }
@@ -101,14 +100,12 @@ const getLoanStats = async (userId) => {
 };
 const createPurchaseLoan = async (purchaseData) => {
   const { user_id, invoice_code, amount, duration_months, monthly_payment } = purchaseData;
-
   const result = await query(
     `INSERT INTO purchase_loans (user_id, invoice_code, amount, duration_months, monthly_payment, status)
      VALUES ($1, $2, $3, $4, $5, 'pending')
      RETURNING *`,
     [user_id, invoice_code, amount, duration_months, monthly_payment]
   );
-
   return result.rows[0];
 };
 const getPurchaseLoansByUserId = async (userId) => {
@@ -125,7 +122,6 @@ const getPurchaseLoanByInvoice = async (invoiceCode) => {
   );
   return result.rows[0];
 };
-
 module.exports = {
   createLoan,
   getLoansByUserId,

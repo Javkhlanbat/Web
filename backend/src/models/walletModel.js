@@ -1,8 +1,6 @@
 const { query } = require('../config/database');
 
-// Wallet авах эсвэл үүсгэх
 const getOrCreateWallet = async (userId) => {
-  // Эхлээд байгаа эсэхийг шалгах
   let result = await query(
     'SELECT * FROM wallets WHERE user_id = $1',
     [userId]
@@ -11,8 +9,6 @@ const getOrCreateWallet = async (userId) => {
   if (result.rows.length > 0) {
     return result.rows[0];
   }
-
-  // Байхгүй бол үүсгэх
   result = await query(
     'INSERT INTO wallets (user_id, balance) VALUES ($1, 0) RETURNING *',
     [userId]
@@ -20,8 +16,6 @@ const getOrCreateWallet = async (userId) => {
 
   return result.rows[0];
 };
-
-// Wallet авах
 const getWalletByUserId = async (userId) => {
   const result = await query(
     'SELECT * FROM wallets WHERE user_id = $1',
@@ -29,21 +23,14 @@ const getWalletByUserId = async (userId) => {
   );
   return result.rows[0];
 };
-
-// Wallet үлдэгдэл нэмэх (зээл олгох үед)
 const addToWallet = async (userId, amount, description, referenceId, referenceType) => {
-  // Wallet байгаа эсэхийг шалгах, байхгүй бол үүсгэх
   const wallet = await getOrCreateWallet(userId);
-
-  // Balance нэмэх
   const newBalance = parseFloat(wallet.balance) + parseFloat(amount);
 
   await query(
     'UPDATE wallets SET balance = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2',
     [newBalance, wallet.id]
   );
-
-  // Transaction бүртгэх
   await query(
     `INSERT INTO wallet_transactions
      (wallet_id, user_id, type, amount, description, reference_id, reference_type, balance_after)
@@ -53,8 +40,6 @@ const addToWallet = async (userId, amount, description, referenceId, referenceTy
 
   return { ...wallet, balance: newBalance };
 };
-
-// Wallet-ээс хасах (төлбөр төлөх, шилжүүлэг хийх үед)
 const deductFromWallet = async (userId, amount, description, referenceId, referenceType) => {
   const wallet = await getWalletByUserId(userId);
 
@@ -65,16 +50,12 @@ const deductFromWallet = async (userId, amount, description, referenceId, refere
   if (parseFloat(wallet.balance) < parseFloat(amount)) {
     throw new Error('Үлдэгдэл хүрэлцэхгүй байна');
   }
-
-  // Balance хасах
   const newBalance = parseFloat(wallet.balance) - parseFloat(amount);
 
   await query(
     'UPDATE wallets SET balance = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2',
     [newBalance, wallet.id]
   );
-
-  // Transaction бүртгэх
   await query(
     `INSERT INTO wallet_transactions
      (wallet_id, user_id, type, amount, description, reference_id, reference_type, balance_after)
@@ -84,8 +65,6 @@ const deductFromWallet = async (userId, amount, description, referenceId, refere
 
   return { ...wallet, balance: newBalance };
 };
-
-// Wallet гүйлгээний түүх авах
 const getWalletTransactions = async (userId, limit = 20) => {
   const result = await query(
     `SELECT * FROM wallet_transactions
@@ -96,8 +75,6 @@ const getWalletTransactions = async (userId, limit = 20) => {
   );
   return result.rows;
 };
-
-// Wallet-ээс банкны данс руу шилжүүлэх
 const withdrawToBank = async (userId, amount, bankName, accountNumber) => {
   const wallet = await getWalletByUserId(userId);
 

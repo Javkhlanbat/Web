@@ -17,20 +17,17 @@ const {
   incrementPromoCodeUsage
 } = require('../models/promoCodeModel');
 
-// Хүүгийн хувь тооцоолох (зээлийн төрлөөс хамаарна)
 const calculateInterestRate = (loanType, amount, duration) => {
   const rates = {
-    'personal': 3.0,      // Хувийн зээл 3%
-    'purchase': 0.0        // Худалдан авалтын зээл 0%
+    'consumer': 2.0,   // Хэрэглээний зээл - 2% жилийн хүү
+    'purchase': 2.0    // Худалдан авалтын зээл - 2% жилийн хүү
   };
 
-  return rates[loanType] || 15.0;
+  return rates[loanType] || 2.0;
 };
 
-// Сарын төлбөр тооцоолох
 const calculateMonthlyPayment = (amount, interestRate, durationMonths) => {
   if (interestRate === 0) {
-    // 0% хүүтэй бол зөвхөн үндсэн дүнг хуваах
     return amount / durationMonths;
   }
   const monthlyRate = interestRate / 100 / 12;
@@ -39,56 +36,69 @@ const calculateMonthlyPayment = (amount, interestRate, durationMonths) => {
 
   return Math.round(payment * 100) / 100;
 };
-
-// Зээл хүсэлт илгээх
 const applyForLoan = async (req, res) => {
   try {
     const {
-      loan_type = 'personal',
+      loan_type = 'consumer',
       amount,
       duration_months,
       purpose,
+      interest_rate,
       monthly_income,
       occupation,
       promo_code
     } = req.body;
     const userId = req.user.id;
-
     console.log('Received loan application:', req.body);
 
-    // Validation
-    if (!amount || isNaN(amount) || amount < 100000 || amount > 10000000) {
+    // Validate loan type
+    const validLoanTypes = ['consumer', 'purchase'];
+    if (!validLoanTypes.includes(loan_type)) {
       return res.status(400).json({
-        error: 'Буруу дүн',
-        message: 'Зээлийн дүн 100,000-10,000,000 хооронд байх ёстой'
+        error: 'Буруу зээлийн төрөл',
+        message: 'Зээлийн төрөл "consumer" эсвэл "purchase" байх ёстой'
       });
     }
 
-    if (!duration_months || isNaN(duration_months) || duration_months < 1 || duration_months > 60) {
-      return res.status(400).json({
-        error: 'Буруу хугацаа',
-        message: 'Зээлийн хугацаа 1-60 сар хооронд байх ёстой'
-      });
+    // Validate amount based on loan type
+    if (loan_type === 'purchase') {
+      if (!amount || isNaN(amount) || amount < 10000 || amount > 3000000) {
+        return res.status(400).json({
+          error: 'Буруу дүн',
+          message: 'Худалдан авалтын зээлийн дүн 10,000-3,000,000₮ хооронд байх ёстой'
+        });
+      }
+    } else {
+      if (!amount || isNaN(amount) || amount <= 0) {
+        return res.status(400).json({
+          error: 'Буруу дүн',
+          message: 'Зээлийн дүн оруулна уу'
+        });
+      }
     }
 
-    if (!monthly_income || isNaN(monthly_income) || monthly_income < 300000) {
-      return res.status(400).json({
-        error: 'Буруу орлого',
-        message: 'Сарын орлого доод тал нь 300,000₮ байх ёстой'
-      });
+    // Validate duration based on loan type
+    if (loan_type === 'consumer') {
+      if (!duration_months || isNaN(duration_months) || duration_months < 2 || duration_months > 24) {
+        return res.status(400).json({
+          error: 'Буруу хугацаа',
+          message: 'Хэрэглээний зээлийн хугацаа 2-24 сар хооронд байх ёстой'
+        });
+      }
+    } else if (loan_type === 'purchase') {
+      if (duration_months !== 6) {
+        return res.status(400).json({
+          error: 'Буруу хугацаа',
+          message: 'Худалдан авалтын зээлийн хугацаа 6 сар (тогтмол) байна'
+        });
+      }
     }
 
-    if (!occupation || occupation.trim() === '') {
+    // Validate purpose
+    if (!purpose || purpose.trim() === '' || purpose.trim().length < 10) {
       return res.status(400).json({
         error: 'Буруу мэдээлэл',
-        message: 'Ажил мэргэжил заавал бөглөх шаардлагатай'
-      });
-    }
-
-    if (!purpose || purpose.trim() === '') {
-      return res.status(400).json({
-        error: 'Буруу мэдээлэл',
-        message: 'Зээлийн зориулалт заавал бөглөх шаардлагатай'
+        message: 'Зээлийн зориулалтыг дор хаяж 10 тэмдэгтээр бичнэ үү'
       });
     }
 
@@ -106,39 +116,31 @@ const applyForLoan = async (req, res) => {
       }
 
       promoCodeId = promoValidation.promo.id;
-
-      // Хүү override байвал ашиглах
       if (promoValidation.promo.interest_rate_override !== null) {
         appliedInterestRate = parseFloat(promoValidation.promo.interest_rate_override);
       }
-
-      // Код ашигласан тоог нэмэх
       await incrementPromoCodeUsage(promoCodeId);
     }
 
-    // Хүү тооцоолох (promo code-ийн хүү байвал түүнийг ашиглах)
-    const interestRate = appliedInterestRate !== null
+    // Use provided interest_rate from frontend (2% fixed), or calculate if promo code overrides
+    const finalInterestRate = appliedInterestRate !== null
       ? appliedInterestRate
-      : calculateInterestRate(loan_type, amount, duration_months);
+      : (interest_rate !== undefined ? interest_rate : calculateInterestRate(loan_type, amount, duration_months));
 
-    // Сарын төлбөр тооцоолох
-    const monthlyPayment = calculateMonthlyPayment(amount, interestRate, duration_months);
-
-    // Нийт төлөх дүн
+    const monthlyPayment = calculateMonthlyPayment(amount, finalInterestRate, duration_months);
     const totalAmount = monthlyPayment * duration_months;
 
-    // Зээл үүсгэх
     const loan = await createLoan({
       user_id: userId,
       loan_type,
       amount,
-      interest_rate: interestRate,
+      interest_rate: finalInterestRate,
       term_months: duration_months,
       monthly_payment: monthlyPayment,
       total_amount: totalAmount,
       purpose,
-      monthly_income,
-      occupation,
+      monthly_income: monthly_income || null,
+      occupation: occupation || null,
       promo_code_id: promoCodeId
     });
 
@@ -166,8 +168,6 @@ const applyForLoan = async (req, res) => {
     });
   }
 };
-
-// Өөрийн зээлүүд авах
 const getMyLoans = async (req, res) => {
   try {
     const userId = req.user.id;
@@ -186,8 +186,6 @@ const getMyLoans = async (req, res) => {
     });
   }
 };
-
-// Зээлийн дэлгэрэнгүй мэдээлэл
 const getLoanDetails = async (req, res) => {
   try {
     const { id } = req.params;
@@ -201,8 +199,6 @@ const getLoanDetails = async (req, res) => {
         message: 'Тухайн ID-тай зээл олдсонгүй'
       });
     }
-
-    // Зөвхөн өөрийн зээлийг харах эрхтэй
     if (loan.user_id !== userId) {
       return res.status(403).json({
         error: 'Хандах эрхгүй',
@@ -220,8 +216,6 @@ const getLoanDetails = async (req, res) => {
     });
   }
 };
-
-// Зээлийн статистик авах
 const getMyLoanStats = async (req, res) => {
   try {
     const userId = req.user.id;
@@ -238,13 +232,10 @@ const getMyLoanStats = async (req, res) => {
   }
 };
 
-// Purchase loan (0% хүүтэй худалдан авалтын зээл)
 const applyForPurchaseLoan = async (req, res) => {
   try {
     const { invoice_code, amount, duration_months } = req.body;
     const userId = req.user.id;
-
-    // Invoice code давхцаж байгаа эсэх шалгах
     const existingLoan = await getPurchaseLoanByInvoice(invoice_code);
     if (existingLoan) {
       return res.status(400).json({
@@ -252,8 +243,6 @@ const applyForPurchaseLoan = async (req, res) => {
         message: 'Энэ invoice код-оор аль хэдийн зээл авсан байна'
       });
     }
-
-    // Сарын төлбөр (0% хүү тул зөвхөн үндсэн дүнг хуваах)
     const monthlyPayment = calculateMonthlyPayment(amount, 0, duration_months);
 
     const purchaseLoan = await createPurchaseLoan({
@@ -277,8 +266,6 @@ const applyForPurchaseLoan = async (req, res) => {
     });
   }
 };
-
-// Өөрийн purchase loans
 const getMyPurchaseLoans = async (req, res) => {
   try {
     const userId = req.user.id;
@@ -297,8 +284,6 @@ const getMyPurchaseLoans = async (req, res) => {
     });
   }
 };
-
-// Бүх зээлүүд (Админ)
 const adminGetAllLoans = async (req, res) => {
   try {
     const loans = await getAllLoans();
@@ -316,9 +301,6 @@ const adminGetAllLoans = async (req, res) => {
     });
   }
 };
-
-// Зээлийн статус өөрчлөх 
-// approved хийхэд шууд wallet-д мөнгө орно, disbursed статус руу шилжинэ
 const adminUpdateLoanStatus = async (req, res) => {
   try {
     const { id } = req.params;
@@ -331,12 +313,8 @@ const adminUpdateLoanStatus = async (req, res) => {
         message: `Статус нь ${validStatuses.join(', ')}-ийн аль нэг байх ёстой`
       });
     }
-
-    // Хэрэв approved бол шууд disbursed болгож, wallet-д мөнгө нэмнэ
     if (status === 'approved') {
-      // Эхлээд зээл байгаа эсэхийг шалгах
       const existingLoan = await getLoanById(parseInt(id));
-
       if (!existingLoan) {
         return res.status(404).json({
           error: 'Зээл олдсонгүй'
@@ -347,13 +325,8 @@ const adminUpdateLoanStatus = async (req, res) => {
         return res.status(400).json({
           error: 'Зөвхөн хүлээгдэж буй зээлийг зөвшөөрөх боломжтой'
         });
-      }
-
-      // Шууд disbursed болгож, wallet-д мөнгө нэмнэ
+      }  
       const loan = await disburseLoan(parseInt(id));
-
-      // Хэрэв disburseLoan ажиллахгүй бол (status approved биш байсан гэх мэт)
-      // Эхлээд approved болгоод, дараа нь disburse хийнэ
       if (!loan) {
         await updateLoanStatus(parseInt(id), 'approved');
         const disbursedLoan = await disburseLoan(parseInt(id));
@@ -377,8 +350,6 @@ const adminUpdateLoanStatus = async (req, res) => {
         }
       });
     }
-
-    // Бусад статус (rejected, completed гэх мэт)
     const loan = await updateLoanStatus(parseInt(id), status);
 
     if (!loan) {
@@ -400,13 +371,9 @@ const adminUpdateLoanStatus = async (req, res) => {
     });
   }
 };
-
-// Зээл олгох (Админ) - approved зээлийг disbursed болгох
 const adminDisburseLoan = async (req, res) => {
   try {
     const { id } = req.params;
-
-    // Эхлээд зээл байгаа эсэхийг шалгах
     const existingLoan = await getLoanById(parseInt(id));
 
     if (!existingLoan) {
@@ -430,9 +397,6 @@ const adminDisburseLoan = async (req, res) => {
         error: 'Зээл олгоход алдаа гарлаа'
       });
     }
-
-    // Энд жинхэнэ мөнгө шилжүүлэх логик орох боломжтой
-    // Одоогоор зөвхөн статус өөрчилж байна
 
     res.json({
       message: 'Зээл амжилттай олгогдлоо! Хэрэглэгчийн дансанд шилжүүлэгдлээ.',
