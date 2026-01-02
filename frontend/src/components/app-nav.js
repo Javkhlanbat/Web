@@ -1,7 +1,3 @@
-/**
- * Navigation Web Component
- * Responsive navigation with authentication state
- */
 
 import { TokenManager, UserManager } from '../services/api.js';
 import router from '../router.js';
@@ -19,8 +15,6 @@ class AppNav extends HTMLElement {
         this.checkAuth();
         this.render();
         this.attachEventListeners();
-
-        // Listen for route changes
         window.addEventListener('route-changed', () => {
             this.checkAuth();
             this.render();
@@ -28,17 +22,11 @@ class AppNav extends HTMLElement {
         });
     }
 
-    /**
-     * Check authentication status
-     */
     checkAuth() {
         this.isAuthenticated = TokenManager.isAuthenticated();
         this.user = UserManager.getUser();
     }
 
-    /**
-     * Toggle mobile menu
-     */
     toggleMobileMenu() {
         this.mobileMenuOpen = !this.mobileMenuOpen;
         const mobileMenu = this.querySelector('.mobile-menu');
@@ -47,9 +35,6 @@ class AppNav extends HTMLElement {
         }
     }
 
-    /**
-     * Toggle profile menu
-     */
     toggleProfileMenu() {
         this.profileMenuOpen = !this.profileMenuOpen;
         const profileMenu = this.querySelector('.profile-dropdown');
@@ -58,32 +43,21 @@ class AppNav extends HTMLElement {
         }
     }
 
-    /**
-     * Handle logout
-     */
     handleLogout() {
         TokenManager.removeToken();
         UserManager.removeUser();
         router.navigate('/login');
     }
 
-    /**
-     * Attach event listeners
-     */
     attachEventListeners() {
-        // Mobile menu toggle
         const mobileToggle = this.querySelector('.mobile-toggle');
         if (mobileToggle) {
             mobileToggle.addEventListener('click', () => this.toggleMobileMenu());
         }
-
-        // Profile menu toggle
         const profileToggle = this.querySelector('.profile-toggle');
         if (profileToggle) {
             profileToggle.addEventListener('click', () => this.toggleProfileMenu());
         }
-
-        // Logout button
         const logoutBtn = this.querySelector('.logout-btn');
         if (logoutBtn) {
             logoutBtn.addEventListener('click', (e) => {
@@ -92,7 +66,6 @@ class AppNav extends HTMLElement {
             });
         }
 
-        // Close menus when clicking outside
         document.addEventListener('click', (e) => {
             if (!this.contains(e.target)) {
                 this.mobileMenuOpen = false;
@@ -104,7 +77,6 @@ class AppNav extends HTMLElement {
             }
         });
 
-        // Prevent navigation default behavior and use router
         this.querySelectorAll('a[href^="#/"]').forEach(link => {
             link.addEventListener('click', (e) => {
                 e.preventDefault();
@@ -117,9 +89,6 @@ class AppNav extends HTMLElement {
         });
     }
 
-    /**
-     * Render component
-     */
     render() {
         const currentPath = router.getCurrentPath();
 
@@ -434,8 +403,6 @@ class AppNav extends HTMLElement {
         `;
     }
 }
-
-// Register the custom element
 customElements.define('app-nav', AppNav);
 
 export default AppNav;

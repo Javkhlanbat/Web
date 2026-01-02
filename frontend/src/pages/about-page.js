@@ -1,7 +1,3 @@
-/**
- * About Page Web Component
- * Company information and mission
- */
 
 class AboutPage extends HTMLElement {
     connectedCallback() {

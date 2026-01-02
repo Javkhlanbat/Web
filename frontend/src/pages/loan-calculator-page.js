@@ -1,7 +1,3 @@
-/**
- * Loan Calculator Page Web Component
- * PMT formula for loan calculation
- */
 
 import router from '../router.js';
 
@@ -19,11 +15,7 @@ class LoanCalculatorPage extends HTMLElement {
         this.calculate();
     }
 
-    /**
-     * Calculate monthly payment using PMT formula
-     * PMT = P * (r * (1 + r)^n) / ((1 + r)^n - 1)
-     */
-    calculatePMT() {
+        calculatePMT() {
         const P = this.amount;
         const r = (this.interest / 100) / 12; // Monthly interest rate
         const n = this.duration;
@@ -43,10 +35,7 @@ class LoanCalculatorPage extends HTMLElement {
         };
     }
 
-    /**
-     * Calculate and update display
-     */
-    calculate() {
+        calculate() {
         const result = this.calculatePMT();
 
         // Update display
@@ -58,10 +47,7 @@ class LoanCalculatorPage extends HTMLElement {
         this.updateChart(result);
     }
 
-    /**
-     * Update visual chart
-     */
-    updateChart(result) {
+        updateChart(result) {
         const principalPercent = (this.amount / result.total) * 100;
         const interestPercent = (result.interest / result.total) * 100;
 
@@ -72,17 +58,11 @@ class LoanCalculatorPage extends HTMLElement {
         this.querySelector('.interest-amount').textContent = this.formatNumber(result.interest);
     }
 
-    /**
-     * Format number with commas
-     */
-    formatNumber(num) {
+        formatNumber(num) {
         return new Intl.NumberFormat('mn-MN').format(num);
     }
 
-    /**
-     * Attach event listeners
-     */
-    attachEventListeners() {
+        attachEventListeners() {
         // Amount slider
         const amountSlider = this.querySelector('#amount');
         const amountValue = this.querySelector('.amount-value');
@@ -110,10 +90,7 @@ class LoanCalculatorPage extends HTMLElement {
         }
     }
 
-    /**
-     * Render component
-     */
-    render() {
+        render() {
         this.innerHTML = `
             <div class="calculator-page">
                 <app-nav></app-nav>

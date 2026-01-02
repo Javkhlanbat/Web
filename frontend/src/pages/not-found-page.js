@@ -1,6 +1,3 @@
-/**
- * 404 Not Found Page Web Component
- */
 
 import router from '../router.js';
 

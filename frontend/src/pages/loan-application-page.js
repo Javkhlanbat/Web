@@ -1,9 +1,3 @@
-/**
- * Loan Application Page Web Component
- * Comprehensive loan application form with two loan types
- * - Consumer Loan (Хэрэглээний зээл): 2-24 months, 2% interest
- * - Purchase Loan (Худалдан авалтын зээл): 10,000₮ - 3,000,000₮, fixed 6 months, 2% interest
- */
 
 import { LoansAPI } from '../services/api.js';
 import router from '../router.js';
@@ -12,7 +6,7 @@ class LoanApplicationPage extends HTMLElement {
     constructor() {
         super();
         this.isLoading = false;
-        this.loanType = 'consumer'; // Default: consumer loan
+        this.loanType = 'consumer'; 
         this.formData = {
             amount: '',
             duration: 12, // Default 12 months for consumer
@@ -31,15 +25,7 @@ class LoanApplicationPage extends HTMLElement {
         this.calculateLoanDetails();
     }
 
-    /**
-     * Calculate monthly payment using PMT formula
-     * PMT = P * (r * (1 + r)^n) / ((1 + r)^n - 1)
-     * Where:
-     * P = Principal (loan amount)
-     * r = Monthly interest rate (annual rate / 12)
-     * n = Number of months
-     */
-    calculateMonthlyPayment(principal, months) {
+        calculateMonthlyPayment(principal, months) {
         if (!principal || principal <= 0 || !months || months <= 0) {
             return 0;
         }
@@ -56,10 +42,7 @@ class LoanApplicationPage extends HTMLElement {
         return principal * (numerator / denominator);
     }
 
-    /**
-     * Calculate and update loan details
-     */
-    calculateLoanDetails() {
+        calculateLoanDetails() {
         const amount = parseFloat(this.formData.amount) || 0;
         const duration = parseInt(this.formData.duration) || 0;
 
@@ -76,10 +59,7 @@ class LoanApplicationPage extends HTMLElement {
         this.updateCalculationDisplay();
     }
 
-    /**
-     * Update calculation display in real-time
-     */
-    updateCalculationDisplay() {
+        updateCalculationDisplay() {
         const monthlyEl = this.querySelector('.monthly-payment-value');
         const totalEl = this.querySelector('.total-payment-value');
         const interestEl = this.querySelector('.total-interest-value');
@@ -95,17 +75,11 @@ class LoanApplicationPage extends HTMLElement {
         }
     }
 
-    /**
-     * Format number with commas
-     */
-    formatNumber(num) {
+        formatNumber(num) {
         return new Intl.NumberFormat('mn-MN').format(num || 0);
     }
 
-    /**
-     * Handle loan type change
-     */
-    handleLoanTypeChange(type) {
+        handleLoanTypeChange(type) {
         this.loanType = type;
         this.formData.loanType = type;
 
@@ -123,28 +97,19 @@ class LoanApplicationPage extends HTMLElement {
         this.attachEventListeners();
     }
 
-    /**
-     * Handle amount input change
-     */
-    handleAmountChange(e) {
+        handleAmountChange(e) {
         const value = e.target.value;
         this.formData.amount = value;
         this.calculateLoanDetails();
     }
 
-    /**
-     * Handle duration change
-     */
-    handleDurationChange(e) {
+        handleDurationChange(e) {
         const value = e.target.value;
         this.formData.duration = parseInt(value) || 0;
         this.calculateLoanDetails();
     }
 
-    /**
-     * Validate form
-     */
-    validateForm() {
+        validateForm() {
         const errors = [];
         const amount = parseFloat(this.formData.amount);
         const duration = parseInt(this.formData.duration);
@@ -179,10 +144,7 @@ class LoanApplicationPage extends HTMLElement {
         return errors;
     }
 
-    /**
-     * Handle form submission
-     */
-    async handleSubmit(e) {
+        async handleSubmit(e) {
         e.preventDefault();
 
         if (this.isLoading) return;
@@ -234,10 +196,7 @@ class LoanApplicationPage extends HTMLElement {
         }
     }
 
-    /**
-     * Update button state
-     */
-    updateButtonState() {
+        updateButtonState() {
         const btn = this.querySelector('.submit-btn');
         if (btn) {
             btn.disabled = this.isLoading;
@@ -245,10 +204,7 @@ class LoanApplicationPage extends HTMLElement {
         }
     }
 
-    /**
-     * Show error message
-     */
-    showError(message) {
+        showError(message) {
         const errorEl = this.querySelector('.error-message');
         if (errorEl) {
             errorEl.textContent = message;
@@ -263,10 +219,7 @@ class LoanApplicationPage extends HTMLElement {
         }
     }
 
-    /**
-     * Show success message
-     */
-    showSuccess(message) {
+        showSuccess(message) {
         const successEl = this.querySelector('.success-message');
         if (successEl) {
             successEl.textContent = message;
@@ -277,10 +230,7 @@ class LoanApplicationPage extends HTMLElement {
         }
     }
 
-    /**
-     * Attach event listeners
-     */
-    attachEventListeners() {
+        attachEventListeners() {
         // Loan type tabs
         const consumerTab = this.querySelector('.consumer-tab');
         const purchaseTab = this.querySelector('.purchase-tab');
@@ -316,10 +266,7 @@ class LoanApplicationPage extends HTMLElement {
         }
     }
 
-    /**
-     * Get loan type tabs HTML
-     */
-    getLoanTypeTabsHTML() {
+        getLoanTypeTabsHTML() {
         return `
             <div class="loan-type-tabs">
                 <button
@@ -355,10 +302,7 @@ class LoanApplicationPage extends HTMLElement {
         `;
     }
 
-    /**
-     * Get loan info HTML
-     */
-    getLoanInfoHTML() {
+        getLoanInfoHTML() {
         if (this.loanType === 'consumer') {
             return `
                 <div class="loan-info-card">
@@ -398,10 +342,7 @@ class LoanApplicationPage extends HTMLElement {
         }
     }
 
-    /**
-     * Get form fields HTML
-     */
-    getFormFieldsHTML() {
+        getFormFieldsHTML() {
         return `
             <div class="form-section">
                 <div class="form-group">
@@ -491,10 +432,7 @@ class LoanApplicationPage extends HTMLElement {
         `;
     }
 
-    /**
-     * Get calculation summary HTML
-     */
-    getCalculationSummaryHTML() {
+        getCalculationSummaryHTML() {
         return `
             <div class="calculation-summary card">
                 <h3 class="summary-title">Төлбөрийн мэдээлэл</h3>
@@ -522,10 +460,7 @@ class LoanApplicationPage extends HTMLElement {
         `;
     }
 
-    /**
-     * Render component
-     */
-    render() {
+        render() {
         this.innerHTML = `
             <div class="loan-application-page">
                 <app-nav></app-nav>
@@ -605,8 +540,7 @@ class LoanApplicationPage extends HTMLElement {
                     margin: 0;
                 }
 
-                /* Loan Type Tabs */
-                .loan-type-tabs {
+                                .loan-type-tabs {
                     display: grid;
                     grid-template-columns: repeat(2, 1fr);
                     gap: 1rem;
@@ -677,8 +611,7 @@ class LoanApplicationPage extends HTMLElement {
                     margin: 0;
                 }
 
-                /* Grid Layout */
-                .loan-application-grid {
+                                .loan-application-grid {
                     display: grid;
                     grid-template-columns: 1fr 400px;
                     gap: 2rem;
@@ -696,8 +629,7 @@ class LoanApplicationPage extends HTMLElement {
                     gap: 1.5rem;
                 }
 
-                /* Form Card */
-                .form-card {
+                                .form-card {
                     padding: 2rem;
                 }
 
@@ -707,8 +639,7 @@ class LoanApplicationPage extends HTMLElement {
                     gap: 1.5rem;
                 }
 
-                /* Duration Input */
-                .duration-input-wrapper {
+                                .duration-input-wrapper {
                     display: flex;
                     align-items: center;
                     gap: 1rem;
@@ -782,8 +713,7 @@ class LoanApplicationPage extends HTMLElement {
                     padding: 0 0.5rem;
                 }
 
-                /* Fixed Duration Display */
-                .fixed-duration-display {
+                                .fixed-duration-display {
                     display: flex;
                     align-items: center;
                     gap: 0.75rem;
@@ -801,8 +731,7 @@ class LoanApplicationPage extends HTMLElement {
                     color: var(--primary);
                 }
 
-                /* Interest Rate Display */
-                .interest-rate-display {
+                                .interest-rate-display {
                     display: flex;
                     align-items: center;
                     gap: 0.75rem;
@@ -820,8 +749,7 @@ class LoanApplicationPage extends HTMLElement {
                     color: var(--success);
                 }
 
-                /* Calculation Summary */
-                .calculation-summary {
+                                .calculation-summary {
                     padding: 1.5rem;
                     background: var(--gradient-primary);
                     color: white;
@@ -879,8 +807,7 @@ class LoanApplicationPage extends HTMLElement {
                     margin: 0;
                 }
 
-                /* Loan Info Card */
-                .loan-info-card {
+                                .loan-info-card {
                     padding: 1.5rem;
                 }
 
@@ -931,8 +858,7 @@ class LoanApplicationPage extends HTMLElement {
                     font-size: var(--font-lg);
                 }
 
-                /* Form Actions */
-                .form-actions {
+                                .form-actions {
                     display: flex;
                     gap: 1rem;
                     margin-top: 2rem;
@@ -944,8 +870,7 @@ class LoanApplicationPage extends HTMLElement {
                     flex: 1;
                 }
 
-                /* Animations */
-                @keyframes slideInDown {
+                                @keyframes slideInDown {
                     from {
                         opacity: 0;
                         transform: translateY(-20px);
@@ -976,8 +901,7 @@ class LoanApplicationPage extends HTMLElement {
                     }
                 }
 
-                /* Responsive Design */
-                @media (max-width: 1024px) {
+                                @media (max-width: 1024px) {
                     .loan-application-grid {
                         grid-template-columns: 1fr;
                     }

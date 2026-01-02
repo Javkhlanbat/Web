@@ -1,7 +1,3 @@
-/**
- * FAQ Page Web Component
- * Frequently Asked Questions
- */
 
 class FaqPage extends HTMLElement {
     constructor() {

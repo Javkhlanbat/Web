@@ -154,14 +154,11 @@
   }
 }
 
-/* Mission section styles */
-/* Light mode - black text for better contrast on peachy background */
 [data-theme="light"] .card-peachy .mission-title,
 [data-theme="light"] .card-peachy .mission-text {
   color: #000000;
 }
 
-/* Dark mode - white text */
 [data-theme="dark"] .card-peachy .mission-title,
 [data-theme="dark"] .card-peachy .mission-text {
   color: white;

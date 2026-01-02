@@ -1,7 +1,3 @@
-/**
- * Theme Toggle Web Component
- * Switches between light and dark themes
- */
 
 class ThemeToggle extends HTMLElement {
     constructor() {
@@ -14,17 +10,11 @@ class ThemeToggle extends HTMLElement {
         this.render();
         this.attachEventListeners();
     }
-
-    /**
-     * Get current theme from localStorage or system preference
-     */
     getTheme() {
         const savedTheme = localStorage.getItem('theme');
         if (savedTheme) {
             return savedTheme;
         }
-
-        // Check system preference
         if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
             return 'dark';
         }
@@ -32,27 +22,16 @@ class ThemeToggle extends HTMLElement {
         return 'light';
     }
 
-    /**
-     * Set theme
-     */
     setTheme(theme) {
         this.currentTheme = theme;
         document.documentElement.setAttribute('data-theme', theme);
         localStorage.setItem('theme', theme);
         this.updateButton();
     }
-
-    /**
-     * Toggle theme
-     */
     toggleTheme() {
         const newTheme = this.currentTheme === 'light' ? 'dark' : 'light';
         this.setTheme(newTheme);
     }
-
-    /**
-     * Update button appearance
-     */
     updateButton() {
         const button = this.shadowRoot.querySelector('.theme-toggle');
         const icon = this.shadowRoot.querySelector('.theme-icon');
@@ -66,17 +45,11 @@ class ThemeToggle extends HTMLElement {
         }
     }
 
-    /**
-     * Attach event listeners
-     */
     attachEventListeners() {
         const button = this.shadowRoot.querySelector('.theme-toggle');
         button.addEventListener('click', () => this.toggleTheme());
     }
 
-    /**
-     * Render component
-     */
     render() {
         this.shadowRoot.innerHTML = `
             <style>
@@ -147,5 +120,4 @@ class ThemeToggle extends HTMLElement {
     }
 }
 
-// Register the custom element
 customElements.define('theme-toggle', ThemeToggle);

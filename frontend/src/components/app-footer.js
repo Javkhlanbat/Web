@@ -1,7 +1,3 @@
-/**
- * Footer Web Component
- * Application footer with links and copyright
- */
 
 class AppFooter extends HTMLElement {
     connectedCallback() {
@@ -141,7 +137,6 @@ class AppFooter extends HTMLElement {
     }
 }
 
-// Register the custom element
 customElements.define('app-footer', AppFooter);
 
 export default AppFooter;

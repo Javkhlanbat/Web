@@ -19,9 +19,7 @@ const {
 
 const calculateInterestRate = (loanType, amount, duration) => {
   const rates = {
-    'consumer': 2.0,   // Хэрэглээний зээл - 2% жилийн хүү
-    'purchase': 2.0    // Худалдан авалтын зээл - 2% жилийн хүү
-  };
+    'consumer': 2.0,       'purchase': 2.0      };
 
   return rates[loanType] || 2.0;
 };
@@ -51,8 +49,7 @@ const applyForLoan = async (req, res) => {
     const userId = req.user.id;
     console.log('Received loan application:', req.body);
 
-    // Validate loan type
-    const validLoanTypes = ['consumer', 'purchase'];
+        const validLoanTypes = ['consumer', 'purchase'];
     if (!validLoanTypes.includes(loan_type)) {
       return res.status(400).json({
         error: 'Буруу зээлийн төрөл',
@@ -60,8 +57,7 @@ const applyForLoan = async (req, res) => {
       });
     }
 
-    // Validate amount based on loan type
-    if (loan_type === 'purchase') {
+        if (loan_type === 'purchase') {
       if (!amount || isNaN(amount) || amount < 10000 || amount > 3000000) {
         return res.status(400).json({
           error: 'Буруу дүн',
@@ -77,8 +73,7 @@ const applyForLoan = async (req, res) => {
       }
     }
 
-    // Validate duration based on loan type
-    if (loan_type === 'consumer') {
+        if (loan_type === 'consumer') {
       if (!duration_months || isNaN(duration_months) || duration_months < 2 || duration_months > 24) {
         return res.status(400).json({
           error: 'Буруу хугацаа',
@@ -94,8 +89,7 @@ const applyForLoan = async (req, res) => {
       }
     }
 
-    // Validate purpose
-    if (!purpose || purpose.trim() === '' || purpose.trim().length < 10) {
+        if (!purpose || purpose.trim() === '' || purpose.trim().length < 10) {
       return res.status(400).json({
         error: 'Буруу мэдээлэл',
         message: 'Зээлийн зориулалтыг дор хаяж 10 тэмдэгтээр бичнэ үү'
@@ -122,8 +116,7 @@ const applyForLoan = async (req, res) => {
       await incrementPromoCodeUsage(promoCodeId);
     }
 
-    // Use provided interest_rate from frontend (2% fixed), or calculate if promo code overrides
-    const finalInterestRate = appliedInterestRate !== null
+        const finalInterestRate = appliedInterestRate !== null
       ? appliedInterestRate
       : (interest_rate !== undefined ? interest_rate : calculateInterestRate(loan_type, amount, duration_months));
 

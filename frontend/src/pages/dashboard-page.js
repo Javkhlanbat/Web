@@ -1,8 +1,3 @@
-/**
- * Dashboard Page Web Component
- * Main dashboard for the OmniCredit loan platform
- * Displays user stats, wallet, quick actions, and recent activity
- */
 
 import { AuthAPI, LoansAPI, PaymentsAPI, WalletAPI, TokenManager, UserManager } from '../services/api.js';
 import router from '../router.js';
@@ -30,10 +25,7 @@ class DashboardPage extends HTMLElement {
         this.loadDashboardData();
     }
 
-    /**
-     * Load all dashboard data
-     */
-    async loadDashboardData() {
+        async loadDashboardData() {
         try {
             this.isLoading = true;
             this.updateLoadingState();
@@ -66,10 +58,7 @@ class DashboardPage extends HTMLElement {
         }
     }
 
-    /**
-     * Calculate dashboard statistics
-     */
-    calculateStats() {
+        calculateStats() {
         // Total loans count
         this.stats.totalLoansCount = this.loans.length;
 
@@ -85,27 +74,18 @@ class DashboardPage extends HTMLElement {
         this.stats.totalPaymentsMade = this.payments.length;
     }
 
-    /**
-     * Update loading state
-     */
-    updateLoadingState() {
+        updateLoadingState() {
         const container = this.querySelector('.dashboard-content');
         if (container && this.isLoading) {
             container.innerHTML = this.getLoadingHTML();
         }
     }
 
-    /**
-     * Format number with commas
-     */
-    formatNumber(num) {
+        formatNumber(num) {
         return new Intl.NumberFormat('mn-MN').format(num || 0);
     }
 
-    /**
-     * Format date
-     */
-    formatDate(dateString) {
+        formatDate(dateString) {
         if (!dateString) return '-';
         const date = new Date(dateString);
         return new Intl.DateTimeFormat('mn-MN', {
@@ -115,10 +95,7 @@ class DashboardPage extends HTMLElement {
         }).format(date);
     }
 
-    /**
-     * Get status badge HTML
-     */
-    getStatusBadge(status) {
+        getStatusBadge(status) {
         const statusMap = {
             'pending': { class: 'badge-warning', text: 'Хүлээгдэж буй' },
             'approved': { class: 'badge-success', text: 'Зөвшөөрөгдсөн' },
@@ -133,10 +110,7 @@ class DashboardPage extends HTMLElement {
         return `<span class="badge ${badge.class}">${badge.text}</span>`;
     }
 
-    /**
-     * Show error message
-     */
-    showError(message) {
+        showError(message) {
         const errorEl = this.querySelector('.dashboard-error');
         if (errorEl) {
             errorEl.textContent = message;
@@ -147,10 +121,7 @@ class DashboardPage extends HTMLElement {
         }
     }
 
-    /**
-     * Show success message
-     */
-    showSuccess(message) {
+        showSuccess(message) {
         const successEl = this.querySelector('.dashboard-success');
         if (successEl) {
             successEl.textContent = message;
@@ -161,10 +132,7 @@ class DashboardPage extends HTMLElement {
         }
     }
 
-    /**
-     * Handle deposit
-     */
-    async handleDeposit(e) {
+        async handleDeposit(e) {
         e.preventDefault();
         const amount = this.querySelector('#deposit-amount').value;
 
@@ -189,10 +157,7 @@ class DashboardPage extends HTMLElement {
         }
     }
 
-    /**
-     * Handle withdraw
-     */
-    async handleWithdraw(e) {
+        async handleWithdraw(e) {
         e.preventDefault();
         const amount = this.querySelector('#withdraw-amount').value;
         const bankAccount = this.querySelector('#bank-account').value;
@@ -226,10 +191,7 @@ class DashboardPage extends HTMLElement {
         }
     }
 
-    /**
-     * Attach event listeners
-     */
-    attachEventListeners() {
+        attachEventListeners() {
         // Quick action buttons
         const applyLoanBtn = this.querySelector('.apply-loan-btn');
         if (applyLoanBtn) {
@@ -308,10 +270,7 @@ class DashboardPage extends HTMLElement {
         }
     }
 
-    /**
-     * Get loading HTML
-     */
-    getLoadingHTML() {
+        getLoadingHTML() {
         return `
             <div class="loading-container">
                 <div class="spinner"></div>
@@ -320,10 +279,7 @@ class DashboardPage extends HTMLElement {
         `;
     }
 
-    /**
-     * Get stats cards HTML
-     */
-    getStatsCardsHTML() {
+        getStatsCardsHTML() {
         return `
             <div class="stats-grid">
                 <div class="stat-card card" style="animation-delay: 0.1s">
@@ -377,10 +333,7 @@ class DashboardPage extends HTMLElement {
         `;
     }
 
-    /**
-     * Get wallet section HTML
-     */
-    getWalletSectionHTML() {
+        getWalletSectionHTML() {
         return `
             <div class="wallet-section card" style="animation-delay: 0.5s">
                 <div class="card-header">
@@ -413,10 +366,7 @@ class DashboardPage extends HTMLElement {
         `;
     }
 
-    /**
-     * Get quick actions HTML
-     */
-    getQuickActionsHTML() {
+        getQuickActionsHTML() {
         return `
             <div class="quick-actions-section card" style="animation-delay: 0.6s">
                 <div class="card-header">
@@ -454,10 +404,7 @@ class DashboardPage extends HTMLElement {
         `;
     }
 
-    /**
-     * Get recent loans HTML
-     */
-    getRecentLoansHTML() {
+        getRecentLoansHTML() {
         const recentLoans = this.loans.slice(0, 5);
 
         return `
@@ -504,10 +451,7 @@ class DashboardPage extends HTMLElement {
         `;
     }
 
-    /**
-     * Get recent payments HTML
-     */
-    getRecentPaymentsHTML() {
+        getRecentPaymentsHTML() {
         const recentPayments = this.payments.slice(0, 5);
 
         return `
@@ -553,10 +497,7 @@ class DashboardPage extends HTMLElement {
         `;
     }
 
-    /**
-     * Get deposit modal HTML
-     */
-    getDepositModalHTML() {
+        getDepositModalHTML() {
         if (!this.showDepositModal) return '';
 
         return `
@@ -589,10 +530,7 @@ class DashboardPage extends HTMLElement {
         `;
     }
 
-    /**
-     * Get withdraw modal HTML
-     */
-    getWithdrawModalHTML() {
+        getWithdrawModalHTML() {
         if (!this.showWithdrawModal) return '';
 
         return `
@@ -637,10 +575,7 @@ class DashboardPage extends HTMLElement {
         `;
     }
 
-    /**
-     * Render component
-     */
-    render() {
+        render() {
         const userName = this.userData ? `${this.userData.first_name || ''} ${this.userData.last_name || ''}`.trim() : 'Хэрэглэгч';
 
         this.innerHTML = `
@@ -718,8 +653,7 @@ class DashboardPage extends HTMLElement {
                     margin: 0;
                 }
 
-                /* Loading State */
-                .loading-container {
+                                .loading-container {
                     display: flex;
                     flex-direction: column;
                     align-items: center;
@@ -741,8 +675,7 @@ class DashboardPage extends HTMLElement {
                     color: var(--text-muted);
                 }
 
-                /* Stats Grid */
-                .stats-grid {
+                                .stats-grid {
                     display: grid;
                     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
                     gap: 1.5rem;
@@ -816,8 +749,7 @@ class DashboardPage extends HTMLElement {
                     margin: 0;
                 }
 
-                /* Dashboard Grid */
-                .dashboard-grid {
+                                .dashboard-grid {
                     display: grid;
                     grid-template-columns: 1fr 350px;
                     gap: 1.5rem;
@@ -835,8 +767,7 @@ class DashboardPage extends HTMLElement {
                     gap: 1.5rem;
                 }
 
-                /* Card Styles */
-                .card {
+                                .card {
                     background: var(--card);
                     border: 1px solid var(--card-border);
                     border-radius: var(--radius-xl);
@@ -862,8 +793,7 @@ class DashboardPage extends HTMLElement {
                     margin: 0;
                 }
 
-                /* Wallet Section */
-                .wallet-content {
+                                .wallet-content {
                     display: flex;
                     flex-direction: column;
                     gap: 1.5rem;
@@ -911,8 +841,7 @@ class DashboardPage extends HTMLElement {
                     text-align: center;
                 }
 
-                /* Quick Actions */
-                .quick-actions-grid {
+                                .quick-actions-grid {
                     display: grid;
                     gap: 1rem;
                 }
@@ -971,8 +900,7 @@ class DashboardPage extends HTMLElement {
                     margin: 0;
                 }
 
-                /* Tables */
-                .loans-table,
+                                .loans-table,
                 .payments-table {
                     overflow-x: auto;
                 }
@@ -1009,8 +937,7 @@ class DashboardPage extends HTMLElement {
                     font-weight: var(--font-semibold);
                 }
 
-                /* Badge */
-                .badge {
+                                .badge {
                     display: inline-flex;
                     align-items: center;
                     padding: 0.25rem 0.75rem;
@@ -1039,8 +966,7 @@ class DashboardPage extends HTMLElement {
                     color: #1e40af;
                 }
 
-                /* Empty State */
-                .empty-state {
+                                .empty-state {
                     display: flex;
                     flex-direction: column;
                     align-items: center;
@@ -1063,8 +989,7 @@ class DashboardPage extends HTMLElement {
                     margin-bottom: 1rem;
                 }
 
-                /* Modal */
-                .modal-overlay {
+                                .modal-overlay {
                     position: fixed;
                     top: 0;
                     left: 0;
@@ -1136,8 +1061,7 @@ class DashboardPage extends HTMLElement {
                     margin-top: 1.5rem;
                 }
 
-                /* Links */
-                .text-link {
+                                .text-link {
                     color: var(--primary);
                     text-decoration: none;
                     font-weight: var(--font-medium);
@@ -1150,8 +1074,7 @@ class DashboardPage extends HTMLElement {
                     text-decoration: underline;
                 }
 
-                /* Animations */
-                @keyframes slideInUp {
+                                @keyframes slideInUp {
                     from {
                         opacity: 0;
                         transform: translateY(20px);
@@ -1188,8 +1111,7 @@ class DashboardPage extends HTMLElement {
                     }
                 }
 
-                /* Responsive Design */
-                @media (max-width: 1024px) {
+                                @media (max-width: 1024px) {
                     .dashboard-grid {
                         grid-template-columns: 1fr;
                     }
@@ -1250,13 +1172,9 @@ class DashboardPage extends HTMLElement {
                 }
             </style>
         `;
-
-        // Attach event listeners after render
         this.attachEventListeners();
     }
 }
-
-// Register the custom element
 customElements.define('dashboard-page', DashboardPage);
 
 export default DashboardPage;

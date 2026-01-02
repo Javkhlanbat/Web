@@ -175,15 +175,13 @@ const deletePromoCode = async (id) => {
 };
 
 module.exports = {
-  // Companies
-  createCompany,
+    createCompany,
   getAllCompanies,
   getCompanyById,
   updateCompany,
   deleteCompany,
 
-  // Promo Codes
-  generatePromoCode,
+    generatePromoCode,
   createPromoCode,
   getAllPromoCodes,
   getPromoCodesByCompany,

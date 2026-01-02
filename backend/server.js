@@ -11,7 +11,6 @@ const allowedOrigins = [
   'http://localhost:5174',                       
   'https://omnicredit-frontend.onrender.com'     
 ];
-
 app.use(cors({
   origin: function(origin, callback) {
     if (!origin) return callback(null, true);
@@ -30,14 +29,12 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 initDatabase().catch(console.error);
 
-// Import routes
 const authRoutes = require('./src/routes/authRoutes');
 const loanRoutes = require('./src/routes/loanRoutes');
 const paymentRoutes = require('./src/routes/paymentRoutes');
 const walletRoutes = require('./src/routes/walletRoutes');
 const promoCodeRoutes = require('./src/routes/promoCodeRoutes');
 
-// Test route
 app.get('/', (req, res) => {
   res.json({
     message: 'ajilaj baina',

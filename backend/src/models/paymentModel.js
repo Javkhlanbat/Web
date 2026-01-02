@@ -7,12 +7,10 @@ const createPayment = async (paymentData) => {
   let actualInterestPaid = 0;
 
   if (amount >= interestAmount) {
-    // Хэрэв төлбөр хүүнээс их бол: эхлээд хүүг бүхэлд нь барагдуулаад, үлдсэн хэсгийг үндсэн зээлд
-    actualInterestPaid = interestAmount;
+        actualInterestPaid = interestAmount;
     principalAmount = amount - interestAmount;
   } else {
-    // Хэрэв төлбөр хүүнээс бага бол: зөвхөн хүүг хэсэгчлэн төлнө
-    actualInterestPaid = amount;
+        actualInterestPaid = amount;
     principalAmount = 0;
   }
 
@@ -114,8 +112,7 @@ const getLoanBalance = async (loanId) => {
   );
   let accruedInterest = 0;
   accruedInterest = principalBalance * monthlyInterestRate;
-  // Нийт үлдэгдэл = Үндсэн үлдэгдэл + Хуримтлагдсан хүү - Төлсөн хүү
-  const totalBalance = principalBalance + accruedInterest;
+    const totalBalance = principalBalance + accruedInterest;
 
   return {
     original_amount: originalAmount,

@@ -1,7 +1,3 @@
-/**
- * Login Page Web Component
- * User authentication page
- */
 
 import { AuthAPI, TokenManager, UserManager } from '../services/api.js';
 import router from '../router.js';
@@ -17,10 +13,7 @@ class LoginPage extends HTMLElement {
         this.attachEventListeners();
     }
 
-    /**
-     * Handle form submission
-     */
-    async handleSubmit(e) {
+        async handleSubmit(e) {
         e.preventDefault();
 
         if (this.isLoading) return;
@@ -64,10 +57,7 @@ class LoginPage extends HTMLElement {
         }
     }
 
-    /**
-     * Update button state
-     */
-    updateButtonState() {
+        updateButtonState() {
         const btn = this.querySelector('.submit-btn');
         if (btn) {
             btn.disabled = this.isLoading;
@@ -75,10 +65,7 @@ class LoginPage extends HTMLElement {
         }
     }
 
-    /**
-     * Show error message
-     */
-    showError(message) {
+        showError(message) {
         const errorEl = this.querySelector('.error-message');
         if (errorEl) {
             errorEl.textContent = message;
@@ -89,10 +76,7 @@ class LoginPage extends HTMLElement {
         }
     }
 
-    /**
-     * Show success message
-     */
-    showSuccess(message) {
+        showSuccess(message) {
         const successEl = this.querySelector('.success-message');
         if (successEl) {
             successEl.textContent = message;
@@ -100,10 +84,7 @@ class LoginPage extends HTMLElement {
         }
     }
 
-    /**
-     * Attach event listeners
-     */
-    attachEventListeners() {
+        attachEventListeners() {
         const form = this.querySelector('.login-form');
         if (form) {
             form.addEventListener('submit', (e) => this.handleSubmit(e));
@@ -119,10 +100,7 @@ class LoginPage extends HTMLElement {
         });
     }
 
-    /**
-     * Render component
-     */
-    render() {
+        render() {
         this.innerHTML = `
             <div class="login-page">
                 <app-nav></app-nav>

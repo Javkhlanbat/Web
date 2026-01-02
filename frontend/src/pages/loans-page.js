@@ -1,7 +1,3 @@
-/**
- * My Loans Page Web Component
- * Display all user's loans with status and details
- */
 
 import { LoansAPI } from '../services/api.js';
 import router from '../router.js';
@@ -18,10 +14,7 @@ class LoansPage extends HTMLElement {
         await this.loadLoans();
     }
 
-    /**
-     * Load user's loans from API
-     */
-    async loadLoans() {
+        async loadLoans() {
         try {
             this.isLoading = true;
             this.updateLoadingState();
@@ -39,20 +32,14 @@ class LoansPage extends HTMLElement {
         }
     }
 
-    /**
-     * Update loading state
-     */
-    updateLoadingState() {
+        updateLoadingState() {
         const container = this.querySelector('.loans-container');
         if (container && this.isLoading) {
             container.innerHTML = '<div class="loading-spinner">Уншиж байна...</div>';
         }
     }
 
-    /**
-     * Show error message
-     */
-    showError(message) {
+        showError(message) {
         const errorEl = this.querySelector('.error-message');
         if (errorEl) {
             errorEl.textContent = message;
@@ -60,17 +47,11 @@ class LoansPage extends HTMLElement {
         }
     }
 
-    /**
-     * Format number with commas
-     */
-    formatNumber(num) {
+        formatNumber(num) {
         return new Intl.NumberFormat('mn-MN').format(num || 0);
     }
 
-    /**
-     * Format date
-     */
-    formatDate(dateString) {
+        formatDate(dateString) {
         if (!dateString) return '-';
         const date = new Date(dateString);
         return date.toLocaleDateString('mn-MN', {
@@ -80,10 +61,7 @@ class LoansPage extends HTMLElement {
         });
     }
 
-    /**
-     * Get status badge HTML
-     */
-    getStatusBadge(status) {
+        getStatusBadge(status) {
         const statusMap = {
             'pending': { label: 'Хүлээгдэж байна', class: 'warning' },
             'approved': { label: 'Зөвшөөрөгдсөн', class: 'success' },
@@ -96,10 +74,7 @@ class LoansPage extends HTMLElement {
         return `<span class="badge badge-${statusInfo.class}">${statusInfo.label}</span>`;
     }
 
-    /**
-     * Get loan type label
-     */
-    getLoanTypeLabel(type) {
+        getLoanTypeLabel(type) {
         const typeMap = {
             'consumer': 'Хэрэглээний зээл',
             'purchase': 'Худалдан авалтын зээл',
@@ -108,24 +83,15 @@ class LoansPage extends HTMLElement {
         return typeMap[type] || type;
     }
 
-    /**
-     * Handle view loan details
-     */
-    handleViewLoan(loanId) {
+        handleViewLoan(loanId) {
         router.navigate(`/loan-details/${loanId}`);
     }
 
-    /**
-     * Handle make payment
-     */
-    handleMakePayment(loanId) {
+        handleMakePayment(loanId) {
         router.navigate(`/payment?loanId=${loanId}`);
     }
 
-    /**
-     * Attach event listeners
-     */
-    attachEventListeners() {
+        attachEventListeners() {
         // View loan buttons
         this.querySelectorAll('.view-loan-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
@@ -149,10 +115,7 @@ class LoansPage extends HTMLElement {
         }
     }
 
-    /**
-     * Get loans list HTML
-     */
-    getLoansListHTML() {
+        getLoansListHTML() {
         if (this.isLoading) {
             return '<div class="loading-spinner">Уншиж байна...</div>';
         }
@@ -244,10 +207,7 @@ class LoansPage extends HTMLElement {
         `).join('');
     }
 
-    /**
-     * Render component
-     */
-    render() {
+        render() {
         this.innerHTML = `
             <div class="loans-page">
                 <app-nav></app-nav>
@@ -326,8 +286,7 @@ class LoansPage extends HTMLElement {
                     margin: 0;
                 }
 
-                /* Stats Grid */
-                .loans-stats {
+                                .loans-stats {
                     display: grid;
                     grid-template-columns: repeat(4, 1fr);
                     gap: 1rem;
@@ -363,8 +322,7 @@ class LoansPage extends HTMLElement {
                     color: var(--success);
                 }
 
-                /* Loans List */
-                .loans-list {
+                                .loans-list {
                     display: flex;
                     flex-direction: column;
                     gap: 1.5rem;
@@ -427,8 +385,7 @@ class LoansPage extends HTMLElement {
                     color: var(--text-secondary);
                 }
 
-                /* Loan Details */
-                .loan-details {
+                                .loan-details {
                     margin-bottom: 1.5rem;
                 }
 
@@ -478,16 +435,14 @@ class LoansPage extends HTMLElement {
                     line-height: var(--leading-relaxed);
                 }
 
-                /* Loan Actions */
-                .loan-actions {
+                                .loan-actions {
                     display: flex;
                     gap: 1rem;
                     padding-top: 1rem;
                     border-top: 1px solid var(--line);
                 }
 
-                /* Empty State */
-                .empty-state {
+                                .empty-state {
                     padding: 4rem 2rem;
                     text-align: center;
                 }
@@ -510,16 +465,14 @@ class LoansPage extends HTMLElement {
                     margin-bottom: 2rem;
                 }
 
-                /* Loading */
-                .loading-spinner {
+                                .loading-spinner {
                     padding: 4rem 2rem;
                     text-align: center;
                     font-size: var(--font-lg);
                     color: var(--text-muted);
                 }
 
-                /* Responsive */
-                @media (max-width: 1024px) {
+                                @media (max-width: 1024px) {
                     .loans-stats {
                         grid-template-columns: repeat(2, 1fr);
                     }

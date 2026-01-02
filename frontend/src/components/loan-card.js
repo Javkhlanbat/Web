@@ -1,7 +1,3 @@
-/**
- * Loan Card Web Component
- * Displays loan information in a card format
- */
 
 class LoanCard extends HTMLElement {
     static get observedAttributes() {
@@ -23,9 +19,7 @@ class LoanCard extends HTMLElement {
         }
     }
 
-    /**
-     * Get status badge class
-     */
+ 
     getStatusClass(status) {
         const statusMap = {
             'pending': 'badge-warning',
@@ -38,9 +32,6 @@ class LoanCard extends HTMLElement {
         return statusMap[status] || 'badge-info';
     }
 
-    /**
-     * Get status text in Mongolian
-     */
     getStatusText(status) {
         const statusMap = {
             'pending': 'Хүлээгдэж буй',
@@ -53,16 +44,10 @@ class LoanCard extends HTMLElement {
         return statusMap[status] || status;
     }
 
-    /**
-     * Format number with comma separator
-     */
     formatNumber(num) {
         return new Intl.NumberFormat('mn-MN').format(num);
     }
 
-    /**
-     * Render component
-     */
     render() {
         const loanId = this.getAttribute('loan-id') || '';
         const amount = this.getAttribute('amount') || '0';
@@ -186,8 +171,6 @@ class LoanCard extends HTMLElement {
         `;
     }
 }
-
-// Register the custom element
 customElements.define('loan-card', LoanCard);
 
 export default LoanCard;

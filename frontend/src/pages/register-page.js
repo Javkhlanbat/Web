@@ -1,7 +1,3 @@
-/**
- * Register Page Web Component
- * User registration with validation
- */
 
 import { AuthAPI } from '../services/api.js';
 import router from '../router.js';
@@ -26,45 +22,33 @@ class RegisterPage extends HTMLElement {
         this.attachEventListeners();
     }
 
-    /**
-     * Validate form
-     */
-    validateForm() {
+        validateForm() {
         const errors = [];
 
-        // First Name
         if (!this.formData.firstName || this.formData.firstName.length < 2) {
             errors.push('Нэр 2-оос дээш тэмдэгттэй байх ёстой');
         }
 
-        // Last Name
         if (!this.formData.lastName || this.formData.lastName.length < 2) {
             errors.push('Овог 2-оос дээш тэмдэгттэй байх ёстой');
         }
-
-        // Email
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!this.formData.email || !emailRegex.test(this.formData.email)) {
             errors.push('И-мэйл хаяг буруу байна');
         }
 
-        // Phone
         const phoneRegex = /^[0-9]{8}$/;
         if (!this.formData.phone || !phoneRegex.test(this.formData.phone)) {
             errors.push('Утасны дугаар 8 оронтой байх ёстой');
         }
 
-        // Register ID
         if (!this.formData.registerId || this.formData.registerId.length < 10) {
             errors.push('Регистрийн дугаар буруу байна');
         }
 
-        // Password
         if (!this.formData.password || this.formData.password.length < 6) {
             errors.push('Нууц үг 6-аас дээш тэмдэгттэй байх ёстой');
         }
-
-        // Confirm Password
         if (this.formData.password !== this.formData.confirmPassword) {
             errors.push('Нууц үг таарахгүй байна');
         }
@@ -72,15 +56,10 @@ class RegisterPage extends HTMLElement {
         return errors;
     }
 
-    /**
-     * Handle form submission
-     */
-    async handleSubmit(e) {
+        async handleSubmit(e) {
         e.preventDefault();
 
         if (this.isLoading) return;
-
-        // Get form values
         this.formData = {
             firstName: this.querySelector('#firstName').value.trim(),
             lastName: this.querySelector('#lastName').value.trim(),
@@ -91,7 +70,6 @@ class RegisterPage extends HTMLElement {
             registerId: this.querySelector('#registerId').value.trim()
         };
 
-        // Validate
         const errors = this.validateForm();
         if (errors.length > 0) {
             this.showError(errors.join(', '));
@@ -107,7 +85,6 @@ class RegisterPage extends HTMLElement {
             if (response.token && response.user) {
                 this.showSuccess('Амжилттай бүртгэгдлээ! Та нэвтэрч байна...');
 
-                // Redirect to dashboard
                 setTimeout(() => {
                     router.navigate('/dashboard');
                 }, 1000);
@@ -123,10 +100,7 @@ class RegisterPage extends HTMLElement {
         }
     }
 
-    /**
-     * Update button state
-     */
-    updateButtonState() {
+        updateButtonState() {
         const btn = this.querySelector('.submit-btn');
         if (btn) {
             btn.disabled = this.isLoading;
@@ -134,10 +108,7 @@ class RegisterPage extends HTMLElement {
         }
     }
 
-    /**
-     * Show error message
-     */
-    showError(message) {
+        showError(message) {
         const errorEl = this.querySelector('.error-message');
         if (errorEl) {
             errorEl.textContent = message;
@@ -148,10 +119,7 @@ class RegisterPage extends HTMLElement {
         }
     }
 
-    /**
-     * Show success message
-     */
-    showSuccess(message) {
+        showSuccess(message) {
         const successEl = this.querySelector('.success-message');
         if (successEl) {
             successEl.textContent = message;
@@ -159,16 +127,12 @@ class RegisterPage extends HTMLElement {
         }
     }
 
-    /**
-     * Attach event listeners
-     */
-    attachEventListeners() {
+        attachEventListeners() {
         const form = this.querySelector('.register-form');
         if (form) {
             form.addEventListener('submit', (e) => this.handleSubmit(e));
         }
 
-        // Handle links
         this.querySelectorAll('a[href^="#/"]').forEach(link => {
             link.addEventListener('click', (e) => {
                 e.preventDefault();
@@ -178,10 +142,7 @@ class RegisterPage extends HTMLElement {
         });
     }
 
-    /**
-     * Render component
-     */
-    render() {
+        render() {
         this.innerHTML = `
             <div class="register-page">
                 <app-nav></app-nav>
@@ -404,7 +365,6 @@ class RegisterPage extends HTMLElement {
     }
 }
 
-// Register the custom element
 customElements.define('register-page', RegisterPage);
 
 export default RegisterPage;

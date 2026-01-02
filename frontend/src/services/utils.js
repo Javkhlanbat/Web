@@ -4,8 +4,7 @@ const Utils = {
     const formatter = new Intl.NumberFormat('mn-MN', {
       style: 'currency',
       currency: 'MNT',
-      minimumFractionDigits: 0,  // Бутархай оронгүй
-      maximumFractionDigits: 0,
+      minimumFractionDigits: 0,        maximumFractionDigits: 0,
     });
     return formatter.format(amount).replace('MNT', '₮');
   },
@@ -18,54 +17,38 @@ const Utils = {
   },
 
   parseMoney(str) {
-    // ₮, таслал, хоосон зайг арилгаж тоо болгоно
     return parseFloat(str.replace(/[₮,\s]/g, '')) || 0;
   },
 
   calculateLoanPayment(principal, annualRate, months) {
-    // Хүү 0% бол энгийн хуваах
-    if (annualRate === 0) {
+        if (annualRate === 0) {
       return principal / months;
     }
-    // Сарын хүү тооцоолох
-    const monthlyRate = annualRate / 100 / 12;
-    // PMT томъёогоор тооцоолох
-    return (principal * monthlyRate) / (1 - Math.pow(1 + monthlyRate, -months));
+        const monthlyRate = annualRate / 100 / 12;
+        return (principal * monthlyRate) / (1 - Math.pow(1 + monthlyRate, -months));
   },
 
   generateLoanSchedule(principal, monthlyRatePercent, months) {
-    // Үндсэн дүн хамгийн багадаа 10,000₮
-    principal = Math.max(10000, +principal || 0);
+        principal = Math.max(10000, +principal || 0);
     months = Math.max(1, Math.floor(+months || 0));
 
     const monthlyRate = (+monthlyRatePercent || 0) / 100;
     let payment, balance = principal;
     const schedule = [];
 
-    // Хүү 0% бол энгийн хуваах
-    if (monthlyRate === 0) {
+        if (monthlyRate === 0) {
       payment = principal / months;
       for (let i = 1; i <= months; i++) {
-        const interest = 0;  // Хүү байхгүй
-        const principalPaid = payment;
+        const interest = 0;          const principalPaid = payment;
         balance = Math.max(0, balance - principalPaid);
         schedule.push({
-          month: i,           // Сар
-          interest,           // Хүү
-          principal: principalPaid,  // Үндсэн төлбөр
-          payment,            // Нийт төлбөр
-          balance,            // Үлдэгдэл
-        });
+          month: i,                     interest,                     principal: principalPaid,            payment,                      balance,                    });
       }
     } else {
-      // Хүүтэй зээлийн тооцоолол (PMT томъёо)
-      payment = (principal * monthlyRate) / (1 - Math.pow(1 + monthlyRate, -months));
+            payment = (principal * monthlyRate) / (1 - Math.pow(1 + monthlyRate, -months));
 
       for (let i = 1; i <= months; i++) {
-        const interest = balance * monthlyRate;  // Тухайн сарын хүү
-        const principalPaid = Math.min(payment - interest, balance);  // Үндсэн төлбөр
-        balance = Math.max(0, balance - principalPaid);  // Үлдэгдэл
-        schedule.push({
+        const interest = balance * monthlyRate;          const principalPaid = Math.min(payment - interest, balance);          balance = Math.max(0, balance - principalPaid);          schedule.push({
           month: i,
           interest,
           principal: principalPaid,
@@ -75,23 +58,17 @@ const Utils = {
       }
     }
 
-    // Нийт хүү ба төлбөр тооцоолох
-    const totalInterest = schedule.reduce((sum, item) => sum + item.interest, 0);
+        const totalInterest = schedule.reduce((sum, item) => sum + item.interest, 0);
     const totalPayment = schedule.reduce((sum, item) => sum + item.payment, 0);
 
     return {
-      payment,          // Сарын төлбөр
-      totalInterest,    // Нийт хүү
-      totalPayment,     // Нийт төлбөр
-      schedule,         // Сар бүрийн хуваарь
-    };
+      payment,                totalInterest,          totalPayment,           schedule,             };
   },
 
   formatDate(date, format = 'YYYY-MM-DD') {
     const d = new Date(date);
     const year = d.getFullYear();
-    const month = String(d.getMonth() + 1).padStart(2, '0');  // 0-11 тул +1
-    const day = String(d.getDate()).padStart(2, '0');
+    const month = String(d.getMonth() + 1).padStart(2, '0');      const day = String(d.getDate()).padStart(2, '0');
 
     return format
       .replace('YYYY', year)
@@ -131,29 +108,24 @@ const Utils = {
 
     document.body.appendChild(toast);
 
-    // Хугацаа дууссаны дараа арилгах
-    setTimeout(() => {
+        setTimeout(() => {
       toast.style.animation = 'slideOut 0.3s ease';
       setTimeout(() => toast.remove(), 300);
     }, duration);
   },
 
-  // И-мэйл шалгах
-  isValidEmail(email) {
+    isValidEmail(email) {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return re.test(email);
   },
 
-  // Утасны дугаар шалгах (Монголын формат: 8 орон)
-  isValidPhone(phone) {
+    isValidPhone(phone) {
     const re = /^[0-9]{8}$/;
     return re.test(phone.replace(/\s/g, ''));
   },
 
-  // LocalStorage хадгалах системчилсэн функцууд
-  storage: {
-    // Утга хадгалах
-    set(key, value) {
+    storage: {
+        set(key, value) {
       try {
         localStorage.setItem(key, JSON.stringify(value));
         return true;
@@ -162,8 +134,7 @@ const Utils = {
         return false;
       }
     },
-    // Утга авах
-    get(key) {
+        get(key) {
       try {
         const item = localStorage.getItem(key);
         return item ? JSON.parse(item) : null;
@@ -172,18 +143,15 @@ const Utils = {
         return null;
       }
     },
-    // Утга устгах
-    remove(key) {
+        remove(key) {
       localStorage.removeItem(key);
     },
-    // Бүгдийг цэвэрлэх
-    clear() {
+        clear() {
       localStorage.clear();
     },
   },
 
-  // Элемент рүү зөөлөн scroll хийх
-  scrollTo(element, offset = 0) {
+    scrollTo(element, offset = 0) {
     const el = typeof element === 'string'
       ? document.querySelector(element)
       : element;
@@ -195,7 +163,6 @@ const Utils = {
   },
 };
 
-// Export individual functions for React
 export const formatMoney = Utils.formatMoney.bind(Utils);
 export const formatNumber = Utils.formatNumber.bind(Utils);
 export const clamp = Utils.clamp.bind(Utils);
@@ -210,5 +177,4 @@ export const isValidPhone = Utils.isValidPhone.bind(Utils);
 export const storage = Utils.storage;
 export const scrollTo = Utils.scrollTo.bind(Utils);
 
-// Default export
 export default Utils;

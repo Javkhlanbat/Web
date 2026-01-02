@@ -1,7 +1,3 @@
-/**
- * Home Page Web Component
- * Landing page with features and call-to-actions
- */
 
 import router from '../router.js';
 
@@ -12,7 +8,6 @@ class HomePage extends HTMLElement {
     }
 
     attachEventListeners() {
-        // Handle CTA buttons
         this.querySelectorAll('a[href^="#/"]').forEach(link => {
             link.addEventListener('click', (e) => {
                 e.preventDefault();
@@ -165,8 +160,7 @@ class HomePage extends HTMLElement {
                     background: var(--bg);
                 }
 
-                /* Hero Section */
-                .hero {
+                                .hero {
                     padding: 6rem 0;
                     background: var(--gradient-soft);
                 }
@@ -205,8 +199,7 @@ class HomePage extends HTMLElement {
                     flex-wrap: wrap;
                 }
 
-                /* Features Section */
-                .features {
+                                .features {
                     padding: 4rem 0;
                 }
 
@@ -239,8 +232,7 @@ class HomePage extends HTMLElement {
                     line-height: var(--leading-relaxed);
                 }
 
-                /* Loan Types Section */
-                .loan-types {
+                                .loan-types {
                     padding: 4rem 0;
                     background: var(--bg-secondary);
                 }
@@ -285,8 +277,7 @@ class HomePage extends HTMLElement {
                     color: var(--white);
                 }
 
-                /* Stats Section */
-                .stats {
+                                .stats {
                     padding: 4rem 0;
                 }
 
@@ -315,8 +306,7 @@ class HomePage extends HTMLElement {
                     color: var(--text-secondary);
                 }
 
-                /* CTA Section */
-                .cta {
+                                .cta {
                     padding: 4rem 0;
                     background: var(--gradient-primary);
                 }
@@ -340,8 +330,7 @@ class HomePage extends HTMLElement {
                     margin-bottom: 2rem;
                 }
 
-                /* Mobile Responsive */
-                @media (max-width: 768px) {
+                                @media (max-width: 768px) {
                     .hero {
                         padding: 4rem 0;
                     }
@@ -369,8 +358,6 @@ class HomePage extends HTMLElement {
         `;
     }
 }
-
-// Register the custom element
 customElements.define('home-page', HomePage);
 
 export default HomePage;
