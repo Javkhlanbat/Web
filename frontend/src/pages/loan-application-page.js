@@ -6,7 +6,7 @@ class LoanApplicationPage extends HTMLElement {
     constructor() {
         super();
         this.isLoading = false;
-        this.loanType = 'consumer'; 
+        this.loanType = 'consumer';
         this.formData = {
             amount: '',
             duration: 12, // Default 12 months for consumer
@@ -79,24 +79,7 @@ class LoanApplicationPage extends HTMLElement {
         return new Intl.NumberFormat('mn-MN').format(num || 0);
     }
 
-        handleLoanTypeChange(type) {
-        this.loanType = type;
-        this.formData.loanType = type;
-
-        // Reset form data based on loan type
-        if (type === 'purchase') {
-            this.formData.duration = 6; // Fixed 6 months for purchase loan
-            this.formData.amount = '';
-        } else {
-            this.formData.duration = 12; // Default 12 months for consumer loan
-            this.formData.amount = '';
-        }
-
-        this.calculateLoanDetails();
-        this.render();
-        this.attachEventListeners();
-    }
-
+    
         handleAmountChange(e) {
         const value = e.target.value;
         this.formData.amount = value;
@@ -106,8 +89,16 @@ class LoanApplicationPage extends HTMLElement {
         handleDurationChange(e) {
         const value = e.target.value;
         this.formData.duration = parseInt(value) || 0;
+
+        // Update duration display
+        const durationValueEl = this.querySelector('.duration-value');
+        if (durationValueEl) {
+            durationValueEl.textContent = this.formData.duration;
+        }
+
         this.calculateLoanDetails();
     }
+
 
         validateForm() {
         const errors = [];
@@ -117,16 +108,6 @@ class LoanApplicationPage extends HTMLElement {
         // Amount validation
         if (!this.formData.amount || isNaN(amount) || amount <= 0) {
             errors.push('Зээлийн дүн оруулна уу');
-        }
-
-        // Purchase loan specific validation
-        if (this.loanType === 'purchase') {
-            if (amount < 10000) {
-                errors.push('Худалдан авалтын зээл 10,000₮-аас доошгүй байх ёстой');
-            }
-            if (amount > 3000000) {
-                errors.push('Худалдан авалтын зээл 3,000,000₮-аас ихгүй байх ёстой');
-            }
         }
 
         // Consumer loan duration validation
@@ -231,17 +212,6 @@ class LoanApplicationPage extends HTMLElement {
     }
 
         attachEventListeners() {
-        // Loan type tabs
-        const consumerTab = this.querySelector('.consumer-tab');
-        const purchaseTab = this.querySelector('.purchase-tab');
-
-        if (consumerTab) {
-            consumerTab.addEventListener('click', () => this.handleLoanTypeChange('consumer'));
-        }
-        if (purchaseTab) {
-            purchaseTab.addEventListener('click', () => this.handleLoanTypeChange('purchase'));
-        }
-
         // Form inputs
         const amountInput = this.querySelector('#loan-amount');
         const durationInput = this.querySelector('#loan-duration');
@@ -283,63 +253,28 @@ class LoanApplicationPage extends HTMLElement {
                         <p class="tab-description">2-24 сар, 2% хүү</p>
                     </div>
                 </button>
-
-                <button
-                    class="loan-type-tab purchase-tab ${this.loanType === 'purchase' ? 'active' : ''}"
-                    type="button"
-                >
-                    <div class="tab-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                            <path d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                    </div>
-                    <div class="tab-content">
-                        <h3 class="tab-title">Худалдан авалтын зээл</h3>
-                        <p class="tab-description">10,000₮ - 3,000,000₮, 6 сар</p>
-                    </div>
-                </button>
             </div>
         `;
     }
 
         getLoanInfoHTML() {
-        if (this.loanType === 'consumer') {
-            return `
-                <div class="loan-info-card">
-                    <div class="info-header">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                            <path d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                        <h3>Хэрэглээний зээлийн мэдээлэл</h3>
-                    </div>
-                    <ul class="info-list">
-                        <li>Хугацаа: 2-24 сар хүртэл</li>
-                        <li>Жилийн хүү: 2%</li>
-                        <li>Урьдчилгаа: Шаардлагагүй</li>
-                        <li>Зээлийн дүн: Таны төлбөрийн чадвараас хамаарна</li>
-                        <li>Зориулалт: Хувийн хэрэглээ, төлбөр, бусад зардал</li>
-                    </ul>
+        return `
+            <div class="loan-info-card">
+                <div class="info-header">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <h3>Хэрэглээний зээлийн мэдээлэл</h3>
                 </div>
-            `;
-        } else {
-            return `
-                <div class="loan-info-card">
-                    <div class="info-header">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                            <path d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                        <h3>Худалдан авалтын зээлийн мэдээлэл</h3>
-                    </div>
-                    <ul class="info-list">
-                        <li>Хугацаа: 6 сар (тогтмол)</li>
-                        <li>Жилийн хүү: 2%</li>
-                        <li>Зээлийн хэмжээ: 10,000₮ - 3,000,000₮</li>
-                        <li>Урьдчилгаа: Шаардлагагүй</li>
-                        <li>Зориулалт: Бараа, үйлчилгээ худалдан авах</li>
-                    </ul>
-                </div>
-            `;
-        }
+                <ul class="info-list">
+                    <li>Хугацаа: 2-24 сар хүртэл</li>
+                    <li>Жилийн хүү: 2%</li>
+                    <li>Урьдчилгаа: Шаардлагагүй</li>
+                    <li>Зээлийн дүн: Таны төлбөрийн чадвараас хамаарна</li>
+                    <li>Зориулалт: Хувийн хэрэглээ, төлбөр, бусад зардал</li>
+                </ul>
+            </div>
+        `;
     }
 
         getFormFieldsHTML() {
@@ -353,56 +288,39 @@ class LoanApplicationPage extends HTMLElement {
                         type="number"
                         id="loan-amount"
                         class="form-input"
-                        placeholder="${this.loanType === 'purchase' ? '10,000 - 3,000,000' : 'Дүнгээ оруулна уу'}"
-                        min="${this.loanType === 'purchase' ? '10000' : '1000'}"
-                        max="${this.loanType === 'purchase' ? '3000000' : ''}"
+                        placeholder="Дүнгээ оруулна уу"
+                        min="1000"
                         step="1000"
                         value="${this.formData.amount}"
                         required
                     />
-                    ${this.loanType === 'purchase' ? `
-                        <small class="form-help">Хамгийн бага: 10,000₮, Хамгийн их: 3,000,000₮</small>
-                    ` : ''}
                 </div>
 
-                ${this.loanType === 'consumer' ? `
-                    <div class="form-group">
-                        <label for="loan-duration" class="form-label">
-                            Хугацаа (сар) *
-                        </label>
-                        <div class="duration-input-wrapper">
-                            <input
-                                type="range"
-                                id="loan-duration"
-                                class="form-range"
-                                min="2"
-                                max="24"
-                                step="1"
-                                value="${this.formData.duration}"
-                            />
-                            <div class="duration-display">
-                                <span class="duration-value">${this.formData.duration}</span>
-                                <span class="duration-label">сар</span>
-                            </div>
-                        </div>
-                        <div class="duration-markers">
-                            <span>2 сар</span>
-                            <span>12 сар</span>
-                            <span>24 сар</span>
+                <div class="form-group">
+                    <label for="loan-duration" class="form-label">
+                        Хугацаа (сар) *
+                    </label>
+                    <div class="duration-input-wrapper">
+                        <input
+                            type="range"
+                            id="loan-duration"
+                            class="form-range"
+                            min="2"
+                            max="24"
+                            step="1"
+                            value="${this.formData.duration}"
+                        />
+                        <div class="duration-display">
+                            <span class="duration-value">${this.formData.duration}</span>
+                            <span class="duration-label">сар</span>
                         </div>
                     </div>
-                ` : `
-                    <div class="form-group">
-                        <label class="form-label">Хугацаа</label>
-                        <div class="fixed-duration-display">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                                <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
-                            <span>6 сар (тогтмол)</span>
-                        </div>
-                        <input type="hidden" id="loan-duration" value="6" />
+                    <div class="duration-markers">
+                        <span>2 сар</span>
+                        <span>12 сар</span>
+                        <span>24 сар</span>
                     </div>
-                `}
+                </div>
 
                 <div class="form-group">
                     <label class="form-label">Жилийн хүү</label>
@@ -413,6 +331,7 @@ class LoanApplicationPage extends HTMLElement {
                         <span>2% (тогтмол)</span>
                     </div>
                 </div>
+
 
                 <div class="form-group">
                     <label for="loan-purpose" class="form-label">
@@ -941,6 +860,37 @@ class LoanApplicationPage extends HTMLElement {
                     }
                 }
 
+                /* Promo Code Styles */
+                .promo-code-wrapper {
+                    position: relative;
+                    display: flex;
+                    align-items: center;
+                    gap: 0.5rem;
+                }
+
+                .promo-code-input {
+                    text-transform: uppercase;
+                    flex: 1;
+                }
+
+                .promo-badge {
+                    padding: 0.375rem 0.75rem;
+                    border-radius: var(--radius);
+                    font-size: 0.75rem;
+                    font-weight: var(--font-medium);
+                    white-space: nowrap;
+                }
+
+                .promo-valid {
+                    background: var(--success-light);
+                    color: var(--success);
+                }
+
+                .promo-invalid {
+                    background: var(--danger-light);
+                    color: var(--danger);
+                }
+
                 @media (max-width: 480px) {
                     .page-title {
                         font-size: var(--font-xl);
@@ -962,6 +912,11 @@ class LoanApplicationPage extends HTMLElement {
 
                     .form-card {
                         padding: 1rem;
+                    }
+
+                    .promo-code-wrapper {
+                        flex-direction: column;
+                        align-items: stretch;
                     }
                 }
             </style>

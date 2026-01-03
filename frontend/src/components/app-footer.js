@@ -1,4 +1,3 @@
-
 class AppFooter extends HTMLElement {
     connectedCallback() {
         this.render();
@@ -136,7 +135,6 @@ class AppFooter extends HTMLElement {
         `;
     }
 }
-
 customElements.define('app-footer', AppFooter);
 
 export default AppFooter;

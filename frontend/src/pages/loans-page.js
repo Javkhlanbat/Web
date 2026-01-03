@@ -99,22 +99,17 @@ class LoansPage extends HTMLElement {
                 this.handleViewLoan(loanId);
             });
         });
-
-        // Make payment buttons
         this.querySelectorAll('.pay-loan-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 const loanId = e.target.dataset.loanId;
                 this.handleMakePayment(loanId);
             });
         });
-
-        // Refresh button
         const refreshBtn = this.querySelector('.refresh-btn');
         if (refreshBtn) {
             refreshBtn.addEventListener('click', () => this.loadLoans());
         }
     }
-
         getLoansListHTML() {
         if (this.isLoading) {
             return '<div class="loading-spinner">Уншиж байна...</div>';
@@ -126,7 +121,7 @@ class LoansPage extends HTMLElement {
                     <div class="empty-icon">📋</div>
                     <h3 class="empty-title">Зээл олдсонгүй</h3>
                     <p class="empty-text">Та одоогоор ямар ч зээл аваагүй байна.</p>
-                    <a href="#/loan-application" class="btn btn-primary">Зээл хүсэх</a>
+                    <a href="#/application" class="btn btn-primary">Зээл хүсэх</a>
                 </div>
             `;
         }

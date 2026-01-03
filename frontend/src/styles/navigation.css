@@ -190,6 +190,11 @@
   box-shadow: 0 2px 8px rgba(74, 144, 226, 0.3);
 }
 
+.profile-name {
+  font-size: 13px;
+  font-weight: 500;
+}
+
 .profile-trigger:hover {
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(74, 144, 226, 0.4);

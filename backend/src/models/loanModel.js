@@ -48,7 +48,10 @@ const getLoanById = async (id) => {
 
 const getAllLoans = async () => {
   const result = await query(
-    `SELECT l.*, u.email, u.first_name, u.last_name
+    `SELECT l.id, l.user_id, l.loan_type, l.amount, l.interest_rate, l.term_months, 
+            l.monthly_payment, l.total_amount, l.purpose, l.monthly_income, l.occupation, 
+            l.status, l.approved_at, l.disbursed_at, l.created_at,
+            u.email as user_email, CONCAT(u.first_name, ' ', u.last_name) as user_name
      FROM loans l
      JOIN users u ON l.user_id = u.id
      ORDER BY l.created_at DESC`

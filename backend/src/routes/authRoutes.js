@@ -4,6 +4,7 @@ const {
   register,
   login,
   getProfile,
+  updateProfile,
   uploadProfileImage,
   verifyToken,
   adminGetAllUsers,
@@ -12,18 +13,13 @@ const {
   createAdminUser
 } = require('../controllers/authController');
 const { authMiddleware, adminMiddleware } = require('../middleware/authMiddleware');
-
-// Public routes
 router.post('/register', register);
 router.post('/login', login);
 router.post('/create-admin', createAdminUser);
-
-// Protected routes
 router.get('/profile', authMiddleware, getProfile);
+router.put('/profile', authMiddleware, updateProfile);
 router.post('/upload-profile-image', authMiddleware, uploadProfileImage);
 router.get('/verify', authMiddleware, verifyToken);
-
-// Admin routes
 router.get('/users', authMiddleware, adminMiddleware, adminGetAllUsers);
 router.get('/users/:userId', authMiddleware, adminMiddleware, adminGetUserDetails);
 router.delete('/users/:userId', authMiddleware, adminMiddleware, adminDeleteUser);

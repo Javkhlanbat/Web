@@ -164,9 +164,15 @@ const initDatabase = async () => {
         ) THEN
           ALTER TABLE payments ADD COLUMN interest_amount DECIMAL(12, 2) DEFAULT 0;
         END IF;
+        IF NOT EXISTS (
+          SELECT 1 FROM information_schema.columns
+          WHERE table_name = 'payments' AND column_name = 'payment_date'
+        ) THEN
+          ALTER TABLE payments ADD COLUMN payment_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
+        END IF;
       END $$;
     `);
-    console.log('Payments table-д principal_amount, interest_amount columns нэмэгдлээ');
+    console.log('Payments table-д principal_amount, interest_amount, payment_date columns нэмэгдлээ');
 
     await pool.query(`
       CREATE TABLE IF NOT EXISTS wallets (
@@ -183,12 +189,10 @@ const initDatabase = async () => {
         id SERIAL PRIMARY KEY,
         wallet_id INTEGER REFERENCES wallets(id) ON DELETE CASCADE,
         user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
-        type VARCHAR(50) NOT NULL,
+        loan_id INTEGER REFERENCES loans(id) ON DELETE SET NULL,
+        transaction_type VARCHAR(50) NOT NULL,
         amount DECIMAL(12, 2) NOT NULL,
         description TEXT,
-        reference_id INTEGER,
-        reference_type VARCHAR(50),
-        balance_after DECIMAL(12, 2) NOT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
     `);
@@ -236,8 +240,6 @@ const initDatabase = async () => {
       END $$;
     `);
     console.log('Loans table-д promo_code_id column нэмэгдлээ');
-
-    // Add invoice_code column to loans table for purchase loans
     await pool.query(`
       DO $$
       BEGIN
@@ -250,8 +252,6 @@ const initDatabase = async () => {
       END $$;
     `);
     console.log('Loans table-д invoice_code column нэмэгдлээ');
-
-    // Add is_admin column to users table
     await pool.query(`
       DO $$
       BEGIN

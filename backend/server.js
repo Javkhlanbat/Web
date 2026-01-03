@@ -33,7 +33,6 @@ const authRoutes = require('./src/routes/authRoutes');
 const loanRoutes = require('./src/routes/loanRoutes');
 const paymentRoutes = require('./src/routes/paymentRoutes');
 const walletRoutes = require('./src/routes/walletRoutes');
-const promoCodeRoutes = require('./src/routes/promoCodeRoutes');
 
 app.get('/', (req, res) => {
   res.json({
@@ -61,7 +60,6 @@ app.use('/api/auth', authRoutes);
 app.use('/api/loans', loanRoutes);
 app.use('/api/payments', paymentRoutes);
 app.use('/api/wallet', walletRoutes);
-app.use('/api/promo', promoCodeRoutes);
 
 app.use((err, req, res, next) => {
   console.error(err.stack);

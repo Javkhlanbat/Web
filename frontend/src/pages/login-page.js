@@ -20,8 +20,6 @@ class LoginPage extends HTMLElement {
 
         const phone = this.querySelector('#phone').value;
         const password = this.querySelector('#password').value;
-
-        // Validation
         if (!phone || !password) {
             this.showError('Утас болон нууц үгээ оруулна уу');
             return;
@@ -34,14 +32,9 @@ class LoginPage extends HTMLElement {
             const response = await AuthAPI.login({ phone, password });
 
             if (response.token && response.user) {
-                // Save auth data
                 TokenManager.setToken(response.token);
                 UserManager.setUser(response.user);
-
-                // Success message
                 this.showSuccess('Амжилттай нэвтэрлээ!');
-
-                // Redirect based on user role
                 setTimeout(() => {
                     if (response.user.is_admin) {
                         router.navigate('/admin');
@@ -93,8 +86,6 @@ class LoginPage extends HTMLElement {
         if (form) {
             form.addEventListener('submit', (e) => this.handleSubmit(e));
         }
-
-        // Handle links
         this.querySelectorAll('a[href^="#/"]').forEach(link => {
             link.addEventListener('click', (e) => {
                 e.preventDefault();

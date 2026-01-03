@@ -11,12 +11,6 @@ const {
   getPurchaseLoanByInvoice
 } = require('../models/loanModel');
 
-const {
-  validatePromoCode,
-  getPromoCodeByCode,
-  incrementPromoCodeUsage
-} = require('../models/promoCodeModel');
-
 const calculateInterestRate = (loanType, amount, duration) => {
   const rates = {
     'consumer': 2.0,       'purchase': 2.0      };
@@ -296,8 +290,19 @@ const adminGetAllLoans = async (req, res) => {
 };
 const adminUpdateLoanStatus = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { loanId } = req.params;
     const { status } = req.body;
+
+    console.log('Admin update loan status - ID:', loanId, 'Status:', status);
+
+    // Validate loan ID
+    const parsedId = parseInt(loanId);
+    if (isNaN(parsedId) || parsedId <= 0) {
+      return res.status(400).json({
+        error: 'Буруу зээлийн ID',
+        message: `Зээлийн ID бүхэл тоо байх ёстой (мөнгөөлөлтийг авсан: ${loanId})`
+      });
+    }
 
     const validStatuses = ['pending', 'approved', 'rejected', 'completed'];
     if (!validStatuses.includes(status)) {
@@ -306,8 +311,9 @@ const adminUpdateLoanStatus = async (req, res) => {
         message: `Статус нь ${validStatuses.join(', ')}-ийн аль нэг байх ёстой`
       });
     }
+
     if (status === 'approved') {
-      const existingLoan = await getLoanById(parseInt(id));
+      const existingLoan = await getLoanById(parsedId);
       if (!existingLoan) {
         return res.status(404).json({
           error: 'Зээл олдсонгүй'
@@ -318,12 +324,15 @@ const adminUpdateLoanStatus = async (req, res) => {
         return res.status(400).json({
           error: 'Зөвхөн хүлээгдэж буй зээлийг зөвшөөрөх боломжтой'
         });
-      }  
-      const loan = await disburseLoan(parseInt(id));
-      if (!loan) {
-        await updateLoanStatus(parseInt(id), 'approved');
-        const disbursedLoan = await disburseLoan(parseInt(id));
+      }
 
+      // Update to approved first
+      const approvedLoan = await updateLoanStatus(parsedId, 'approved');
+      console.log('Loan approved, now disbursing:', { id: parsedId, userId: approvedLoan.user_id });
+
+      // Then disburse
+      const disbursedLoan = await disburseLoan(parsedId);
+      if (disbursedLoan) {
         return res.json({
           message: 'Зээл зөвшөөрөгдөж, хэрэглэгчийн wallet-д шилжүүлэгдлээ',
           loan: disbursedLoan,
@@ -335,15 +344,13 @@ const adminUpdateLoanStatus = async (req, res) => {
       }
 
       return res.json({
-        message: 'Зээл зөвшөөрөгдөж, хэрэглэгчийн wallet-д шилжүүлэгдлээ',
-        loan,
-        disbursement: {
-          amount: loan.amount,
-          recipient_user_id: loan.user_id
-        }
+        message: 'Зээл батлагдлаа',
+        loan: approvedLoan
       });
     }
-    const loan = await updateLoanStatus(parseInt(id), status);
+
+    // For other statuses (rejected, completed), just update
+    const loan = await updateLoanStatus(parsedId, status);
 
     if (!loan) {
       return res.status(404).json({
@@ -366,8 +373,10 @@ const adminUpdateLoanStatus = async (req, res) => {
 };
 const adminDisburseLoan = async (req, res) => {
   try {
-    const { id } = req.params;
-    const existingLoan = await getLoanById(parseInt(id));
+    const { loanId } = req.params;
+    const parsedId = parseInt(loanId);
+
+    const existingLoan = await getLoanById(parsedId);
 
     if (!existingLoan) {
       return res.status(404).json({
@@ -383,7 +392,7 @@ const adminDisburseLoan = async (req, res) => {
       });
     }
 
-    const loan = await disburseLoan(parseInt(id));
+    const loan = await disburseLoan(parsedId);
 
     if (!loan) {
       return res.status(500).json({

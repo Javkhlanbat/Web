@@ -1,4 +1,4 @@
-import { AdminAPI, AuthAPI } from '../services/api.js';
+import { AdminAPI, UserManager } from '../services/api.js';
 import router from '../router.js';
 
 class AdminPage extends HTMLElement {
@@ -20,7 +20,7 @@ class AdminPage extends HTMLElement {
     }
 
     async connectedCallback() {
-        const user = AuthAPI.getCurrentUser();
+        const user = UserManager.getUser();
         if (!user || !user.is_admin) {
             router.navigate('/dashboard');
             return;
@@ -68,11 +68,21 @@ class AdminPage extends HTMLElement {
 
             if (this.activeTab === 'loans') {
                 const response = await AdminAPI.getAllLoans();
-                this.loans = response.loans || [];
+                console.log('Admin loans response:', response);
+                this.loans = Array.isArray(response?.loans) ? response.loans : [];
+                console.log('Raw loans:', this.loans);
+                // Log each loan's ID
+                this.loans.forEach((loan, idx) => {
+                    console.log(`Loan ${idx}:`, { id: loan.id, type: typeof loan.id, isNaN: isNaN(loan.id) });
+                });
+                // Ensure all loans have valid IDs
+                this.loans = this.loans.filter(loan => loan && loan.id && !isNaN(loan.id));
+                console.log('Filtered loans:', this.loans);
                 this.calculateStats();
             } else if (this.activeTab === 'users') {
                 const response = await AdminAPI.getAllUsers();
-                this.users = response.users || [];
+                console.log('Admin users response:', response);
+                this.users = Array.isArray(response?.users) ? response.users : [];
             }
 
             this.isLoading = false;
@@ -80,12 +90,17 @@ class AdminPage extends HTMLElement {
         } catch (error) {
             console.error('Load data error:', error);
             this.isLoading = false;
+            this.loans = [];
+            this.users = [];
             this.showError(error.message || 'Мэдээлэл ачааллахад алдаа гарлаа');
             this.render();
         }
     }
 
     calculateStats() {
+        if (!Array.isArray(this.loans)) {
+            this.loans = [];
+        }
         this.stats.totalLoans = this.loans.length;
         this.stats.pendingLoans = this.loans.filter(l => l.status === 'pending').length;
         this.stats.approvedLoans = this.loans.filter(l => l.status === 'approved' || l.status === 'active').length;
@@ -135,6 +150,13 @@ class AdminPage extends HTMLElement {
     }
 
     async handleApproveLoan(loanId) {
+        console.log('handleApproveLoan called with loanId:', loanId, 'type:', typeof loanId);
+        
+        if (isNaN(loanId) || !loanId) {
+            this.showError('Зээлийн ID буруу байна');
+            return;
+        }
+
         if (!confirm('Энэ зээлийг батлах уу? Мөнгө хэрэглэгчийн wallet-д шилжинэ.')) {
             return;
         }
@@ -150,6 +172,13 @@ class AdminPage extends HTMLElement {
     }
 
     async handleRejectLoan(loanId) {
+        console.log('handleRejectLoan called with loanId:', loanId, 'type:', typeof loanId);
+        
+        if (isNaN(loanId) || !loanId) {
+            this.showError('Зээлийн ID буруу байна');
+            return;
+        }
+
         if (!confirm('Энэ зээлийг татгалзах уу?')) {
             return;
         }
@@ -178,6 +207,7 @@ class AdminPage extends HTMLElement {
             this.showError(error.message || 'Хэрэглэгч устгахад алдаа гарлаа');
         }
     }
+
 
     handleSearch(e) {
         this.searchQuery = e.target.value.toLowerCase();
@@ -243,33 +273,44 @@ class AdminPage extends HTMLElement {
     }
 
     attachEventListeners() {
-        // Tab switching
         this.querySelectorAll('.tab-btn').forEach(btn => {
             btn.addEventListener('click', () => {
                 const tab = btn.dataset.tab;
                 this.switchTab(tab);
             });
         });
-
-        // Search
         const searchInput = this.querySelector('.search-input');
         if (searchInput) {
             searchInput.addEventListener('input', (e) => this.handleSearch(e));
         }
-
-        // Approve loan buttons
         this.querySelectorAll('.approve-loan-btn').forEach(btn => {
             btn.addEventListener('click', () => {
-                const loanId = btn.dataset.loanId;
-                this.handleApproveLoan(loanId);
+                const loanIdAttr = btn.getAttribute('data-loan-id');
+                console.log('Approve button - raw attribute:', loanIdAttr);
+                const parsedId = parseInt(loanIdAttr);
+                console.log('Approve button clicked:', { attribute: loanIdAttr, parsed: parsedId, isValid: !isNaN(parsedId) && parsedId > 0 });
+                if (!isNaN(parsedId) && parsedId > 0) {
+                    this.handleApproveLoan(parsedId);
+                } else {
+                    console.error('Invalid loan ID:', loanIdAttr);
+                    this.showError('Зээлийн ID буруу байна');
+                }
             });
         });
 
         // Reject loan buttons
         this.querySelectorAll('.reject-loan-btn').forEach(btn => {
             btn.addEventListener('click', () => {
-                const loanId = btn.dataset.loanId;
-                this.handleRejectLoan(loanId);
+                const loanIdAttr = btn.getAttribute('data-loan-id');
+                console.log('Reject button - raw attribute:', loanIdAttr);
+                const parsedId = parseInt(loanIdAttr);
+                console.log('Reject button clicked:', { attribute: loanIdAttr, parsed: parsedId, isValid: !isNaN(parsedId) && parsedId > 0 });
+                if (!isNaN(parsedId) && parsedId > 0) {
+                    this.handleRejectLoan(parsedId);
+                } else {
+                    console.error('Invalid loan ID:', loanIdAttr);
+                    this.showError('Зээлийн ID буруу байна');
+                }
             });
         });
 
@@ -397,10 +438,10 @@ class AdminPage extends HTMLElement {
                                                     <td>
                                                         <div class="action-buttons">
                                                             ${loan.status === 'pending' ? `
-                                                                <button class="btn btn-sm btn-success approve-loan-btn" data-loan-id="${loan.id}">
+                                                                <button class="btn btn-sm btn-success approve-loan-btn" data-loan-id="${loan.id}" title="Зээлийн ID: ${loan.id}">
                                                                     Батлах
                                                                 </button>
-                                                                <button class="btn btn-sm btn-danger reject-loan-btn" data-loan-id="${loan.id}">
+                                                                <button class="btn btn-sm btn-danger reject-loan-btn" data-loan-id="${loan.id}" title="Зээлийн ID: ${loan.id}">
                                                                     Татгалзах
                                                                 </button>
                                                             ` : `
@@ -414,7 +455,7 @@ class AdminPage extends HTMLElement {
                                     </table>
                                 </div>
                             `}
-                        ` : `
+                        ` : this.activeTab === 'users' ? `
                             ${filteredUsers.length === 0 ? `
                                 <div class="empty-state card">
                                     <h3>Хэрэглэгч олдсонгүй</h3>
@@ -463,7 +504,7 @@ class AdminPage extends HTMLElement {
                                     </table>
                                 </div>
                             `}
-                        `}
+                        ` : ''}
                     </div>
                 </div>
 

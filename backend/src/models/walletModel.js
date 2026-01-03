@@ -44,9 +44,9 @@ const addToWallet = async (userId, amount, description, loanId = null, transacti
     }
 
     await client.query(
-      `INSERT INTO wallet_transactions (wallet_id, loan_id, amount, transaction_type, description)
-       VALUES ($1, $2, $3, $4, $5)`,
-      [wallet.id, loanId, amount, transactionType, description]
+      `INSERT INTO wallet_transactions (wallet_id, user_id, loan_id, amount, transaction_type, description)
+       VALUES ($1, $2, $3, $4, $5, $6)`,
+      [wallet.id, userId, loanId, amount, transactionType, description]
     );
 
     await client.query('COMMIT');
@@ -86,9 +86,9 @@ const deductFromWallet = async (userId, amount, description, loanId = null, tran
     );
 
     await client.query(
-      `INSERT INTO wallet_transactions (wallet_id, loan_id, amount, transaction_type, description)
-       VALUES ($1, $2, $3, $4, $5)`,
-      [wallet.id, loanId, -amount, transactionType, description]
+      `INSERT INTO wallet_transactions (wallet_id, user_id, loan_id, amount, transaction_type, description)
+       VALUES ($1, $2, $3, $4, $5, $6)`,
+      [wallet.id, userId, loanId, -amount, transactionType, description]
     );
 
     await client.query('COMMIT');

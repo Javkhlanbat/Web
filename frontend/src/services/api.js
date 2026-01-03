@@ -233,6 +233,10 @@ const AuthAPI = {
         return response.user;
     },
 
+    async updateProfile(profileData) {
+        return await api.put('/auth/profile', profileData);
+    },
+
     async uploadProfileImage(imageBase64) {
         return await api.post('/auth/profile/image', { profile_image: imageBase64 });
     },
@@ -263,7 +267,7 @@ const LoansAPI = {
     },
 
     async getMyLoans() {
-        return await api.get('/loans/my');
+        return await api.get('/loans/my-loans');
     },
 
     async getLoanById(loanId) {
@@ -301,7 +305,7 @@ const PaymentsAPI = {
     },
 
     async getMyPayments() {
-        return await api.get('/payments/my');
+        return await api.get('/payments/my-payments');
     },
 
     async getLoanPayments(loanId) {
@@ -320,7 +324,7 @@ const PaymentsAPI = {
     },
 
     async getAllPayments() {
-        return await api.get('/payments/admin/all');
+        return await api.get('/payments/all');
     }
 };
 
@@ -346,6 +350,10 @@ const WalletAPI = {
 };
 
 const PromoCodeAPI = {
+    async checkCode(code) {
+        return await api.get(`/promo-codes/check/${code}`);
+    },
+
     async verifyCode(code) {
         return await api.post('/promo/verify', { code });
     },
@@ -386,4 +394,43 @@ const PromoCodeAPI = {
     }
 };
 
-export { API_CONFIG, TokenManager, UserManager, LastPageManager, api, AuthAPI, LoansAPI, PaymentsAPI, WalletAPI, PromoCodeAPI };
+const AdminAPI = {
+    async getAllLoans() {
+        const response = await api.get('/loans');
+        return response;
+    },
+
+    async getAllUsers() {
+        const response = await api.get('/auth/users');
+        return response;
+    },
+
+    async updateLoanStatus(loanId, status) {
+        return await api.request(`/loans/${loanId}/status`, {
+            method: 'PATCH',
+            body: JSON.stringify({ status })
+        });
+    },
+
+    async deleteUser(userId) {
+        return await api.delete(`/auth/users/${userId}`);
+    },
+
+    async getAllPromoCodes() {
+        return await api.get('/promo-codes');
+    },
+
+    async createPromoCode(promoData) {
+        return await api.post('/promo-codes', promoData);
+    },
+
+    async deletePromoCode(promoId) {
+        return await api.delete(`/promo-codes/${promoId}`);
+    },
+
+    getCurrentUser() {
+        return UserManager.getUser();
+    }
+};
+
+export { API_CONFIG, TokenManager, UserManager, LastPageManager, api, AuthAPI, LoansAPI, PaymentsAPI, WalletAPI, PromoCodeAPI, AdminAPI };

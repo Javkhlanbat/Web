@@ -1,8 +1,3 @@
-/**
- * Wallet History Page Web Component
- * Display wallet transaction history
- */
-
 import { WalletAPI } from '../services/api.js';
 import router from '../router.js';
 

@@ -101,7 +101,6 @@ class AppNav extends HTMLElement {
                             <span class="logo-text">OmniCredit</span>
                         </a>
 
-                        <!-- Desktop Navigation -->
                         <div class="nav-links hide-mobile">
                             <a href="#/" class="nav-link ${currentPath === '/' ? 'active' : ''}">Нүүр</a>
                             <a href="#/zeelhuudas" class="nav-link ${currentPath === '/zeelhuudas' ? 'active' : ''}">Зээлийн тооцоолуур</a>
@@ -109,7 +108,6 @@ class AppNav extends HTMLElement {
                             <a href="#/faq" class="nav-link ${currentPath === '/faq' ? 'active' : ''}">Түгээмэл асуулт</a>
                         </div>
 
-                        <!-- Right Side -->
                         <div class="nav-right">
                             <!-- Theme Toggle -->
                             <theme-toggle></theme-toggle>
@@ -128,7 +126,7 @@ class AppNav extends HTMLElement {
                                         <a href="#/profile" class="dropdown-item">Профайл</a>
                                         <a href="#/my-loans" class="dropdown-item">Миний зээл</a>
                                         <a href="#/wallet-history" class="dropdown-item">Түрийвч</a>
-                                        ${this.user?.role === 'admin' ? `
+                                        ${this.user?.is_admin ? `
                                             <div class="dropdown-divider"></div>
                                             <a href="#/admin" class="dropdown-item">Админ самбар</a>
                                         ` : ''}
@@ -144,7 +142,6 @@ class AppNav extends HTMLElement {
                                 </div>
                             `}
 
-                            <!-- Mobile Menu Toggle -->
                             <button class="mobile-toggle show-mobile" aria-label="Toggle mobile menu">
                                 <svg width="24" height="24" fill="currentColor" viewBox="0 0 20 20">
                                     <path fill-rule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"/>
@@ -166,7 +163,7 @@ class AppNav extends HTMLElement {
                             <a href="#/dashboard" class="mobile-link">Dashboard</a>
                             <a href="#/profile" class="mobile-link">Профайл</a>
                             <a href="#/my-loans" class="mobile-link">Миний зээл</a>
-                            ${this.user?.role === 'admin' ? `
+                            ${this.user?.is_admin ? `
                                 <a href="#/admin" class="mobile-link">Админ самбар</a>
                             ` : ''}
                             <a href="#" class="mobile-link logout-btn text-danger">Гарах</a>

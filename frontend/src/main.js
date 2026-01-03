@@ -56,7 +56,7 @@ router.beforeEach((to, from, next) => {
     }
 
         if (to.meta.requiresAdmin) {
-        if (!user || user.role !== 'admin') {
+        if (!user || !user.is_admin) {
             console.log('Route requires admin role, redirecting to dashboard');
             next('/dashboard');
             return;

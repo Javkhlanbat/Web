@@ -1,9 +1,5 @@
-/**
- * Profile Page Web Component
- * User profile management
- */
 
-import { AuthAPI } from '../services/api.js';
+import { AuthAPI, UserManager } from '../services/api.js';
 import router from '../router.js';
 
 class ProfilePage extends HTMLElement {
@@ -15,10 +11,19 @@ class ProfilePage extends HTMLElement {
     }
 
     async connectedCallback() {
-        this.user = AuthAPI.getCurrentUser();
+        this.user = UserManager.getUser();
         if (!this.user) {
-            router.navigate('/login');
-            return;
+            // Try to fetch from server
+            try {
+                this.user = await AuthAPI.getProfile();
+                if (this.user) {
+                    UserManager.setUser(this.user);
+                }
+            } catch (error) {
+                console.error('Failed to fetch profile:', error);
+                router.navigate('/login');
+                return;
+            }
         }
 
         this.formData = { ...this.user };
@@ -55,9 +60,9 @@ class ProfilePage extends HTMLElement {
 
         try {
             const updateData = {
-                name: this.formData.name,
-                phone: this.formData.phone,
-                address: this.formData.address
+                first_name: this.formData.first_name,
+                last_name: this.formData.last_name,
+                phone: this.formData.phone
             };
 
             const response = await AuthAPI.updateProfile(updateData);
@@ -151,10 +156,10 @@ class ProfilePage extends HTMLElement {
                         <div class="profile-card card">
                             <div class="profile-header">
                                 <div class="profile-avatar">
-                                    ${this.user.name ? this.user.name.charAt(0).toUpperCase() : 'U'}
+                                    ${this.user.first_name ? this.user.first_name.charAt(0).toUpperCase() : 'U'}
                                 </div>
                                 <div class="profile-info">
-                                    <h2 class="profile-name">${this.user.name || 'Нэргүй хэрэглэгч'}</h2>
+                                    <h2 class="profile-name">${(this.user.first_name || '') + ' ' + (this.user.last_name || '') || 'Нэргүй хэрэглэгч'}</h2>
                                     <p class="profile-email">${this.user.email}</p>
                                     ${this.user.is_admin ? '<span class="badge badge-primary">Admin</span>' : ''}
                                 </div>
@@ -183,12 +188,23 @@ class ProfilePage extends HTMLElement {
                             ` : `
                                 <form class="profile-form">
                                     <div class="form-group">
+                                        <label class="form-label">Овог</label>
+                                        <input
+                                            type="text"
+                                            name="last_name"
+                                            class="form-input profile-input"
+                                            value="${this.formData.last_name || ''}"
+                                            required
+                                        />
+                                    </div>
+
+                                    <div class="form-group">
                                         <label class="form-label">Нэр</label>
                                         <input
                                             type="text"
-                                            name="name"
+                                            name="first_name"
                                             class="form-input profile-input"
-                                            value="${this.formData.name || ''}"
+                                            value="${this.formData.first_name || ''}"
                                             required
                                         />
                                     </div>
@@ -202,16 +218,6 @@ class ProfilePage extends HTMLElement {
                                             value="${this.formData.phone || ''}"
                                             placeholder="99999999"
                                         />
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label class="form-label">Хаяг</label>
-                                        <textarea
-                                            name="address"
-                                            class="form-input profile-input"
-                                            rows="3"
-                                            placeholder="Хаягаа оруулна уу"
-                                        >${this.formData.address || ''}</textarea>
                                     </div>
 
                                     <div class="form-actions">

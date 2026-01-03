@@ -37,17 +37,11 @@ class DashboardPage extends HTMLElement {
                 PaymentsAPI.getMyPayments().catch(() => ({ payments: [] })),
                 WalletAPI.getMyWallet().catch(() => null)
             ]);
-
-            // Store data
             this.userData = userData || UserManager.getUser();
             this.loans = loansResponse.loans || [];
             this.payments = paymentsResponse.payments || [];
             this.wallet = walletResponse;
-
-            // Calculate stats
             this.calculateStats();
-
-            // Update UI
             this.isLoading = false;
             this.render();
         } catch (error) {
@@ -195,7 +189,7 @@ class DashboardPage extends HTMLElement {
         // Quick action buttons
         const applyLoanBtn = this.querySelector('.apply-loan-btn');
         if (applyLoanBtn) {
-            applyLoanBtn.addEventListener('click', () => router.navigate('/loan-application'));
+            applyLoanBtn.addEventListener('click', () => router.navigate('/application'));
         }
 
         const makePaymentBtn = this.querySelector('.make-payment-btn');
@@ -248,12 +242,25 @@ class DashboardPage extends HTMLElement {
         }
 
         // Modal close buttons
-        const modalCloses = this.querySelectorAll('.modal-close, .modal-overlay');
+        const modalCloses = this.querySelectorAll('.modal-close');
         modalCloses.forEach(btn => {
             btn.addEventListener('click', () => {
                 this.showDepositModal = false;
                 this.showWithdrawModal = false;
                 this.render();
+            });
+        });
+
+        // Modal overlay close
+        const modalOverlays = this.querySelectorAll('.modal-overlay');
+        modalOverlays.forEach(overlay => {
+            overlay.addEventListener('click', (e) => {
+                // Only close if clicking directly on overlay, not its children
+                if (e.target === overlay) {
+                    this.showDepositModal = false;
+                    this.showWithdrawModal = false;
+                    this.render();
+                }
             });
         });
 

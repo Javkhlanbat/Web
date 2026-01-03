@@ -5,7 +5,7 @@ class LoanCalculatorPage extends HTMLElement {
     constructor() {
         super();
         this.amount = 1000000;
-        this.interest = 2; // Fixed 2% annual interest rate
+        this.interest = 2; 
         this.duration = 12;
     }
 
@@ -17,7 +17,7 @@ class LoanCalculatorPage extends HTMLElement {
 
         calculatePMT() {
         const P = this.amount;
-        const r = (this.interest / 100) / 12; // Monthly interest rate
+        const r = (this.interest / 100) / 12; 
         const n = this.duration;
 
         if (r === 0) {
@@ -37,33 +37,25 @@ class LoanCalculatorPage extends HTMLElement {
 
         calculate() {
         const result = this.calculatePMT();
-
-        // Update display
         this.querySelector('.monthly-payment').textContent = this.formatNumber(result.monthly);
         this.querySelector('.total-payment').textContent = this.formatNumber(result.total);
         this.querySelector('.total-interest').textContent = this.formatNumber(result.interest);
-
-        // Update chart/bars
         this.updateChart(result);
     }
 
         updateChart(result) {
         const principalPercent = (this.amount / result.total) * 100;
         const interestPercent = (result.interest / result.total) * 100;
-
         this.querySelector('.principal-bar').style.width = `${principalPercent}%`;
         this.querySelector('.interest-bar').style.width = `${interestPercent}%`;
-
         this.querySelector('.principal-amount').textContent = this.formatNumber(this.amount);
         this.querySelector('.interest-amount').textContent = this.formatNumber(result.interest);
     }
-
         formatNumber(num) {
         return new Intl.NumberFormat('mn-MN').format(num);
     }
 
         attachEventListeners() {
-        // Amount slider
         const amountSlider = this.querySelector('#amount');
         const amountValue = this.querySelector('.amount-value');
         amountSlider.addEventListener('input', (e) => {
@@ -71,8 +63,6 @@ class LoanCalculatorPage extends HTMLElement {
             amountValue.textContent = this.formatNumber(this.amount);
             this.calculate();
         });
-
-        // Duration slider
         const durationSlider = this.querySelector('#duration');
         const durationValue = this.querySelector('.duration-value');
         durationSlider.addEventListener('input', (e) => {
@@ -80,16 +70,13 @@ class LoanCalculatorPage extends HTMLElement {
             durationValue.textContent = this.duration;
             this.calculate();
         });
-
-        // Apply loan button
         const applyBtn = this.querySelector('.apply-loan-btn');
         if (applyBtn) {
             applyBtn.addEventListener('click', () => {
-                router.navigate('/loan-application');
+                router.navigate('/application');
             });
         }
     }
-
         render() {
         this.innerHTML = `
             <div class="calculator-page">
@@ -101,7 +88,6 @@ class LoanCalculatorPage extends HTMLElement {
                         <p class="page-subtitle">Сарын төлбөрөө тооцоолоорой</p>
 
                         <div class="calculator-grid">
-                            <!-- Input Controls -->
                             <div class="card calculator-controls">
                                 <h2 class="card-title">Параметрүүд</h2>
 

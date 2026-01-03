@@ -79,9 +79,9 @@ class HomePage extends HTMLElement {
                 <!-- Loan Types Section -->
                 <section class="loan-types">
                     <div class="container">
-                        <h2 class="section-title text-center">Зээлийн төрлүүд</h2>
+                        <h2 class="section-title text-center">Зээлийн төрөл</h2>
 
-                        <div class="grid grid-cols-2">
+                        <div class="loan-type-single">
                             <div class="loan-type-card card card-gradient">
                                 <h3 class="loan-type-title">Хэрэглээний зээл</h3>
                                 <p class="loan-type-description">
@@ -93,21 +93,7 @@ class HomePage extends HTMLElement {
                                     <li>Урьдчилгаагүй</li>
                                     <li>Хурдан зөвшөөрөл</li>
                                 </ul>
-                                <a href="#/loan-application" class="btn btn-secondary btn-block mt-4">Зээл хүсэх</a>
-                            </div>
-
-                            <div class="loan-type-card card">
-                                <h3 class="loan-type-title">Худалдан авалтын зээл</h3>
-                                <p class="loan-type-description">
-                                    Нэхэмжлэлийн кодоор зээл авах
-                                </p>
-                                <ul class="loan-features">
-                                    <li>10,000₮ - 3,000,000₮</li>
-                                    <li>6 сарын хугацаатай (тогтмол)</li>
-                                    <li>2% жилийн хүүтэй</li>
-                                    <li>Нэхэмжлэлийн код шаардлагатай</li>
-                                </ul>
-                                <a href="#/loan-application" class="btn btn-outline btn-block mt-4">Зээл хүсэх</a>
+                                <a href="#/application" class="btn btn-secondary btn-block mt-4">Зээл хүсэх</a>
                             </div>
                         </div>
                     </div>
@@ -235,6 +221,11 @@ class HomePage extends HTMLElement {
                                 .loan-types {
                     padding: 4rem 0;
                     background: var(--bg-secondary);
+                }
+
+                .loan-type-single {
+                    max-width: 600px;
+                    margin: 0 auto;
                 }
 
                 .loan-type-card {

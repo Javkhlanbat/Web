@@ -173,6 +173,44 @@ const getProfile = async (req, res) => {
   }
 };
 
+const updateProfile = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { first_name, last_name, phone, id_front, id_back } = req.body;
+
+    const updatedUser = await updateUserProfile(userId, {
+      first_name,
+      last_name,
+      phone,
+      id_front,
+      id_back
+    });
+
+    res.json({
+      message: 'Профайл амжилттай шинэчлэгдлээ',
+      user: {
+        id: updatedUser.id,
+        email: updatedUser.email,
+        first_name: updatedUser.first_name,
+        last_name: updatedUser.last_name,
+        phone: updatedUser.phone,
+        register_number: updatedUser.register_number,
+        id_front: updatedUser.id_front,
+        id_back: updatedUser.id_back,
+        is_admin: updatedUser.is_admin,
+        created_at: updatedUser.created_at
+      }
+    });
+
+  } catch (error) {
+    console.error('Профайл шинэчлэх алдаа:', error);
+    res.status(500).json({
+      error: 'Серверт алдаа гарлаа',
+      message: error.message
+    });
+  }
+};
+
 const uploadProfileImage = async (req, res) => {
   try {
     const userId = req.user.id;
@@ -289,7 +327,16 @@ const adminDeleteUser = async (req, res) => {
   try {
     const { userId } = req.params;
 
-    const deletedUser = await deleteUser(userId);
+    // Validate user ID
+    const parsedId = parseInt(userId);
+    if (isNaN(parsedId) || parsedId <= 0) {
+      return res.status(400).json({
+        error: 'Буруу хэрэглэгчийн ID',
+        message: 'Хэрэглэгчийн ID бүхэл тоо байх ёстой'
+      });
+    }
+
+    const deletedUser = await deleteUser(parsedId);
 
     if (!deletedUser) {
       return res.status(404).json({
@@ -364,6 +411,7 @@ module.exports = {
   register,
   login,
   getProfile,
+  updateProfile,
   uploadProfileImage,
   verifyToken,
   adminGetAllUsers,

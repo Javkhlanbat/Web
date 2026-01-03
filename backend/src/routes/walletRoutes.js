@@ -3,6 +3,9 @@ const router = express.Router();
 const {
   getWallet,
   getTransactions,
+  depositToWallet,
+  withdrawToBank,
+  payLoanFromWallet,
   adminAddToWallet
 } = require('../controllers/walletController');
 const { authMiddleware, adminMiddleware } = require('../middleware/authMiddleware');
@@ -10,6 +13,9 @@ const { authMiddleware, adminMiddleware } = require('../middleware/authMiddlewar
 // User routes
 router.get('/', authMiddleware, getWallet);
 router.get('/transactions', authMiddleware, getTransactions);
+router.post('/deposit', authMiddleware, depositToWallet);
+router.post('/withdraw', authMiddleware, withdrawToBank);
+router.post('/pay-loan', authMiddleware, payLoanFromWallet);
 
 // Admin routes
 router.post('/:userId/add', authMiddleware, adminMiddleware, adminAddToWallet);

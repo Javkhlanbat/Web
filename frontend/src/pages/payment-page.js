@@ -1,8 +1,3 @@
-/**
- * Payment Page Web Component
- * Make loan payments from wallet
- */
-
 import { PaymentsAPI, LoansAPI, WalletAPI } from '../services/api.js';
 import router from '../router.js';
 
@@ -19,17 +14,12 @@ class PaymentPage extends HTMLElement {
     }
 
     async connectedCallback() {
-        // Get loan ID from URL params
         const urlParams = new URLSearchParams(window.location.hash.split('?')[1]);
         this.loanId = urlParams.get('loanId');
 
         this.render();
         await this.loadData();
     }
-
-    /**
-     * Load loan and wallet data
-     */
     async loadData() {
         try {
             this.isLoading = true;
@@ -39,7 +29,6 @@ class PaymentPage extends HTMLElement {
                 const loanResponse = await LoansAPI.getLoanById(this.loanId);
                 this.loan = loanResponse.loan;
             } else {
-                // Load all active loans if no specific loan selected
                 const loansResponse = await LoansAPI.getMyLoans();
                 this.loans = (loansResponse.loans || []).filter(loan =>
                     loan.status === 'disbursed' || loan.status === 'approved'

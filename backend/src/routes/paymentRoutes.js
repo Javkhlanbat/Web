@@ -8,11 +8,7 @@ const {
   getUserPaymentStats
 } = require('../controllers/paymentController');
 const { authMiddleware, adminMiddleware } = require('../middleware/authMiddleware');
-
-// Admin routes
 router.get('/all', authMiddleware, adminMiddleware, adminGetAllPayments);
-
-// User routes
 router.post('/', authMiddleware, makePayment);
 router.get('/my-payments', authMiddleware, getUserPayments);
 router.get('/stats', authMiddleware, getUserPaymentStats);
